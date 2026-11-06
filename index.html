@@ -172,6 +172,58 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 
 #v-ayuno .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
 
+/* ===== v3.2: carga y bienvenida ===== */
+#splash{background:radial-gradient(circle at 50% 38%,#3a9a5f 0%,#1f5e39 55%,#123a22 100%);transition:opacity .45s ease,transform .45s ease,visibility .45s}
+#splash.out{transform:scale(1.04)}
+#splash .logo{width:120px;height:120px;border-radius:30px;box-shadow:0 0 0 10px rgba(255,255,255,.08),0 0 0 24px rgba(255,255,255,.04),0 18px 40px rgba(0,0,0,.35)}
+#splash .name{font-size:2.1rem;margin-top:14px}
+.sbar{width:132px;height:3px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden;margin-top:22px;animation:rise .6s .35s ease both}
+.sbar i{display:block;height:100%;width:38%;background:#fff;border-radius:3px;animation:sload 1.3s ease-in-out infinite}
+@keyframes sload{0%{transform:translateX(-110%)}100%{transform:translateX(290%)}}
+#splash div.by{text-transform:none;letter-spacing:0;opacity:1;display:flex;flex-direction:column;align-items:center;gap:2px;animation:rise .6s .45s ease both}
+#splash .by span{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;opacity:.65}
+#splash .by b{text-transform:none;font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:.01em}
+#splash .by .ver{margin-top:6px;letter-spacing:.08em;opacity:.45}
+
+#welcome{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);transition:opacity .4s ease,transform .4s ease}
+#welcome.out{opacity:0;transform:translateY(12px)}
+.wtop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px))}
+.wbrand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:.95rem}
+.wbrand img{width:28px;height:28px;border-radius:8px}
+.wskip{border:0;background:none;color:var(--muted);font-weight:700;padding:8px 4px}
+.wtrack{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.wtrack::-webkit-scrollbar{display:none}
+.wslide{flex:0 0 100%;scroll-snap-align:center;display:flex;flex-direction:column;justify-content:center;gap:16px;
+  padding:12px max(28px,env(safe-area-inset-right,0px)) 12px max(28px,env(safe-area-inset-left,0px));max-width:100%;overflow-y:auto}
+.wslide > *{width:100%;max-width:440px;margin-inline:auto}
+.wslide h2{font-size:2rem;font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.wslide p{margin:0;color:var(--muted);font-size:1.05rem}
+.whero{display:flex;justify-content:center;margin-bottom:10px}
+.wlogo{position:relative;width:150px;height:150px}
+.wlogo img{position:relative;width:100%;height:100%;border-radius:38px;box-shadow:0 20px 44px color-mix(in srgb,var(--leaf) 35%,transparent)}
+.wlogo::before,.wlogo::after{content:"";position:absolute;inset:-18px;border-radius:52px;border:2px solid color-mix(in srgb,var(--leaf) 30%,transparent);animation:halo 2.6s ease-out infinite}
+.wlogo::after{animation-delay:1.3s}
+@keyframes halo{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.25);opacity:0}}
+.wfeat{list-style:none;margin:6px auto 0;padding:0;display:flex;flex-direction:column;gap:14px}
+.wfeat li{display:flex;gap:14px;align-items:flex-start}
+.wic{flex:none;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--leaf-soft);color:var(--leaf)}
+.wic svg{width:24px;height:24px}
+.wic.c{background:var(--citrus-soft);color:var(--citrus)}.wic.w{background:var(--water-soft);color:var(--water)}
+.wfeat b{display:block;font-family:var(--display);font-size:1.02rem}
+.wfeat span{color:var(--muted);font-size:.92rem}
+.wform{display:flex;flex-direction:column;gap:12px}
+.wform label{display:flex;flex-direction:column;gap:5px;font-size:.88rem;color:var(--muted);font-weight:700}
+.wform input{font-size:1.05rem;padding:12px 14px;background:var(--surface)}
+.wbottom{display:flex;flex-direction:column;align-items:center;gap:14px;padding:10px max(24px,env(safe-area-inset-right,0px)) 18px max(24px,env(safe-area-inset-left,0px))}
+.wdots{display:flex;gap:7px}
+.wdot{width:7px;height:7px;border-radius:7px;background:var(--line);transition:width .25s ease,background .25s ease}
+.wdot.on{width:22px;background:var(--leaf)}
+.wnext{width:100%;max-width:440px;padding:15px 18px;font-size:1.05rem}
+.wsig{font-size:.78rem;color:var(--muted);letter-spacing:.04em}
+.wsig b{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.wlogo::before,.wlogo::after,.sbar i{animation:none}}
+
 /* ===== v3: experiencia de app nativa ===== */
 .exout{display:flex;flex-direction:column;gap:2px;background:var(--leaf-soft);border-radius:12px;padding:12px 14px}
 .exout #exKcal{font-family:var(--display);font-weight:800;font-size:1.8rem;color:var(--leaf);line-height:1.1}
@@ -251,7 +303,42 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
   <img class="logo" src="icon-512.png" alt="">
   <div class="name">Mi Cota Fitness</div>
   <div class="tag">Come mejor, muévete más</div>
-  <div class="by">Hecho por Allan Cepeda</div>
+  <div class="sbar"><i></i></div>
+  <div class="by"><span>Hecho por</span><b>Allan Cepeda</b><span class="ver" id="splashVer"></span></div>
+</div>
+
+<div id="welcome" hidden role="dialog" aria-modal="true" aria-label="Bienvenida a Mi Cota Fitness">
+  <div class="wtop"><span class="wbrand"><img src="icon-192.png" alt="">Mi Cota Fitness</span><button class="wskip" id="wSkip">Saltar</button></div>
+  <div class="wtrack" id="wTrack">
+    <section class="wslide">
+      <div class="whero"><div class="wlogo"><img src="icon-512.png" alt="Logo de Mi Cota Fitness"></div></div>
+      <h2>Bienvenido a<br>Mi Cota Fitness</h2>
+      <p>Tu compañero diario para comer mejor, moverte más y ver tu avance con datos reales.</p>
+    </section>
+    <section class="wslide">
+      <h2>Todo en un solo lugar</h2>
+      <ul class="wfeat">
+        <li><span class="wic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div><b>Foto → calorías</b><span>Saca una foto a tu plato o escanea el código de barras.</span></div></li>
+        <li><span class="wic c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span><div><b>Ejercicio</b><span>Registra tu actividad y calcula las calorías que quemas.</span></div></li>
+        <li><span class="wic w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5"/></svg></span><div><b>Ayuno y agua</b><span>Temporizador de ayuno con avisos y control de vasos de agua.</span></div></li>
+        <li><span class="wic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/></svg></span><div><b>Tu progreso</b><span>Peso, IMC, calorías de la semana y sugerencias saludables.</span></div></li>
+      </ul>
+    </section>
+    <section class="wslide">
+      <h2>Personaliza tu app</h2>
+      <p>Con esto ajustamos tus cálculos. Puedes cambiarlo cuando quieras en Perfil.</p>
+      <div class="wform">
+        <label for="wName">¿Cómo te llamas?<input type="text" id="wName" autocomplete="given-name" placeholder="Tu nombre" maxlength="30"></label>
+        <label for="wKg">Peso actual (kg)<input type="text" id="wKg" inputmode="decimal" placeholder="Ej: 80,5"></label>
+        <label for="wGoal">Meta diaria de calorías<input type="number" id="wGoal" inputmode="numeric" min="800" max="5000" step="50" value="2000"></label>
+      </div>
+    </section>
+  </div>
+  <div class="wbottom">
+    <div class="wdots" aria-hidden="true"><i class="wdot on"></i><i class="wdot"></i><i class="wdot"></i></div>
+    <button class="btn wnext" id="wNext">Siguiente</button>
+    <div class="wsig">Hecho por <b>Allan Cepeda</b></div>
+  </div>
 </div>
 
 <header class="appbar pad" id="appbar">
@@ -447,6 +534,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
   <section class="card" id="settings">
     <h2>Mis metas</h2>
     <div class="grid2">
+      <label for="nameInput">Tu nombre<input type="text" id="nameInput" maxlength="30" placeholder="opcional"></label>
       <label for="goalInput">Meta diaria (kcal)<input type="number" id="goalInput" inputmode="numeric" min="800" max="5000" step="50"></label>
       <label for="waterGoalInput">Meta de agua (vasos)<input type="number" id="waterGoalInput" inputmode="numeric" min="1" max="20"></label>
       <label for="fastTargetInput">Meta de ayuno (horas)
@@ -491,6 +579,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <h2>Mi Cota Fitness</h2>
     <div class="small-t muted num" id="appVersion"></div>
     <div class="sig">Hecho por Allan Cepeda</div>
+    <div><button class="btn small ghost" id="reWelcome">Ver bienvenida</button></div>
     <div class="small-t muted">Las calorías desde fotos son estimaciones de IA (pueden variar ±20%). Úsalas como guía, no como medición exacta.</div>
   </section>
 </div>
@@ -927,7 +1016,7 @@ $("sugs").addEventListener("click", e => {
 function fillSettings(){
   $("goalInput").value = S.profile.goal; $("waterGoalInput").value = S.profile.waterGoal; $("fastTargetInput").value = String(S.profile.fastTarget);
   $("goalWarn").hidden = S.profile.goal >= 1200;
-  $("exShareInput").value = String(exShare()); $("heightInput").value = S.profile.height || ""; $("weightGoalInput").value = S.profile.weightGoal ? fmtKg(S.profile.weightGoal) : "";
+  $("nameInput").value = S.profile.name || ""; $("exShareInput").value = String(exShare()); $("heightInput").value = S.profile.height || ""; $("weightGoalInput").value = S.profile.weightGoal ? fmtKg(S.profile.weightGoal) : "";
   const k = getKey(); $("keyInput").placeholder = k ? "Clave guardada ••••" + k.slice(-4) : "AIza…";
   fillModels([]);
   storageInfo();
@@ -937,6 +1026,7 @@ $("saveSettings").onclick = () => {
   S.profile.goal = Math.min(5000, Math.max(800, +$("goalInput").value || 2000));
   S.profile.waterGoal = Math.min(20, Math.max(1, +$("waterGoalInput").value || 8));
   S.profile.fastTarget = +$("fastTargetInput").value || 16;
+  S.profile.name = $("nameInput").value.trim().slice(0, 30) || null;
   S.profile.exShare = +$("exShareInput").value;
   const hgt = +$("heightInput").value; S.profile.height = hgt >= 100 && hgt <= 230 ? hgt : null;
   S.profile.weightGoal = parseKg($("weightGoalInput").value);
@@ -1211,10 +1301,10 @@ $("productBox").addEventListener("input", e => {
 });
 document.addEventListener("visibilitychange", () => { if (document.hidden && scan.on) closeScanner(); });
 
-function renderAll(){ renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
+function renderAll(){ refreshTitle(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.1.0";
+const APP_VERSION = "3.2.0";
 const VIEWS = ["hoy", "ayuno", "registrar", "progreso", "perfil"];
 let cur = null;
 function go(v){
@@ -1232,7 +1322,7 @@ function show(v){
     if (on) { el.dataset.dir = dir; el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); }
   });
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-current", t.dataset.go === v ? "page" : "false"));
-  $("viewTitle").textContent = $("v-" + v).dataset.title;
+  refreshTitle();
   $("dateNav").hidden = v !== "hoy";
   window.scrollTo(0, 0);
   if (v !== "registrar" && typeof closeScanner === "function" && !$("scanSheet").hidden) closeScanner();
@@ -1268,7 +1358,9 @@ renderFast = function(){ _renderFast(); updFastRing(); };
 
 /* ---------- v3: pantalla de carga ---------- */
 function hideSplash(){ const s = $("splash"); if (!s || s.classList.contains("out")) return; s.classList.add("out"); setTimeout(() => s.remove(), 450); }
-Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 1200))]).then(() => setTimeout(hideSplash, 450));
+const splashMin = new Promise(r => setTimeout(r, 1700));
+const fontsReady = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 1500))]);
+Promise.all([splashMin, fontsReady]).then(() => { if (!S.profile.welcomed) openWelcome(); hideSplash(); });
 
 /* ---------- v3: actualizaciones en línea ---------- */
 $("appVersion").textContent = `Versión ${APP_VERSION}`;
@@ -1396,6 +1488,48 @@ function exDeepLink(){ if (location.hash === "#ejercicio") { go("hoy"); setTimeo
 window.addEventListener("hashchange", exDeepLink);
 
 exDeepLink();
+
+/* ---------- bienvenida (primer uso) ---------- */
+function refreshTitle(){
+  const v = cur || "hoy", n = (S.profile.name || "").trim().split(/\s+/)[0];
+  $("viewTitle").textContent = v === "hoy" && n ? `Hola, ${n}` : $("v-" + v).dataset.title;
+}
+let wIdx = 0;
+function openWelcome(){
+  $("wName").value = S.profile.name || ""; $("wKg").value = bodyKg() ? fmtKg(bodyKg()) : ""; $("wGoal").value = S.profile.goal;
+  $("welcome").hidden = false; requestAnimationFrame(() => wGo(0, false));
+}
+function wGo(i, smooth = true){
+  wIdx = Math.max(0, Math.min(2, i));
+  $("wTrack").scrollTo({ left: wIdx * $("wTrack").clientWidth, behavior: smooth ? "smooth" : "auto" });
+  wUpd();
+}
+function wUpd(){
+  document.querySelectorAll(".wdot").forEach((d, k) => d.classList.toggle("on", k === wIdx));
+  $("wNext").textContent = wIdx === 2 ? "Comenzar" : "Siguiente";
+  $("wSkip").style.visibility = wIdx === 2 ? "hidden" : "visible";
+}
+$("wTrack").addEventListener("scroll", () => {
+  const i = Math.round($("wTrack").scrollLeft / Math.max(1, $("wTrack").clientWidth));
+  if (i !== wIdx) { wIdx = i; wUpd(); }
+}, { passive: true });
+$("wNext").onclick = () => { navigator.vibrate?.(8); if (wIdx < 2) wGo(wIdx + 1); else finishWelcome(); };
+$("wSkip").onclick = () => wGo(2);
+$("wGoal").addEventListener("keydown", e => { if (e.key === "Enter") finishWelcome(); });
+function finishWelcome(){
+  const name = $("wName").value.trim().slice(0, 30), kg = parseKg($("wKg").value), g = +$("wGoal").value;
+  if (name) S.profile.name = name;
+  if (g >= 800 && g <= 5000) S.profile.goal = Math.round(g);
+  if (kg) S.profile.weights = [...(S.profile.weights || []).filter(x => x.date !== todayStr()), { date: todayStr(), kg }];
+  S.profile.welcomed = true; saveProfile(); renderAll();
+  const w = $("welcome"); w.classList.add("out");
+  setTimeout(() => { w.hidden = true; w.classList.remove("out"); }, 420);
+  go("hoy");
+  toast(name ? `¡Bienvenido, ${name.split(/\s+/)[0]}!` : "¡Todo listo para empezar!");
+}
+$("reWelcome").onclick = openWelcome;
+$("splashVer").textContent = "v" + APP_VERSION;
+window.addEventListener("resize", () => { if (!$("welcome").hidden) wGo(wIdx, false); });
 
 /* ---------- inicio ---------- */
 S.profile = {...DEF_PROFILE, ...get("profile", {})};
