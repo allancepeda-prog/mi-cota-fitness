@@ -6,6 +6,11 @@ App personal para contar calorías con foto, registrar ejercicio y estimar las c
 
 Es una app web instalable (PWA): se publica gratis con GitHub Pages, se instala en el celular como una app y funciona sin conexión (salvo la IA y el escáner de productos).
 
+## Descargar para Android (APK)
+
+Página de descarga: `https://allancepeda-prog.github.io/mi-cota-fitness/descargar.html`
+El APK (`descargas/mi-cota-fitness.apk`) abre la versión publicada, así que se actualiza solo cuando se sube una nueva versión de la app web. Solo hay que generar un APK nuevo si cambia el nombre, el ícono o el paquete.
+
 ## Publicar en GitHub Pages (una sola vez)
 
 1. En GitHub, crea un repositorio nuevo llamado `mi-cota-fitness` (público).
