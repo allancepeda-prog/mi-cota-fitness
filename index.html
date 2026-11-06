@@ -172,6 +172,17 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 
 #v-ayuno .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
 
+/* ===== v3.4: recordatorios ===== */
+.rem{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.remhead{display:flex;align-items:center;gap:10px;cursor:pointer}
+.remhead input{width:20px;height:20px;accent-color:var(--leaf);flex:none}
+.remopts{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.9rem;color:var(--muted);padding-left:30px}
+.remopts input[type=time],.remopts select{width:auto;padding:6px 8px;font-size:.95rem;background:var(--sunk);border:1px solid var(--line);border-radius:10px;color:var(--ink)}
+.rem.off .remopts{opacity:.45}
+.remlist{display:flex;flex-direction:column;margin-top:8px}
+.remlist div{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:.9rem}
+.remlist div:first-child{border-top:0}
+.remlist a{white-space:nowrap}
 /* ===== v3.3: instalación + bienvenida Carla ===== */
 .whello{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--leaf)}
 .install{border:2px solid var(--leaf);background:var(--leaf-soft)}
@@ -562,6 +573,36 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <div class="small-t muted">"Ejercicio en tu meta" suma a tu meta diaria parte de las calorías que quemas. Sumar 50% es lo más prudente, porque las estimaciones de quema suelen quedar altas.</div>
     <div class="warn" id="goalWarn" hidden>Una meta bajo 1.200 kcal diarias conviene hacerla con supervisión de un médico o nutricionista.</div>
     <div class="row"><button class="btn small" id="saveSettings">Guardar metas</button></div>
+  </section>
+
+  <section class="card" id="remCard">
+    <h2>Recordatorios</h2>
+    <div class="small-t muted">Se guardan como alarmas que se repiten en el calendario del celular, así suenan aunque la app esté cerrada.</div>
+    <div class="rem">
+      <label class="remhead"><input type="checkbox" id="remWaterOn"><span><b>💧 Tomar agua</b></span></label>
+      <div class="remopts">cada <select id="remWaterEvery"><option value="2">2 h</option><option value="3">3 h</option><option value="4">4 h</option></select>
+        de <input type="time" id="remWaterFrom"> a <input type="time" id="remWaterTo"></div>
+    </div>
+    <div class="rem">
+      <label class="remhead"><input type="checkbox" id="remMealsOn"><span><b>🍽️ Registrar comidas</b></span></label>
+      <div class="remopts">desayuno <input type="time" id="remB"> almuerzo <input type="time" id="remL"> cena <input type="time" id="remD"></div>
+    </div>
+    <div class="rem">
+      <label class="remhead"><input type="checkbox" id="remWeightOn"><span><b>⚖️ Pesarse</b> <span class="muted small-t">(lunes, en ayunas)</span></span></label>
+      <div class="remopts">a las <input type="time" id="remWeightT"></div>
+    </div>
+    <div class="rem">
+      <label class="remhead"><input type="checkbox" id="remExOn"><span><b>🏃 Hacer ejercicio</b></span></label>
+      <div class="remopts">a las <input type="time" id="remExT"> <select id="remExDays"><option value="weekdays">lunes a viernes</option><option value="daily">todos los días</option><option value="mwf">lun, mié y vie</option></select></div>
+    </div>
+    <div class="small-t" id="remCount"></div>
+    <div class="row"><button class="btn" id="remIcs">Guardar en mi calendario</button></div>
+    <div class="small-t muted">Se descarga un archivo de calendario: ábrelo y confirma <b>"Importar"</b> o <b>"Guardar"</b>. Si tu calendario no lo abre, agrega cada recordatorio uno por uno:</div>
+    <details>
+      <summary class="small-t" style="cursor:pointer;font-weight:700">Agregar uno por uno a Google Calendar</summary>
+      <div class="remlist" id="remList"></div>
+      <div class="small-t muted" style="margin-top:6px">En Google Calendar revisa que la notificación diga <b>"A la hora del evento"</b> (por defecto avisa 30 min antes) y toca <b>Guardar</b>.</div>
+    </details>
   </section>
 
   <section class="card" id="aiCard">
@@ -1316,10 +1357,10 @@ $("productBox").addEventListener("input", e => {
 });
 document.addEventListener("visibilitychange", () => { if (document.hidden && scan.on) closeScanner(); });
 
-function renderAll(){ refreshTitle(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
+function renderAll(){ refreshTitle(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.3.0";
+const APP_VERSION = "3.4.0";
 const VIEWS = ["hoy", "ayuno", "registrar", "progreso", "perfil"];
 let cur = null;
 function go(v){
@@ -1577,6 +1618,89 @@ $("installBtn").onclick = async () => {
 $("installLater").onclick = () => { try { localStorage.setItem(P + "installLater", todayStr()); } catch {} $("installCard").hidden = true; };
 $("installAgain").onclick = () => { go("hoy"); renderInstall(true); setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 320); };
 renderInstall();
+
+/* ---------- recordatorios en el calendario ---------- */
+const REM_DEF = { water: { on: true, every: 2, from: "09:00", to: "21:00" }, meals: { on: true, b: "08:30", l: "13:30", d: "20:00" }, weight: { on: true, t: "08:00" }, ex: { on: false, t: "19:00", days: "weekdays" } };
+function remCfg(){ const r = S.profile.rem || {}; const o = {}; for (const k in REM_DEF) o[k] = { ...REM_DEF[k], ...(r[k] || {}) }; return o; }
+const APP_URL = location.href.split("#")[0];
+function remItems(){
+  const c = remCfg(), it = [];
+  if (c.water.on) {
+    const [fh, fm] = c.water.from.split(":").map(Number), [th, tm] = c.water.to.split(":").map(Number);
+    for (let m = fh * 60 + fm; m <= th * 60 + tm; m += c.water.every * 60) {
+      const t = `${pad(Math.floor(m / 60))}:${pad(m % 60)}`;
+      it.push({ id: "agua-" + t.replace(":", ""), title: "💧 Toma un vaso de agua", time: t, rrule: "FREQ=DAILY", label: `Agua ${t}` });
+    }
+  }
+  if (c.meals.on) [["b", "desayuno"], ["l", "almuerzo"], ["d", "cena"]].forEach(([k, n]) =>
+    it.push({ id: "comida-" + k, title: `🍽️ Registra tu ${n} en Mi Cota Fitness`, time: c.meals[k], rrule: "FREQ=DAILY", label: `${n[0].toUpperCase() + n.slice(1)} ${c.meals[k]}` }));
+  if (c.weight.on) it.push({ id: "peso", title: "⚖️ Pésate en ayunas y anótalo", time: c.weight.t, rrule: "FREQ=WEEKLY;BYDAY=MO", label: `Peso · lunes ${c.weight.t}` });
+  if (c.ex.on) {
+    const r = { weekdays: "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR", daily: "FREQ=DAILY", mwf: "FREQ=WEEKLY;BYDAY=MO,WE,FR" }[c.ex.days];
+    const d = { weekdays: "lun a vie", daily: "todos los días", mwf: "lun, mié, vie" }[c.ex.days];
+    it.push({ id: "ejercicio", title: "🏃 Hora de moverte: registra tu ejercicio", time: c.ex.t, rrule: r, label: `Ejercicio · ${d} ${c.ex.t}` });
+  }
+  return it;
+}
+function remStart(time, rrule){
+  const d = new Date(); const [h, m] = time.split(":").map(Number);
+  const by = (rrule.match(/BYDAY=([A-Z,]+)/) || [])[1];
+  if (by) { const days = by.split(",").map(x => ["SU","MO","TU","WE","TH","FR","SA"].indexOf(x)); for (let i = 0; i < 7 && !days.includes(d.getDay()); i++) d.setDate(d.getDate() + 1); }
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+const icsLocal = d => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+function gcalLink(x){
+  const st = remStart(x.time, x.rrule), en = new Date(st.getTime() + 10 * 60000);
+  const p = new URLSearchParams({ action: "TEMPLATE", text: x.title, details: `Recordatorio de Mi Cota Fitness. Abre la app: ${APP_URL}`, dates: `${icsLocal(st)}/${icsLocal(en)}`, recur: "RRULE:" + x.rrule });
+  try { p.set("ctz", Intl.DateTimeFormat().resolvedOptions().timeZone); } catch {}
+  return "https://calendar.google.com/calendar/render?" + p.toString();
+}
+function renderRem(){
+  const c = remCfg();
+  $("remWaterOn").checked = c.water.on; $("remWaterEvery").value = String(c.water.every); $("remWaterFrom").value = c.water.from; $("remWaterTo").value = c.water.to;
+  $("remMealsOn").checked = c.meals.on; $("remB").value = c.meals.b; $("remL").value = c.meals.l; $("remD").value = c.meals.d;
+  $("remWeightOn").checked = c.weight.on; $("remWeightT").value = c.weight.t;
+  $("remExOn").checked = c.ex.on; $("remExT").value = c.ex.t; $("remExDays").value = c.ex.days;
+  document.querySelectorAll("#remCard .rem").forEach(r => r.classList.toggle("off", !r.querySelector("input[type=checkbox]").checked));
+  const it = remItems(), added = S.profile.remAdded || {};
+  $("remCount").textContent = it.length ? `${it.length} recordatorio${it.length > 1 ? "s" : ""} listos para guardar` : "Activa al menos un recordatorio.";
+  $("remIcs").disabled = !it.length;
+  $("remList").innerHTML = it.map(x => `<div><span>${esc(x.label)}</span><a href="${esc(gcalLink(x))}" target="_blank" rel="noopener" class="btn small ${added[x.id] ? "ghost" : ""}" data-remid="${esc(x.id)}">${added[x.id] ? "✓ Agregado" : "Agregar"}</a></div>`).join("");
+}
+function readRem(){
+  const v = id => $(id).value, ok = t => /^\d{2}:\d{2}$/.test(t);
+  const c = remCfg();
+  S.profile.rem = {
+    water: { on: $("remWaterOn").checked, every: +v("remWaterEvery"), from: ok(v("remWaterFrom")) ? v("remWaterFrom") : c.water.from, to: ok(v("remWaterTo")) ? v("remWaterTo") : c.water.to },
+    meals: { on: $("remMealsOn").checked, b: ok(v("remB")) ? v("remB") : c.meals.b, l: ok(v("remL")) ? v("remL") : c.meals.l, d: ok(v("remD")) ? v("remD") : c.meals.d },
+    weight: { on: $("remWeightOn").checked, t: ok(v("remWeightT")) ? v("remWeightT") : c.weight.t },
+    ex: { on: $("remExOn").checked, t: ok(v("remExT")) ? v("remExT") : c.ex.t, days: v("remExDays") }
+  };
+  saveProfile(); renderRem();
+}
+$("remCard").addEventListener("change", e => { if (e.target.matches("input,select")) readRem(); });
+$("remList").addEventListener("click", e => {
+  const a = e.target.closest("[data-remid]"); if (!a) return;
+  S.profile.remAdded = { ...(S.profile.remAdded || {}), [a.dataset.remid]: true }; saveProfile();
+  setTimeout(renderRem, 600);
+});
+$("remIcs").onclick = () => {
+  const it = remItems(); if (!it.length) return;
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const esc2 = t => t.replace(/([,;\\])/g, "\\$1");
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//MiCotaFitness//ES", "CALSCALE:GREGORIAN", "X-WR-CALNAME:Mi Cota Fitness"];
+  it.forEach(x => {
+    lines.push("BEGIN:VEVENT", `UID:micota-${x.id}@micotafitness`, `DTSTAMP:${stamp}`, `DTSTART:${icsLocal(remStart(x.time, x.rrule))}`, "DURATION:PT10M",
+      `RRULE:${x.rrule}`, `SUMMARY:${esc2(x.title)}`, `DESCRIPTION:${esc2("Recordatorio de Mi Cota Fitness. Abre la app: " + APP_URL)}`,
+      "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${esc2(x.title)}`, "TRIGGER:PT0M", "END:VALARM", "END:VEVENT");
+  });
+  lines.push("END:VCALENDAR");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/calendar" })); a.download = "recordatorios-mi-cota-fitness.ics";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast("Archivo descargado: ábrelo y confirma \"Importar\"");
+};
+renderRem();
 
 /* ---------- inicio ---------- */
 S.profile = {...DEF_PROFILE, ...get("profile", {})};
