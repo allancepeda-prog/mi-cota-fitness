@@ -1,7 +1,7 @@
 // Mi Cota Fitness — service worker
 // Para publicar una actualización: cambia VERSION (y APP_VERSION en index.html), sube los archivos.
 // La app mostrará "Nueva versión disponible · Actualizar".
-const VERSION = "3.4.1";
+const VERSION = "3.5.0";
 const CACHE = "miplato-" + VERSION;
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./logo.svg", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png"];
 
