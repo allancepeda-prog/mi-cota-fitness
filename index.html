@@ -1,0 +1,1416 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mi Cota Fitness</title>
+<meta name="description" content="Calorías por foto, ejercicio, ayuno, agua, peso y sugerencias saludables. Hecho por Allan Cepeda.">
+<meta name="author" content="Allan Cepeda">
+<meta name="theme-color" content="#eef3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1511" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mi Cota Fitness">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+
+:root{
+  --bg:#eef3ec; --surface:#ffffff; --sunk:#e3eae1; --ink:#16231b; --muted:#5a6a60; --line:#d3ddd3;
+  --leaf:#2c7a4b; --leaf-soft:#d7eadc; --citrus:#c98a0c; --citrus-soft:#f6e6c2; --water:#2370ad; --water-soft:#d6e7f5;
+  --danger:#b3392f; --on-accent:#ffffff;
+  --display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r:16px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0e1511; --surface:#17211b; --sunk:#111a15; --ink:#e5eee8; --muted:#97a99d; --line:#2a3830;
+  --leaf:#5cc184; --leaf-soft:#1d3426; --citrus:#efb740; --citrus-soft:#3a2e14; --water:#60a9e3; --water-soft:#16293a;
+  --danger:#ef7d72; --on-accent:#0e1511; color-scheme:dark }}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
+img{max-width:100%}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:1.15rem;font-weight:700}
+.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+.num{font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
+.btn{border:0;border-radius:999px;padding:10px 16px;font-weight:700;background:var(--leaf);color:var(--on-accent);display:inline-flex;align-items:center;gap:8px;justify-content:center;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.small{padding:6px 12px;font-size:.88rem}
+.btn:disabled{opacity:.55;cursor:default}
+input[type=text],input[type=password],input[type=number],input[type=datetime-local],textarea,select{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;min-width:0;font-size:16px}
+textarea{resize:vertical;min-height:44px}
+.card{background:var(--surface);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{justify-content:space-between}
+.muted{color:var(--muted)}
+.small-t{font-size:.86rem}
+a{color:var(--leaf)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-family:var(--display);font-weight:800;font-size:1.5rem}
+.brand span{color:var(--leaf)}
+.datenav{display:flex;align-items:center;gap:4px}
+.datenav button{border:0;background:var(--surface);border-radius:999px;width:34px;height:34px;font-size:1.1rem}
+.datenav .lbl{min-width:96px;text-align:center;font-weight:700;font-size:.92rem}
+
+.today{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}
+.ring{position:relative;width:150px;height:150px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .big{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1}
+.macros{display:flex;flex-direction:column;gap:10px;min-width:0}
+.macro .bar{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden;margin-top:4px}
+.macro .bar i{display:block;height:100%;border-radius:99px}
+@media (max-width:400px){.today{grid-template-columns:1fr;justify-items:center}.macros{width:100%}}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:440px){.duo{grid-template-columns:1fr}}
+.fast{background:var(--citrus-soft)}
+.fast .clock{font-family:var(--display);font-weight:800;font-size:2.1rem;line-height:1}
+.prog{height:8px;border-radius:99px;background:color-mix(in srgb,var(--citrus) 22%,transparent);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--citrus);border-radius:99px;transition:width .4s}
+.fast .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
+.water{background:var(--water-soft)}
+.glasses{display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:6px}
+.glass{border:0;background:transparent;padding:0;height:40px;display:flex;align-items:flex-end;justify-content:center}
+.glass svg{width:28px;height:38px}
+.water .big{font-family:var(--display);font-weight:800;font-size:2.1rem;line-height:1;color:var(--water)}
+
+.capture-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.capture-actions label{cursor:pointer}
+.preview{display:flex;gap:12px;align-items:flex-start}
+.preview img{width:96px;height:96px;object-fit:cover;border-radius:12px;flex:none}
+.result{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.item{display:grid;grid-template-columns:1fr 84px;gap:8px;align-items:center}
+.item .name{min-width:0}
+.item input{text-align:right}
+.portion{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:.88rem}
+.chip[aria-pressed=true]{background:var(--leaf);color:var(--on-accent);border-color:var(--leaf)}
+.badge{font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--leaf-soft);color:var(--leaf)}
+.badge.media{background:var(--citrus-soft);color:var(--citrus)}
+.badge.baja{background:color-mix(in srgb,var(--danger) 15%,transparent);color:var(--danger)}
+.status{font-size:.92rem;color:var(--muted)}
+.err{color:var(--danger)}
+.setup{background:var(--leaf-soft);border-radius:12px;padding:12px;font-size:.9rem;display:flex;flex-direction:column;gap:8px}
+
+.meals{display:flex;flex-direction:column}
+.meal{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.meal:first-child{border-top:0}
+.thumb{width:48px;height:48px;border-radius:10px;background:var(--leaf-soft);object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;color:var(--leaf)}
+.meal .info{min-width:0}
+.meal .info b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meal .k{font-family:var(--display);font-weight:700;text-align:right}
+.meal .del{border:0;background:transparent;color:var(--muted);font-size:.8rem;padding:2px 0}
+.empty{padding:14px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--muted)}
+
+.sugs{display:flex;flex-direction:column;gap:10px}
+.sug{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.sug .head{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.sug h3{font-size:1.02rem}
+
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:120px;position:relative}
+.week::after{content:"";position:absolute;left:0;right:0;border-top:1px dashed var(--muted);bottom:var(--g,0);pointer-events:none}
+.wcol{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;border:0;background:none;padding:0}
+.wbar{width:100%;max-width:30px;border-radius:6px 6px 3px 3px;background:var(--leaf);min-height:3px}
+.wbar.over{background:var(--citrus)}
+.wbar.zero{background:var(--sunk)}
+.wlbl{font-size:.72rem;color:var(--muted)}
+.wcol.sel .wlbl{color:var(--ink);font-weight:700}
+
+details.card summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:1.05rem;list-style:none}
+details.card summary::-webkit-details-marker{display:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 label,.field{display:flex;flex-direction:column;gap:4px;font-size:.86rem;color:var(--muted)}
+.warn{background:var(--citrus-soft);color:var(--ink);border-radius:10px;padding:8px 10px;font-size:.88rem}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.92rem;z-index:20;max-width:calc(100% - 32px)}
+.note{font-size:.8rem;color:var(--muted);text-align:center}
+hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+/* escáner */
+.sheet{position:fixed;inset:0;z-index:30;background:color-mix(in srgb,var(--ink) 45%,transparent);display:flex;align-items:flex-end;justify-content:center}
+.sheet-inner{background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;display:flex;flex-direction:column;gap:12px;
+  padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.video-wrap{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3;max-width:100%}
+.video-wrap video{width:100%;height:100%;object-fit:cover;display:block}
+.reticle{position:absolute;left:12%;right:12%;top:35%;bottom:35%;border:3px solid rgba(255,255,255,.9);border-radius:10px;box-shadow:0 0 0 999px rgba(0,0,0,.25)}
+.product{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px}
+.product .ph{display:flex;gap:12px;align-items:flex-start}
+.product .ph img{width:64px;height:64px;object-fit:contain;border-radius:8px;background:#fff;flex:none}
+.product .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.product .facts div{background:var(--sunk);border-radius:8px;padding:6px 2px}
+.product .facts b{display:block;font-family:var(--display)}
+/* peso */
+.wchart svg{width:100%;height:auto;display:block}
+.wc-grid{stroke:var(--line);stroke-width:1}
+.wc-line{stroke:var(--leaf);fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.wc-area{fill:var(--leaf-soft);stroke:none}
+.wc-dot{fill:var(--leaf)}
+.wc-goal{stroke:var(--citrus);stroke-width:1.5;stroke-dasharray:5 4}
+.wc-txt{fill:var(--muted);font-size:10px;font-family:var(--body)}
+.wlist{display:flex;flex-direction:column}
+.wlist div{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:.9rem}
+.wlist div:first-child{border-top:0}
+.wlist button{border:0;background:none;color:var(--muted);font-size:.8rem}
+.recents{display:flex;gap:6px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+#v-ayuno .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
+
+/* ===== v3: experiencia de app nativa ===== */
+.exout{display:flex;flex-direction:column;gap:2px;background:var(--leaf-soft);border-radius:12px;padding:12px 14px}
+.exout #exKcal{font-family:var(--display);font-weight:800;font-size:1.8rem;color:var(--leaf);line-height:1.1}
+.thumb.ex{background:var(--citrus-soft);color:var(--citrus)}
+:root{--leaf-deep:#1f5e39;--tabh:62px}
+html,body{overscroll-behavior-y:none}
+body{padding:0;-webkit-tap-highlight-color:transparent}
+.pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,.btn,.tab,.tile,.chip{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.btn,.tile,.chip{transition:transform .12s ease,filter .12s ease}
+.btn:active,.tile:active,.chip:active{transform:scale(.97);filter:brightness(.94)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:15;background:var(--bg)}
+
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:12;background:color-mix(in srgb,var(--bg) 86%,transparent);
+  -webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid transparent;transition:border-color .2s}
+.appbar.scrolled{border-bottom-color:var(--line)}
+.appbar-in{max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:58px}
+.appbar h1{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}
+main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inset-bottom,0px))}
+.view.enter{animation:vin .3s cubic-bezier(.2,.8,.2,1) both}
+.view[data-dir=fwd]{--dx:22px}.view[data-dir=back]{--dx:-22px}.view[data-dir=none]{--dx:0px}
+@keyframes vin{from{opacity:0;transform:translateX(var(--dx))}to{opacity:1;transform:none}}
+
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:14;background:color-mix(in srgb,var(--surface) 90%,transparent);
+  -webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);height:var(--tabh)}
+.tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:.68rem;font-weight:700;letter-spacing:.02em;padding:0}
+.tab svg{width:24px;height:24px}
+.tab[aria-current=page]{color:var(--leaf)}
+.tab.fab{justify-content:flex-end;padding-bottom:7px}
+.tab.fab .circle{width:56px;height:56px;border-radius:50%;background:var(--leaf);color:var(--on-accent);display:flex;align-items:center;justify-content:center;
+  margin-top:-26px;margin-bottom:2px;box-shadow:0 6px 18px color-mix(in srgb,var(--leaf) 45%,transparent),0 0 0 5px var(--bg)}
+.tab.fab .circle svg{width:28px;height:28px}
+
+#splash{position:fixed;inset:0;z-index:50;background:var(--leaf-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;transition:opacity .4s ease,visibility .4s}
+#splash.out{opacity:0;visibility:hidden}
+#splash .logo{width:112px;height:112px;border-radius:28px;box-shadow:0 12px 32px rgba(0,0,0,.25);animation:pop .7s cubic-bezier(.2,1.3,.4,1) both}
+#splash .name{font-family:var(--display);font-weight:800;font-size:2rem;letter-spacing:-.02em;animation:rise .6s .15s ease both}
+#splash .tag{font-size:.9rem;opacity:.8;animation:rise .6s .25s ease both}
+#splash .by{position:absolute;bottom:calc(30px + env(safe-area-inset-bottom,0px));font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+.toast{bottom:calc(var(--tabh) + 16px + env(safe-area-inset-bottom,0px))}
+.update{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 16px + env(safe-area-inset-bottom,0px));z-index:22;display:flex;gap:12px;align-items:center;
+  background:var(--ink);color:var(--bg);padding:7px 7px 7px 16px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:nowrap;font-size:.92rem}
+
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:18px 6px;border-radius:14px;background:var(--leaf-soft);color:var(--ink);
+  font-weight:700;font-size:.86rem;text-align:center;border:0;cursor:pointer;line-height:1.2}
+.tile svg{width:28px;height:28px;color:var(--leaf)}
+.tile.primary{background:var(--leaf);color:var(--on-accent)}
+.tile.primary svg{color:var(--on-accent)}
+
+.fastring{position:relative;width:min(250px,72vw);aspect-ratio:1;margin:2px auto 0}
+.fastring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.fastring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.fastring .clock{font-family:var(--display);font-weight:800;font-size:3rem;line-height:1}
+.fastring .eyebrow{max-width:70%}
+#fastRingArc{transition:stroke-dashoffset .6s ease}
+.fast-actions{justify-content:center}
+.prog.slim{height:0;overflow:hidden}
+.mini{display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;width:100%;text-align:left;background:var(--citrus-soft);border-radius:var(--r);padding:12px 16px;cursor:pointer}
+.mini b{font-family:var(--display)}
+.mini .go{color:var(--citrus);font-weight:700;font-size:.9rem;white-space:nowrap}
+.history div{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:.92rem}
+.history div:first-child{border-top:0}
+
+.about{align-items:center;text-align:center;gap:6px}
+.about img{width:68px;height:68px;border-radius:17px}
+.about .sig{font-family:var(--display);font-weight:700;font-size:1.05rem}
+@media (prefers-reduced-motion:reduce){.view.enter,#splash .logo,#splash .name,#splash .tag{animation:none}}
+</style>
+</head>
+<body>
+<div id="splash" aria-hidden="true">
+  <img class="logo" src="icon-512.png" alt="">
+  <div class="name">Mi Cota Fitness</div>
+  <div class="tag">Come mejor, muévete más</div>
+  <div class="by">Hecho por Allan Cepeda</div>
+</div>
+
+<header class="appbar pad" id="appbar">
+  <div class="appbar-in">
+    <h1 id="viewTitle">Hoy</h1>
+    <div class="datenav" id="dateNav">
+      <button id="prevDay" aria-label="Día anterior">‹</button>
+      <div class="lbl" id="dateLbl">Hoy</div>
+      <button id="nextDay" aria-label="Día siguiente">›</button>
+    </div>
+  </div>
+</header>
+
+<main class="pad">
+<div class="wrap">
+
+<!-- ================= HOY ================= -->
+<section class="view" id="v-hoy" data-title="Hoy">
+<div class="wrap">
+  <section class="card" aria-label="Resumen del día">
+    <div class="today">
+      <div class="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--sunk)" stroke-width="12"/>
+          <circle id="ringArc" cx="60" cy="60" r="52" fill="none" style="stroke:var(--leaf);transition:stroke-dashoffset .6s ease" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        </svg>
+        <div class="center">
+          <div class="big num" id="kcalLeft">2000</div>
+          <div class="small-t muted" id="kcalLeftLbl">kcal disponibles</div>
+        </div>
+      </div>
+      <div class="macros">
+        <div class="row spread"><span class="eyebrow">Consumido</span><span class="num"><b id="kcalEaten">0</b> / <span id="kcalGoal">2000</span> kcal</span></div>
+        <div class="row spread small-t"><span class="muted">Ejercicio</span><span class="num muted" id="exLine">Sin ejercicio hoy</span></div>
+        <div class="macro"><div class="row spread small-t"><span>Proteína</span><span class="num muted" id="mP">0 / 0 g</span></div><div class="bar"><i id="bP" style="background:var(--leaf)"></i></div></div>
+        <div class="macro"><div class="row spread small-t"><span>Carbohidratos</span><span class="num muted" id="mC">0 / 0 g</span></div><div class="bar"><i id="bC" style="background:var(--citrus)"></i></div></div>
+        <div class="macro"><div class="row spread small-t"><span>Grasas</span><span class="num muted" id="mF">0 / 0 g</span></div><div class="bar"><i id="bF" style="background:var(--water)"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <button class="mini" data-goto="ayuno"><span><span class="eyebrow">Ayuno</span><br><b id="fastMini">Sin ayuno activo</b></span><span class="go">Ver ›</span></button>
+
+  <section class="card water" aria-label="Agua">
+    <div class="row spread"><h2>Agua</h2><span class="eyebrow">vaso = 250 ml</span></div>
+    <div class="row" style="align-items:baseline;gap:6px"><span class="big num" id="waterCount">0</span><span class="muted num" id="waterGoalLbl">/ 8 vasos</span></div>
+    <div class="glasses" id="glasses"></div>
+    <div class="small-t muted num" id="waterMl">0 ml</div>
+  </section>
+
+  <section class="card" aria-label="Ejercicio del día">
+    <div class="row spread"><h2>Ejercicio</h2><span class="muted small-t num" id="exTotalLbl"></span></div>
+    <div class="meals" id="exList"></div>
+    <div><button class="btn small ghost exOpen">+ Agregar ejercicio</button></div>
+  </section>
+
+  <section class="card" aria-label="Comidas del día">
+    <div class="row spread"><h2 id="mealsTitle">Comidas de hoy</h2><span class="muted small-t num" id="mealsCount"></span></div>
+    <div class="meals" id="meals"></div>
+    <div><button class="btn small ghost" data-goto="registrar">+ Registrar comida</button></div>
+  </section>
+
+  <section class="card" aria-label="Sugerencias saludables">
+    <div class="row spread"><h2>¿Qué como?</h2><span class="eyebrow">sugerencias</span></div>
+    <input type="text" id="prefInput" placeholder="Opcional: qué tienes o qué se te antoja (ej. pollo, algo rápido)">
+    <div class="row"><button class="btn" id="sugBtn">Sugerir comida saludable</button></div>
+    <div class="status" id="sugStatus" aria-live="polite"></div>
+    <div class="sugs" id="sugs"></div>
+  </section>
+</div>
+</section>
+
+<!-- ================= AYUNO ================= -->
+<section class="view" id="v-ayuno" data-title="Ayuno" hidden>
+<div class="wrap">
+  <section class="card" aria-label="Temporizador de ayuno">
+    <div class="fastring">
+      <svg viewBox="0 0 220 220" aria-hidden="true">
+        <circle cx="110" cy="110" r="96" fill="none" style="stroke:var(--citrus-soft)" stroke-width="16"/>
+        <circle id="fastRingArc" cx="110" cy="110" r="96" fill="none" style="stroke:var(--citrus)" stroke-width="16" stroke-linecap="round" stroke-dasharray="603.2" stroke-dashoffset="603.2"/>
+      </svg>
+      <div class="center">
+        <span class="eyebrow" id="fastPhase">Sin ayuno activo</span>
+        <span class="clock num" id="fastClock">0:00</span>
+        <span class="small-t muted num" id="fastPct">Meta 16 h</span>
+      </div>
+    </div>
+    <div class="prog slim"><i id="fastProg"></i></div>
+    <div class="small-t muted" id="fastSub" style="text-align:center">Meta 16 h</div>
+    <div class="row fast-actions" id="fastControls"></div>
+    <div id="fastAdjust" hidden class="row fast-actions">
+      <label for="fastStartInput" class="small-t muted">Empecé a las</label>
+      <input type="datetime-local" id="fastStartInput" style="flex:1 1 180px">
+      <button class="btn small ghost" id="fastStartSave">Guardar</button>
+    </div>
+    <div id="fastRemind" hidden class="row fast-actions">
+      <button class="btn small ghost" id="notifBtn">🔔 Notificación</button>
+      <button class="btn small ghost" id="icsBtn">📅 Al calendario</button>
+    </div>
+    <div class="small-t muted" id="fastRemindNote" hidden style="text-align:center"></div>
+  </section>
+
+  <section class="card" aria-label="Historial de ayunos">
+    <div class="row spread"><h2>Historial</h2><span class="small-t muted num" id="fastAvg"></span></div>
+    <div class="history" id="fastHistory"></div>
+  </section>
+
+  <section class="card">
+    <h2>Etapas (referenciales)</h2>
+    <div class="small-t muted">0–4 h digestión · 4–12 h la glucosa se estabiliza · 12–16 h el cuerpo empieza a usar grasa · 16 h+ quema de grasa más marcada. Varía según cada persona. Si tomas medicamentos o tienes alguna condición de salud, consulta a tu médico antes de ayunos largos.</div>
+  </section>
+</div>
+</section>
+
+<!-- ================= REGISTRAR ================= -->
+<section class="view" id="v-registrar" data-title="Registrar" hidden>
+<div class="wrap">
+  <section class="card" aria-label="Registrar comida">
+    <div class="setup" id="setupBox" hidden>
+      <b>Activa la IA gratis (una sola vez)</b>
+      <span>Para calcular desde fotos necesitas una clave gratuita de Google Gemini.</span>
+      <div><button class="btn small" id="goSetup">Configurar ahora</button></div>
+    </div>
+    <div class="tiles">
+      <label class="tile primary" for="camInput"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Tomar foto</label>
+      <label class="tile" for="galInput"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Galería</label>
+      <button class="tile" id="scanBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6v12M7.5 6v12M11 6v12M14 6v12M18 6v12M20.5 6v12"/></svg>Código de barras</button>
+      <button class="tile exOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Ejercicio</button>
+    </div>
+    <input type="file" id="camInput" accept="image/*" capture="environment" hidden>
+    <input type="file" id="galInput" accept="image/*" hidden>
+    <div class="preview" id="previewBox" hidden>
+      <img id="previewImg" alt="Foto del plato">
+      <div style="flex:1;min-width:0" class="small-t muted">Foto lista. Puedes agregar detalles abajo (ej. "con mayonesa", "plato grande") para afinar el cálculo.</div>
+    </div>
+    <label for="descInput" class="small-t muted">Describe el plato (opcional con foto, obligatorio sin foto)</label>
+    <textarea id="descInput" placeholder="Ej: porción de porotos con riendas y un pan marraqueta"></textarea>
+    <div class="row">
+      <button class="btn" id="analyzeBtn">Calcular calorías</button>
+      <button class="btn ghost" id="stopBtn" hidden>Detener</button>
+      <button class="btn ghost small" id="clearBtn" hidden>Limpiar</button>
+    </div>
+    <div class="status" id="analyzeStatus" aria-live="polite"></div>
+    <div id="resultBox"></div>
+  </section>
+
+  <section class="card" id="recents" hidden>
+    <h2>Repetir algo reciente</h2>
+    <div class="small-t muted">Un toque lo agrega a hoy.</div>
+    <div class="recents" id="recentChips"></div>
+  </section>
+
+  <section class="card">
+    <h2>Agregar a mano</h2>
+    <div class="row">
+      <input type="text" id="manName" placeholder="Nombre" style="flex:2 1 140px">
+      <input type="number" id="manKcal" placeholder="kcal" inputmode="numeric" style="flex:1 1 80px">
+      <button class="btn small" id="manAdd">Agregar</button>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- ================= PROGRESO ================= -->
+<section class="view" id="v-progreso" data-title="Progreso" hidden>
+<div class="wrap">
+  <section class="card" aria-label="Últimos 7 días">
+    <div class="row spread"><h2>Calorías · 7 días</h2><span class="small-t muted num" id="weekAvg"></span></div>
+    <div class="week" id="week"></div>
+    <div class="small-t muted">Verde: dentro de la meta · Amarillo: sobre la meta · Línea: tu meta diaria. Toca un día para verlo.</div>
+    <div class="small-t num" id="weekEx"></div>
+  </section>
+
+  <section class="card" aria-label="Peso">
+    <div class="row spread"><h2>Peso</h2><span class="small-t muted num" id="weightSummary"></span></div>
+    <div class="row">
+      <input type="text" id="weightInput" inputmode="decimal" placeholder="kg" style="flex:1 1 110px">
+      <button class="btn small" id="weightSave">Registrar</button>
+    </div>
+    <div class="wchart" id="weightChart"></div>
+    <div class="small-t muted" id="weightMeta"></div>
+    <details>
+      <summary class="small-t muted" style="cursor:pointer">Ver registros</summary>
+      <div class="wlist" id="weightList" style="margin-top:8px"></div>
+    </details>
+  </section>
+</div>
+</section>
+
+<!-- ================= PERFIL ================= -->
+<section class="view" id="v-perfil" data-title="Perfil" hidden>
+<div class="wrap">
+  <section class="card" id="settings">
+    <h2>Mis metas</h2>
+    <div class="grid2">
+      <label for="goalInput">Meta diaria (kcal)<input type="number" id="goalInput" inputmode="numeric" min="800" max="5000" step="50"></label>
+      <label for="waterGoalInput">Meta de agua (vasos)<input type="number" id="waterGoalInput" inputmode="numeric" min="1" max="20"></label>
+      <label for="fastTargetInput">Meta de ayuno (horas)
+        <select id="fastTargetInput"><option>12</option><option>13</option><option>14</option><option>16</option><option>18</option><option>20</option></select></label>
+      <label for="exShareInput">Ejercicio en tu meta
+        <select id="exShareInput"><option value="0">No sumar</option><option value="0.5">Sumar 50%</option><option value="1">Sumar 100%</option></select></label>
+      <label for="heightInput">Estatura (cm)<input type="number" id="heightInput" inputmode="numeric" min="100" max="230" placeholder="opcional"></label>
+      <label for="weightGoalInput">Peso meta (kg)<input type="text" id="weightGoalInput" inputmode="decimal" placeholder="opcional"></label>
+    </div>
+    <div class="small-t muted">"Ejercicio en tu meta" suma a tu meta diaria parte de las calorías que quemas. Sumar 50% es lo más prudente, porque las estimaciones de quema suelen quedar altas.</div>
+    <div class="warn" id="goalWarn" hidden>Una meta bajo 1.200 kcal diarias conviene hacerla con supervisión de un médico o nutricionista.</div>
+    <div class="row"><button class="btn small" id="saveSettings">Guardar metas</button></div>
+  </section>
+
+  <section class="card" id="aiCard">
+    <h2>Inteligencia artificial</h2>
+    <ol class="small-t muted" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px">
+      <li>Entra a <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> con tu cuenta Google.</li>
+      <li>Toca "Create API key" y cópiala.</li>
+      <li>Pégala aquí y toca "Probar y guardar".</li>
+    </ol>
+    <div class="field"><label for="keyInput">Clave de Google Gemini (gratis)</label><input type="password" id="keyInput" placeholder="AIza…" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label for="modelSelect">Modelo</label><select id="modelSelect"><option value="">Automático</option></select></div>
+    <div class="row"><button class="btn small" id="testKey">Probar y guardar</button><button class="btn small ghost" id="forgetKey">Borrar clave</button></div>
+    <div class="small-t" id="keyStatus" aria-live="polite"></div>
+    <div class="small-t muted">La clave queda guardada solo en este teléfono, nunca en el código publicado. El plan gratis tiene un límite diario de consultas.</div>
+  </section>
+
+  <section class="card">
+    <h2>Respaldo de datos</h2>
+    <div class="small-t muted">Tus datos viven solo en este teléfono. Descarga un respaldo de vez en cuando o para pasarlos a otro equipo.</div>
+    <div class="row">
+      <button class="btn small ghost" id="exportBtn">Descargar respaldo</button>
+      <label class="btn small ghost" for="importInput">Restaurar respaldo</label>
+      <input type="file" id="importInput" accept="application/json,.json" hidden>
+    </div>
+    <div class="small-t muted" id="storageInfo"></div>
+  </section>
+
+  <section class="card about">
+    <img src="icon-192.png" alt="Logo de Mi Cota Fitness">
+    <h2>Mi Cota Fitness</h2>
+    <div class="small-t muted num" id="appVersion"></div>
+    <div class="sig">Hecho por Allan Cepeda</div>
+    <div class="small-t muted">Las calorías desde fotos son estimaciones de IA (pueden variar ±20%). Úsalas como guía, no como medición exacta.</div>
+  </section>
+</div>
+</section>
+
+</div>
+</main>
+
+<nav class="tabbar pad" aria-label="Navegación principal">
+  <div class="tabbar-in">
+    <button class="tab" data-go="hoy" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></svg>Hoy</button>
+    <button class="tab" data-go="ayuno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5"/></svg>Ayuno</button>
+    <button class="tab fab" data-go="registrar" aria-label="Registrar comida"><span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Registrar</button>
+    <button class="tab" data-go="progreso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/></svg>Progreso</button>
+    <button class="tab" data-go="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>Perfil</button>
+  </div>
+</nav>
+
+<div class="sheet" id="scanSheet" hidden role="dialog" aria-modal="true" aria-labelledby="scanTitle">
+  <div class="sheet-inner">
+    <div class="row spread"><h2 id="scanTitle">Escanear producto</h2><button class="btn small ghost" id="scanClose">Cerrar</button></div>
+    <div class="video-wrap" id="videoWrap"><video id="scanVideo" playsinline muted></video><div class="reticle"></div></div>
+    <div class="status" id="scanStatus" aria-live="polite"></div>
+    <div class="row">
+      <input type="text" id="codeInput" inputmode="numeric" placeholder="o escribe el número del código" style="flex:1 1 160px">
+      <button class="btn small" id="codeGo">Buscar</button>
+    </div>
+    <div id="productBox"></div>
+    <input type="file" id="labelInput" accept="image/*" capture="environment" hidden>
+  </div>
+</div>
+<div class="sheet" id="exSheet" hidden role="dialog" aria-modal="true" aria-labelledby="exTitle">
+  <div class="sheet-inner">
+    <div class="row spread"><h2 id="exTitle">Agregar ejercicio</h2><button class="btn small ghost" id="exClose">Cerrar</button></div>
+    <div class="portion" id="exGrid"></div>
+    <div><div class="small-t muted" style="margin-bottom:6px">Intensidad</div><div class="portion" id="exInt"></div><div class="small-t muted" id="exHint" style="margin-top:6px"></div></div>
+    <div><div class="small-t muted" style="margin-bottom:6px">Minutos</div>
+      <div class="row"><div class="portion" id="exMinChips"></div><input type="number" id="exMin" inputmode="numeric" min="1" max="600" style="flex:0 1 90px" aria-label="Minutos"></div></div>
+    <div class="exout"><span class="num" id="exKcal">0 kcal</span><span class="small-t muted num" id="exHow"></span></div>
+    <button class="btn" id="exAdd">Agregar ejercicio</button>
+    <details>
+      <summary class="small-t muted" style="cursor:pointer">¿No está en la lista? Descríbelo y la IA lo estima</summary>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+        <textarea id="exDesc" placeholder="Ej: 40 min de clase de spinning y 15 min de abdominales"></textarea>
+        <div><button class="btn small" id="exAi">Estimar con IA</button></div>
+        <div class="status" id="exAiStatus"></div>
+        <div id="exAiResult"></div>
+      </div>
+    </details>
+  </div>
+</div>
+<div class="update" id="updateBar" hidden><span>Nueva versión disponible</span><button class="btn small" id="updateBtn">Actualizar</button></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+
+(() => {
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayStr = () => ymd(new Date());
+const parseYmd = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const addDays = (s, n) => { const d = parseYmd(s); d.setDate(d.getDate()+n); return ymd(d); };
+const DAYS = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const round = n => Math.round(Number(n) || 0);
+const nowTime = () => { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+
+const DEF_PROFILE = { goal: 2000, waterGoal: 8, fastTarget: 16, fastStart: null, fasts: [], model: "", fallbackModel: "" };
+const S = { profile: {...DEF_PROFILE}, day: null, date: todayStr(), file: null, result: null, mult: 1, sugs: [] };
+const emptyDay = date => ({ type: "day", date, meals: [], water: 0 });
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+
+/* ---------- almacenamiento local ---------- */
+const P = "miplato.";
+function get(key, fb){ try { const v = localStorage.getItem(P + key); return v ? JSON.parse(v) : fb; } catch { return fb; } }
+function put(key, val){
+  try { localStorage.setItem(P + key, JSON.stringify(val)); return true; }
+  catch { toast("El teléfono se quedó sin espacio para la app. Descarga un respaldo."); return false; }
+}
+const getKey = () => { try { return localStorage.getItem(P + "apikey") || ""; } catch { return ""; } };
+const setKey = k => { try { k ? localStorage.setItem(P + "apikey", k) : localStorage.removeItem(P + "apikey"); } catch {} };
+const saveProfile = () => put("profile", S.profile);
+const saveDay = () => put("day-" + S.day.date, S.day);
+const loadDay = d => get("day-" + d, null) || emptyDay(d);
+if (navigator.storage?.persist) navigator.storage.persist().catch(() => {});
+
+/* ---------- día ---------- */
+function totals(day){
+  const t = { kcal: 0, p: 0, c: 0, f: 0 };
+  (day.meals || []).forEach(m => { t.kcal += +m.kcal || 0; t.p += +m.p || 0; t.c += +m.c || 0; t.f += +m.f || 0; });
+  return t;
+}
+function renderDay(){
+  const ex = exTotal(S.day), bonus = round(ex * exShare()), goal = S.profile.goal + bonus, t = totals(S.day), left = goal - t.kcal;
+  $("kcalLeft").textContent = Math.abs(round(left)).toLocaleString("es-CL");
+  $("kcalLeftLbl").textContent = left >= 0 ? "kcal disponibles" : "kcal sobre la meta";
+  $("kcalEaten").textContent = round(t.kcal).toLocaleString("es-CL");
+  $("kcalGoal").textContent = goal.toLocaleString("es-CL");
+  $("exLine").textContent = ex ? `${round(ex).toLocaleString("es-CL")} kcal quemadas${bonus ? " · +" + bonus + " a tu meta" : ""}` : "Sin ejercicio hoy";
+  const frac = Math.min(t.kcal / goal, 1), C = 326.7, arc = $("ringArc");
+  arc.setAttribute("stroke-dashoffset", String(C * (1 - frac)));
+  arc.style.stroke = left < 0 ? "var(--citrus)" : "var(--leaf)";
+  const tg = { p: goal * .25 / 4, c: goal * .45 / 4, f: goal * .30 / 9 };
+  [["p","P"],["c","C"],["f","F"]].forEach(([k,K]) => {
+    $("m"+K).textContent = `${round(t[k])} / ${round(tg[k])} g`;
+    $("b"+K).style.width = Math.min(100, t[k] / tg[k] * 100) + "%";
+  });
+  const isToday = S.date === todayStr(), d = parseYmd(S.date);
+  $("dateLbl").textContent = isToday ? "Hoy" : S.date === addDays(todayStr(), -1) ? "Ayer" : `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
+  $("nextDay").disabled = isToday; $("nextDay").style.opacity = isToday ? .35 : 1;
+  $("mealsTitle").textContent = isToday ? "Comidas de hoy" : "Comidas del día";
+  renderMeals(); renderWater(); renderExercises();
+}
+function renderMeals(){
+  const ms = [...(S.day.meals || [])].sort((a,b) => (a.time||"").localeCompare(b.time||""));
+  $("mealsCount").textContent = ms.length ? `${ms.length} registro${ms.length > 1 ? "s" : ""}` : "";
+  if (!ms.length) { $("meals").innerHTML = `<div class="empty">Aún no registras comidas. Saca una foto a tu plato o escríbelo arriba.</div>`; return; }
+  $("meals").innerHTML = ms.map(m => `
+    <div class="meal">
+      ${m.thumb ? `<img class="thumb" src="${esc(m.thumb)}" alt="">` : `<div class="thumb">${esc((m.name||"?").trim().charAt(0).toUpperCase())}</div>`}
+      <div class="info"><b>${esc(m.name)}</b><span class="small-t muted num">${esc(m.time || "")} · P ${round(m.p)} · C ${round(m.c)} · G ${round(m.f)} g</span></div>
+      <div><div class="k num">${round(m.kcal)} kcal</div><button class="del" data-del="${esc(m.id)}">Quitar</button></div>
+    </div>`).join("");
+}
+$("meals").addEventListener("click", e => {
+  const b = e.target.closest("[data-del]"); if (!b) return;
+  if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "¿Seguro?"; setTimeout(() => { if (b.isConnected) { b.dataset.armed = ""; b.textContent = "Quitar"; } }, 3000); return; }
+  S.day.meals = S.day.meals.filter(m => m.id !== b.dataset.del); saveDay(); renderDay(); renderWeek(); toast("Comida quitada");
+});
+function addMeal(meal){ S.day.meals = [...(S.day.meals || []), meal]; saveDay(); renderDay(); renderWeek(); renderRecents(); }
+
+/* ---------- agua ---------- */
+const glassSvg = full => `<svg viewBox="0 0 28 38" aria-hidden="true"><path d="M3 3h22l-3 31a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z" style="fill:${full ? "var(--water)" : "none"};stroke:var(--water)" stroke-width="2" stroke-linejoin="round" opacity="${full ? 1 : .55}"/></svg>`;
+function renderWater(){
+  const n = S.day.water || 0, g = S.profile.waterGoal, slots = Math.max(g, n);
+  $("waterCount").textContent = n; $("waterGoalLbl").textContent = `/ ${g} vasos`;
+  $("waterMl").textContent = `${(n * 250).toLocaleString("es-CL")} ml${n >= g ? " · ¡meta cumplida!" : ""}`;
+  let h = ""; for (let i = 1; i <= slots; i++) h += `<button class="glass" data-g="${i}" aria-label="${i} vasos">${glassSvg(i <= n)}</button>`;
+  h += `<button class="glass" data-g="${n+1}" aria-label="Agregar vaso" style="font-size:1.4rem;color:var(--water);font-weight:700;align-items:center">+</button>`;
+  $("glasses").innerHTML = h;
+}
+$("glasses").addEventListener("click", e => {
+  const b = e.target.closest("[data-g]"); if (!b) return;
+  const i = +b.dataset.g; S.day.water = (S.day.water === i) ? i - 1 : i;
+  saveDay(); renderWater();
+});
+
+/* ---------- ayuno ---------- */
+const fmtDur = ms => { const m = Math.max(0, Math.floor(ms / 60000)); return `${Math.floor(m/60)}:${pad(m%60)}`; };
+const phase = h => h < 4 ? "Digestión" : h < 12 ? "Glucosa estabilizándose" : h < 16 ? "Empieza a usar grasa" : h < 24 ? "Quema de grasa (aprox.)" : "Ayuno prolongado";
+function renderFast(){
+  const p = S.profile, st = p.fastStart, ctr = $("fastControls");
+  if (st) {
+    const ms = Date.now() - st, h = ms / 3600000, end = new Date(st + p.fastTarget * 3600000);
+    $("fastClock").textContent = fmtDur(ms);
+    $("fastProg").style.width = Math.min(100, h / p.fastTarget * 100) + "%";
+    $("fastPhase").textContent = phase(h);
+    $("fastSub").textContent = h >= p.fastTarget ? `¡Meta de ${p.fastTarget} h cumplida!` : `Meta ${p.fastTarget} h · termina ${end.toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit"})}${ymd(end) !== todayStr() ? " (mañana)" : ""}`;
+    if (ctr.dataset.mode !== "on") { ctr.dataset.mode = "on"; ctr.innerHTML = `<button class="btn small" id="fastEnd">Terminar ayuno</button><button class="btn small ghost" id="fastEdit">Ajustar inicio</button><button class="btn small ghost" id="fastRemindBtn">Recordatorio</button>`; }
+  } else {
+    $("fastClock").textContent = "0:00"; $("fastProg").style.width = "0"; $("fastPhase").textContent = "Sin ayuno activo";
+    const last = (p.fasts || [])[0];
+    $("fastSub").textContent = last ? `Último: ${last.hours.toFixed(1).replace(".",",")} h · meta ${p.fastTarget} h` : `Meta ${p.fastTarget} h`;
+    if (ctr.dataset.mode !== "off") { ctr.dataset.mode = "off"; ctr.innerHTML = `<button class="btn small" id="fastBegin">Comenzar ayuno</button><button class="btn small ghost" id="fastEdit">Empecé antes</button>`; $("fastRemind").hidden = true; $("fastRemindNote").hidden = true; }
+  }
+}
+const toLocalInput = ms => { const d = new Date(ms); return `${ymd(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+$("fastControls").addEventListener("click", e => {
+  const id = e.target.id;
+  if (id === "fastBegin") { S.profile.fastStart = Date.now(); saveProfile(); renderFast(); toast("Ayuno iniciado"); }
+  if (id === "fastEnd") {
+    const b = e.target;
+    if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Confirmar término"; setTimeout(() => { if (b.isConnected) { b.dataset.armed = ""; b.textContent = "Terminar ayuno"; } }, 3000); return; }
+    const end = Date.now(), hours = (end - S.profile.fastStart) / 3600000;
+    S.profile.fasts = [{ start: S.profile.fastStart, end, hours }, ...(S.profile.fasts || [])].slice(0, 60);
+    S.profile.fastStart = null; saveProfile(); renderFast();
+    toast(`Ayuno de ${hours.toFixed(1).replace(".",",")} h registrado`);
+  }
+  if (id === "fastRemindBtn") { $("fastRemind").hidden = !$("fastRemind").hidden; $("fastRemindNote").hidden = true; }
+  if (id === "fastEdit") { $("fastAdjust").hidden = !$("fastAdjust").hidden; $("fastStartInput").value = toLocalInput(S.profile.fastStart || Date.now() - 2*3600000); }
+});
+$("fastStartSave").addEventListener("click", () => {
+  const v = $("fastStartInput").value; if (!v) return;
+  const ms = new Date(v).getTime();
+  if (!(ms < Date.now())) { toast("La hora de inicio debe estar en el pasado"); return; }
+  S.profile.fastStart = ms; saveProfile(); $("fastAdjust").hidden = true; renderFast(); toast("Inicio del ayuno actualizado");
+});
+
+/* ---------- semana ---------- */
+function renderWeek(){
+  const goal = S.profile.goal, days = [];
+  for (let i = 6; i >= 0; i--) { const d = addDays(todayStr(), -i); days.push({ d, k: totals(d === S.day.date ? S.day : loadDay(d)).kcal }); }
+  const max = Math.max(goal * 1.25, ...days.map(x => x.k));
+  $("week").style.setProperty("--g", `calc(${goal / max} * (100% - 34px) + 20px)`);
+  $("week").innerHTML = days.map(x => {
+    const dd = parseYmd(x.d), h = x.k ? Math.max(3, x.k / max * 100) : 3;
+    return `<button class="wcol ${x.d === S.date ? "sel" : ""}" data-day="${x.d}" aria-label="${x.d}: ${round(x.k)} kcal">
+      <span class="num" style="font-size:.68rem;color:var(--muted)">${x.k ? round(x.k) : ""}</span>
+      <div class="wbar ${!x.k ? "zero" : x.k > goal ? "over" : ""}" style="height:calc(${h / 100} * (100% - 34px))"></div>
+      <span class="wlbl">${DAYS[dd.getDay()]}</span></button>`;
+  }).join("");
+  const logged = days.filter(x => x.k > 0);
+  const exW = days.reduce((a, x) => { const dd = x.d === S.day.date ? S.day : loadDay(x.d); return { k: a.k + exTotal(dd), m: a.m + (dd.exercises || []).reduce((s2, e) => s2 + (+e.min || 0), 0) }; }, { k: 0, m: 0 });
+  $("weekEx").textContent = exW.m ? `Ejercicio en 7 días: ${exW.m} min · ${round(exW.k).toLocaleString("es-CL")} kcal quemadas` : "Sin ejercicio registrado esta semana.";
+  $("weekAvg").textContent = logged.length ? `promedio ${round(logged.reduce((a,b) => a + b.k, 0) / logged.length).toLocaleString("es-CL")} kcal` : "";
+}
+$("week").addEventListener("click", e => { const d = e.target.closest("[data-day]")?.dataset.day; if (d) goDate(d); });
+function goDate(d){ if (d > todayStr()) return; S.date = d; S.day = loadDay(d); renderDay(); renderWeek(); renderWeight(); }
+$("prevDay").onclick = () => goDate(addDays(S.date, -1));
+$("nextDay").onclick = () => goDate(addDays(S.date, 1));
+
+/* ---------- IA: Google Gemini ---------- */
+const API = "https://generativelanguage.googleapis.com/v1beta";
+async function listModels(key){
+  const r = await fetch(`${API}/models?pageSize=200`, { headers: { "x-goog-api-key": key } });
+  if (!r.ok) throw await apiErr(r);
+  const j = await r.json();
+  return (j.models || [])
+    .filter(m => (m.supportedGenerationMethods || []).includes("generateContent"))
+    .map(m => m.name.replace(/^models\//, ""))
+    .filter(n => /gemini/.test(n) && /flash/.test(n) && !/(image|tts|audio|live|embed|thinking|exp)/.test(n));
+}
+function rankModels(names){
+  const ver = n => { const m = n.match(/gemini-(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : 0; };
+  const score = n => ver(n) * 10 - (/preview/.test(n) ? 3 : 0) - (/latest/.test(n) ? 0.5 : 0);
+  const sorted = [...names].sort((a,b) => score(b) - score(a));
+  return { main: sorted.find(n => !/lite/.test(n)) || sorted[0] || "", lite: sorted.find(n => /lite/.test(n)) || "", all: sorted };
+}
+async function apiErr(r){
+  let msg = ""; try { msg = (await r.json()).error?.message || ""; } catch {}
+  const e = new Error(msg || ("HTTP " + r.status)); e.status = r.status; return e;
+}
+function errText(e){
+  if (e?.name === "AbortError") return "Detenido.";
+  if (e?.status === 400 && /API key/i.test(e.message)) return "La clave no es válida. Revísala en Ajustes.";
+  if (e?.status === 403) return "La clave no tiene permiso. Crea una nueva en aistudio.google.com/apikey.";
+  if (e?.status === 429) return "Se agotó la cuota gratis de hoy. Mañana se renueva; mientras, puedes agregar a mano.";
+  if (e?.status >= 500) return "El servicio de IA está con problemas. Prueba en unos minutos.";
+  if (e?.code === "nojson") return "La respuesta vino incompleta. Toca de nuevo para reintentar.";
+  if (e instanceof TypeError) return "Sin conexión a internet.";
+  return "No se pudo completar: " + (e?.message || "error desconocido");
+}
+function parseJson(text){
+  try { return JSON.parse(text); } catch {}
+  const m = text.match(/[\[{][\s\S]*[\]}]/); if (m) { try { return JSON.parse(m[0]); } catch {} }
+  const e = new Error("nojson"); e.code = "nojson"; throw e;
+}
+async function ensureModel(key){
+  if (S.profile.model) return;
+  const r = rankModels(await listModels(key));
+  if (!r.main) throw new Error("Tu clave no tiene modelos Gemini Flash disponibles.");
+  S.profile.model = r.main; S.profile.fallbackModel = r.lite; saveProfile(); fillModels(r.all);
+}
+async function gemini(text, imgB64, signal){
+  const key = getKey(); if (!key) { const e = new Error("nokey"); e.code = "nokey"; throw e; }
+  await ensureModel(key);
+  const parts = [{ text }];
+  if (imgB64) parts.push({ inline_data: { mime_type: "image/jpeg", data: imgB64 } });
+  const body = JSON.stringify({ contents: [{ role: "user", parts }], generationConfig: { responseMimeType: "application/json", temperature: 0.4 } });
+  const models = [S.profile.model, S.profile.fallbackModel].filter((m, i, a) => m && a.indexOf(m) === i);
+  let last;
+  for (const m of models) {
+    const r = await fetch(`${API}/models/${m}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body, signal });
+    if (r.ok) {
+      const j = await r.json();
+      const out = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || "").join("");
+      if (!out) { const e = new Error(j.promptFeedback?.blockReason ? "La IA no quiso analizar esta imagen." : "Respuesta vacía."); throw e; }
+      return parseJson(out);
+    }
+    last = await apiErr(r);
+    if (r.status === 404) { S.profile.model = ""; saveProfile(); }
+    if (r.status !== 429 && r.status !== 404 && r.status < 500) throw last;
+  }
+  throw last;
+}
+function updateSetupHint(){ $("setupBox").hidden = !!getKey(); }
+$("goSetup").onclick = () => { $("settings").open = true; $("keyInput").focus(); $("settings").scrollIntoView({ behavior: "smooth" }); };
+
+function fillModels(all){
+  const sel = $("modelSelect"), cur = S.profile.model;
+  sel.innerHTML = `<option value="">Automático</option>` + (all || []).map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  if (cur && ![...sel.options].some(o => o.value === cur)) sel.insertAdjacentHTML("beforeend", `<option value="${esc(cur)}">${esc(cur)}</option>`);
+  sel.value = cur || "";
+}
+$("testKey").onclick = async () => {
+  const key = $("keyInput").value.trim() || getKey();
+  if (!key) { $("keyStatus").innerHTML = `<span class="err">Pega tu clave primero.</span>`; return; }
+  $("testKey").disabled = true; $("keyStatus").textContent = "Probando…";
+  try {
+    const r = rankModels(await listModels(key));
+    if (!r.main) throw new Error("Tu clave no tiene modelos Gemini Flash disponibles.");
+    setKey(key); $("keyInput").value = ""; $("keyInput").placeholder = "Clave guardada ••••" + key.slice(-4);
+    const chosen = $("modelSelect").value;
+    S.profile.model = chosen && r.all.includes(chosen) ? chosen : r.main;
+    S.profile.fallbackModel = r.lite && r.lite !== S.profile.model ? r.lite : "";
+    saveProfile(); fillModels(r.all);
+    $("keyStatus").innerHTML = `<span style="color:var(--leaf)">Listo. Usando ${esc(S.profile.model)}${S.profile.fallbackModel ? " (respaldo: " + esc(S.profile.fallbackModel) + ")" : ""}.</span>`;
+    updateSetupHint();
+  } catch (e) { $("keyStatus").innerHTML = `<span class="err">${esc(errText(e))}</span>`; }
+  finally { $("testKey").disabled = false; }
+};
+$("modelSelect").onchange = () => { S.profile.model = $("modelSelect").value; saveProfile(); };
+$("forgetKey").onclick = () => { setKey(""); $("keyInput").placeholder = "AIza…"; $("keyStatus").textContent = "Clave borrada de este teléfono."; updateSetupHint(); };
+
+/* ---------- foto ---------- */
+function pickFile(f){
+  if (!f) return;
+  S.file = f; $("previewImg").src = URL.createObjectURL(f); $("previewBox").hidden = false; $("clearBtn").hidden = false;
+  $("resultBox").innerHTML = ""; S.result = null; $("analyzeStatus").textContent = "";
+}
+$("camInput").onchange = e => pickFile(e.target.files[0]);
+$("galInput").onchange = e => pickFile(e.target.files[0]);
+$("clearBtn").onclick = clearCapture;
+function clearCapture(){
+  S.file = null; S.result = null; $("previewBox").hidden = true; $("clearBtn").hidden = true;
+  $("descInput").value = ""; $("resultBox").innerHTML = ""; $("analyzeStatus").textContent = "";
+  $("camInput").value = ""; $("galInput").value = "";
+}
+async function drawScaled(file, maxSide, cover){
+  const bmp = await createImageBitmap(file);
+  const c = document.createElement("canvas");
+  if (cover) {
+    c.width = c.height = maxSide;
+    const k = Math.max(maxSide / bmp.width, maxSide / bmp.height), w = bmp.width * k, h = bmp.height * k;
+    c.getContext("2d").drawImage(bmp, (maxSide - w) / 2, (maxSide - h) / 2, w, h);
+  } else {
+    const k = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+    c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+  }
+  return c;
+}
+async function makeThumb(file){ try { return (await drawScaled(file, 112, true)).toDataURL("image/jpeg", 0.6); } catch { return null; } }
+async function toB64(file){ const c = await drawScaled(file, 1024, false); return c.toDataURL("image/jpeg", 0.82).split(",")[1]; }
+
+let ctl;
+$("stopBtn").onclick = () => ctl?.abort();
+$("analyzeBtn").onclick = async () => {
+  const desc = $("descInput").value.trim();
+  if (!S.file && !desc) { $("analyzeStatus").textContent = "Saca una foto o describe lo que comiste."; return; }
+  if (!getKey()) { $("analyzeStatus").innerHTML = `<span class="err">Primero configura tu clave gratuita de IA en Ajustes.</span>`; updateSetupHint(); return; }
+  ctl = new AbortController();
+  $("analyzeBtn").disabled = true; $("stopBtn").hidden = false;
+  $("analyzeStatus").textContent = "Analizando tu plato…"; $("resultBox").innerHTML = "";
+  const prompt = `Eres un nutricionista que estima calorías de comidas. ${S.file ? "Mira la foto del plato." : "No hay foto; usa solo la descripción."}
+${desc ? "Detalle que da la persona: " + desc : ""}
+Identifica cada alimento visible o descrito, estima la porción (en gramos o medidas caseras) y sus calorías y macronutrientes. Usa porciones y preparaciones típicas de Chile cuando corresponda (ej. marraqueta, porotos, cazuela, completo). Si hay cosas ocultas probables (aceite, aderezos), inclúyelas con su estimación.
+Responde SOLO con JSON con esta forma:
+{"plato":"nombre corto en español","items":[{"nombre":"...","porcion":"...","kcal":0,"proteina_g":0,"carbohidratos_g":0,"grasa_g":0}],"confianza":"alta|media|baja","nota":"una frase breve con un consejo o una aclaración"}
+Si la imagen no muestra comida, devuelve "items":[] y explica en "nota".`;
+  try {
+    const img = S.file ? await toB64(S.file) : null;
+    const r = await gemini(prompt, img, ctl.signal);
+    if (!r || !Array.isArray(r.items)) { const e = new Error("nojson"); e.code = "nojson"; throw e; }
+    S.result = r; S.mult = 1;
+    $("analyzeStatus").textContent = r.items.length ? "Revisa y ajusta si hace falta, luego agrega." : (r.nota || "No se reconoció comida en la foto.");
+    if (r.items.length) renderResult();
+  } catch (e) { $("analyzeStatus").innerHTML = e?.name === "AbortError" ? "Detenido." : `<span class="err">${esc(errText(e))}</span>`; }
+  finally { $("analyzeBtn").disabled = false; $("stopBtn").hidden = true; }
+};
+function renderResult(){
+  const r = S.result, conf = String(r.confianza || "media").toLowerCase();
+  const tot = r.items.reduce((a, it) => a + (+it.kcal || 0), 0) * S.mult;
+  $("resultBox").innerHTML = `<div class="result">
+    <div class="row spread"><input type="text" id="resName" value="${esc(r.plato || "Comida")}" style="flex:1 1 160px;font-weight:700"><span class="badge ${conf === "alta" ? "" : conf === "baja" ? "baja" : "media"}">confianza ${esc(conf)}</span></div>
+    ${r.items.map((it, i) => `<div class="item"><div class="name"><div>${esc(it.nombre)}</div><div class="small-t muted">${esc(it.porcion || "")}</div></div><input type="number" inputmode="numeric" data-ik="${i}" value="${round(it.kcal)}" aria-label="kcal de ${esc(it.nombre)}"></div>`).join("")}
+    <div><div class="small-t muted" style="margin-bottom:6px">Tamaño de la porción que comiste</div>
+      <div class="portion">${[[.5,"½"],[.75,"¾"],[1,"Tal cual"],[1.5,"1½"],[2,"Doble"]].map(([m,l]) => `<button class="chip" data-mult="${m}" aria-pressed="${S.mult === m}">${l}</button>`).join("")}</div></div>
+    ${r.nota ? `<div class="small-t muted">${esc(r.nota)}</div>` : ""}
+    <div class="row spread"><span style="font-family:var(--display);font-weight:800;font-size:1.4rem" class="num" id="resTotal">${round(tot)} kcal</span><button class="btn" id="resAdd">Agregar a ${S.date === todayStr() ? "hoy" : "este día"}</button></div>
+  </div>`;
+}
+$("resultBox").addEventListener("input", e => {
+  const i = e.target.dataset.ik; if (i == null) return;
+  S.result.items[+i].kcal = +e.target.value || 0;
+  $("resTotal").textContent = round(S.result.items.reduce((a, it) => a + (+it.kcal || 0), 0) * S.mult) + " kcal";
+});
+$("resultBox").addEventListener("click", async e => {
+  const m = e.target.closest("[data-mult]")?.dataset.mult;
+  if (m) { S.result.plato = $("resName").value; S.mult = +m; renderResult(); return; }
+  if (e.target.id === "resAdd") {
+    const r = S.result, k = S.mult, sum = f => r.items.reduce((a, it) => a + (+it[f] || 0), 0) * k;
+    const meal = { id: Date.now().toString(36), name: $("resName").value.trim() || "Comida", kcal: round(sum("kcal")), p: round(sum("proteina_g")), c: round(sum("carbohidratos_g")), f: round(sum("grasa_g")), time: nowTime(), thumb: S.file ? await makeThumb(S.file) : null };
+    addMeal(meal); clearCapture(); toast(`${meal.name} agregado · ${meal.kcal} kcal`);
+  }
+});
+$("manAdd").onclick = () => {
+  const name = $("manName").value.trim(), kcal = +$("manKcal").value;
+  if (!name || !(kcal > 0)) { toast("Escribe un nombre y las kcal"); return; }
+  addMeal({ id: Date.now().toString(36), name, kcal: round(kcal), p: 0, c: 0, f: 0, time: nowTime(), thumb: null });
+  $("manName").value = ""; $("manKcal").value = ""; toast("Agregado");
+};
+
+/* ---------- sugerencias ---------- */
+$("sugBtn").onclick = async () => {
+  if (!getKey()) { $("sugStatus").innerHTML = `<span class="err">Primero configura tu clave gratuita de IA en Ajustes.</span>`; return; }
+  const t = totals(S.day), left = round(S.profile.goal - t.kcal), hour = new Date().getHours();
+  const momento = hour < 11 ? "desayuno" : hour < 16 ? "almuerzo" : hour < 19 ? "once" : "cena";
+  const fasting = S.profile.fastStart ? `La persona está en ayuno hace ${fmtDur(Date.now() - S.profile.fastStart)} h (meta ${S.profile.fastTarget} h); sugiere algo adecuado para romper el ayuno.` : "";
+  const pref = $("prefInput").value.trim();
+  const prompt = `Eres un nutricionista chileno práctico. Sugiere 3 opciones de comida saludable y fácil de preparar para ${momento}.
+Le quedan ${left} kcal de su meta de ${S.profile.goal} kcal hoy. Ya comió: ${(S.day.meals || []).map(m => m.name + " (" + m.kcal + " kcal)").join(", ") || "nada aún"}.
+Proteína consumida: ${round(t.p)} g. ${fasting}
+${pref ? "Preferencia: " + pref : ""}
+Prioriza proteína magra, verduras, fibra y grasas saludables; usa ingredientes de supermercados chilenos. Cada opción debe caber en las kcal restantes (si quedan menos de 150, propone snacks livianos).
+Responde SOLO con un arreglo JSON: [{"nombre":"...","kcal":0,"proteina_g":0,"carbohidratos_g":0,"grasa_g":0,"por_que":"una frase","ingredientes":["..."],"preparacion":"1-2 frases"}]`;
+  $("sugBtn").disabled = true; $("sugStatus").textContent = "Pensando opciones…"; $("sugs").innerHTML = "";
+  try {
+    let arr = await gemini(prompt, null);
+    if (!Array.isArray(arr)) arr = arr?.opciones || arr?.sugerencias || Object.values(arr || {}).find(Array.isArray);
+    if (!Array.isArray(arr) || !arr.length) { const e = new Error("nojson"); e.code = "nojson"; throw e; }
+    S.sugs = arr; $("sugStatus").textContent = "";
+    $("sugs").innerHTML = arr.map((s, i) => `<div class="sug">
+      <div class="head"><h3>${esc(s.nombre)}</h3><span class="num" style="font-weight:700;white-space:nowrap">${round(s.kcal)} kcal</span></div>
+      <div class="small-t">${esc(s.por_que)}</div>
+      <div class="small-t muted">${esc((s.ingredientes || []).join(" · "))}</div>
+      ${s.preparacion ? `<div class="small-t muted">${esc(s.preparacion)}</div>` : ""}
+      <div class="row"><button class="btn small ghost" data-sug="${i}">Me lo comí, agregar</button></div></div>`).join("");
+  } catch (e) { $("sugStatus").innerHTML = `<span class="err">${esc(errText(e))}</span>`; }
+  finally { $("sugBtn").disabled = false; }
+};
+$("sugs").addEventListener("click", e => {
+  const i = e.target.closest("[data-sug]")?.dataset.sug; if (i == null) return;
+  const s = S.sugs[+i];
+  addMeal({ id: Date.now().toString(36), name: s.nombre, kcal: round(s.kcal), p: round(s.proteina_g), c: round(s.carbohidratos_g), f: round(s.grasa_g), time: nowTime(), thumb: null });
+  toast(`${s.nombre} agregado`);
+});
+
+/* ---------- ajustes ---------- */
+function fillSettings(){
+  $("goalInput").value = S.profile.goal; $("waterGoalInput").value = S.profile.waterGoal; $("fastTargetInput").value = String(S.profile.fastTarget);
+  $("goalWarn").hidden = S.profile.goal >= 1200;
+  $("exShareInput").value = String(exShare()); $("heightInput").value = S.profile.height || ""; $("weightGoalInput").value = S.profile.weightGoal ? fmtKg(S.profile.weightGoal) : "";
+  const k = getKey(); $("keyInput").placeholder = k ? "Clave guardada ••••" + k.slice(-4) : "AIza…";
+  fillModels([]);
+  storageInfo();
+}
+$("goalInput").oninput = () => $("goalWarn").hidden = !(+$("goalInput").value > 0 && +$("goalInput").value < 1200);
+$("saveSettings").onclick = () => {
+  S.profile.goal = Math.min(5000, Math.max(800, +$("goalInput").value || 2000));
+  S.profile.waterGoal = Math.min(20, Math.max(1, +$("waterGoalInput").value || 8));
+  S.profile.fastTarget = +$("fastTargetInput").value || 16;
+  S.profile.exShare = +$("exShareInput").value;
+  const hgt = +$("heightInput").value; S.profile.height = hgt >= 100 && hgt <= 230 ? hgt : null;
+  S.profile.weightGoal = parseKg($("weightGoalInput").value);
+  saveProfile(); renderAll(); toast("Ajustes guardados");
+};
+function storageInfo(){
+  try {
+    let bytes = 0, days = 0;
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith(P)) { bytes += (localStorage.getItem(k) || "").length; if (k.startsWith(P + "day-")) days++; } }
+    $("storageInfo").textContent = `${days} día${days === 1 ? "" : "s"} registrados · ${(bytes / 1024).toFixed(0)} KB usados`;
+  } catch {}
+}
+$("exportBtn").onclick = () => {
+  const data = { app: "miplato", version: 2, exported: new Date().toISOString(), profile: S.profile, days: {}, products: {} };
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i);
+    if (k.startsWith(P + "day-")) data.days[k.slice(P.length + 4)] = JSON.parse(localStorage.getItem(k));
+    if (k.startsWith(P + "prod-")) data.products[k.slice(P.length + 5)] = JSON.parse(localStorage.getItem(k)); } } catch {}
+  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `mi-cota-respaldo-${todayStr()}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast("Respaldo descargado");
+};
+$("importInput").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    if (data.app !== "miplato" && data.app !== "micota") throw new Error();
+    if (data.profile) { S.profile = {...DEF_PROFILE, ...data.profile}; saveProfile(); }
+    let n = 0; for (const [d, v] of Object.entries(data.days || {})) { if (/^\d{4}-\d{2}-\d{2}$/.test(d)) { put("day-" + d, v); n++; } }
+    for (const [c, v] of Object.entries(data.products || {})) { if (/^\d{6,14}$/.test(c)) put("prod-" + c, v); }
+    S.day = loadDay(S.date); renderAll(); toast(`Respaldo restaurado: ${n} días`);
+  } catch { toast("Ese archivo no es un respaldo de Mi Cota Fitness"); }
+  e.target.value = "";
+};
+
+/* ---------- recientes ---------- */
+function renderRecents(){
+  const seen = new Set(), out = [];
+  for (let i = 0; i < 21 && out.length < 6; i++) {
+    const d = addDays(todayStr(), -i), day = d === S.day.date ? S.day : loadDay(d);
+    for (const m of [...(day.meals || [])].reverse()) {
+      const k = (m.name || "").trim().toLowerCase();
+      if (k && !seen.has(k)) { seen.add(k); out.push(m); if (out.length >= 6) break; }
+    }
+  }
+  S.recents = out; $("recents").hidden = !out.length;
+  $("recentChips").innerHTML = out.map((m, i) => `<button class="chip" data-rec="${i}">${esc(m.name)} · <span class="num">${round(m.kcal)}</span></button>`).join("");
+}
+$("recentChips").addEventListener("click", e => {
+  const i = e.target.closest("[data-rec]")?.dataset.rec; if (i == null) return;
+  const m = S.recents[+i];
+  addMeal({ ...m, id: Date.now().toString(36), time: nowTime() });
+  toast(`${m.name} agregado · ${round(m.kcal)} kcal`);
+});
+
+/* ---------- peso ---------- */
+const fmtKg = n => Number(n).toFixed(1).replace(".", ",");
+const parseKg = s => { const v = parseFloat(String(s).replace(",", ".")); return v >= 25 && v <= 350 ? Math.round(v * 10) / 10 : null; };
+const weights = () => [...(S.profile.weights || [])].sort((a, b) => a.date.localeCompare(b.date));
+function renderWeight(){
+  const w = weights(), last = w[w.length - 1], h = S.profile.height, goal = S.profile.weightGoal;
+  const atDate = w.find(x => x.date === S.date);
+  $("weightInput").placeholder = atDate ? `${fmtKg(atDate.kg)} kg (este día)` : last ? `último: ${fmtKg(last.kg)} kg` : "kg";
+  let sum = "";
+  if (last) { sum = `${fmtKg(last.kg)} kg`; if (h) sum += ` · IMC ${fmtKg(last.kg / ((h / 100) ** 2))}`; }
+  $("weightSummary").textContent = sum;
+  $("weightChart").innerHTML = weightChart(w);
+  const meta = [];
+  if (w.length >= 2) {
+    const ref = [...w].reverse().find(x => parseYmd(last.date) - parseYmd(x.date) >= 6 * 864e5);
+    if (ref) { const dif = last.kg - ref.kg, days = Math.round((parseYmd(last.date) - parseYmd(ref.date)) / 864e5); meta.push(`${dif > 0 ? "+" : dif < 0 ? "−" : "±"}${fmtKg(Math.abs(dif))} kg en ${days} días`); }
+    const first = w[0], tot = last.kg - first.kg;
+    meta.push(`${tot > 0 ? "+" : tot < 0 ? "−" : "±"}${fmtKg(Math.abs(tot))} kg desde el ${parseYmd(first.date).toLocaleDateString("es-CL", { day: "numeric", month: "short" })}`);
+  }
+  if (last && goal) { const d = last.kg - goal; meta.push(Math.abs(d) < 0.1 ? "¡Estás en tu peso meta!" : `${fmtKg(Math.abs(d))} kg para la meta`); }
+  $("weightMeta").textContent = meta.join(" · ");
+  $("weightList").innerHTML = w.length ? [...w].reverse().slice(0, 30).map(x =>
+    `<div><span class="num">${parseYmd(x.date).toLocaleDateString("es-CL", { weekday: "short", day: "numeric", month: "short" })}</span><span class="num"><b>${fmtKg(x.kg)} kg</b> <button data-wdel="${x.date}">Quitar</button></span></div>`).join("")
+    : `<div class="muted">Sin registros aún.</div>`;
+}
+function weightChart(w){
+  if (w.length < 2) return `<div class="empty">${w.length ? "Registra tu peso otro día para ver la evolución." : "Registra tu peso (ideal: en ayunas, misma hora) para ver tu evolución."}</div>`;
+  const pts = w.slice(-60), W = 320, H = 150, L = 36, R = 12, T = 12, B = 22;
+  const t0 = parseYmd(pts[0].date).getTime(), t1 = parseYmd(pts[pts.length - 1].date).getTime(), span = Math.max(1, t1 - t0);
+  const goal = S.profile.weightGoal || null, vals = pts.map(p => p.kg);
+  let lo = Math.min(...vals, goal ?? Infinity), hi = Math.max(...vals, goal ?? -Infinity);
+  const pad = Math.max(0.5, (hi - lo) * 0.15); lo -= pad; hi += pad;
+  const x = t => L + (t - t0) / span * (W - L - R), y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+  const xy = pts.map(p => [x(parseYmd(p.date).getTime()), y(p.kg)]);
+  const line = xy.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join("");
+  const area = `${line}L${xy[xy.length - 1][0].toFixed(1)},${H - B}L${xy[0][0].toFixed(1)},${H - B}Z`;
+  let grid = "";
+  for (let k = 0; k <= 2; k++) { const v = lo + (hi - lo) * (0.15 + k * 0.35), yy = y(v).toFixed(1); grid += `<line class="wc-grid" x1="${L}" x2="${W - R}" y1="${yy}" y2="${yy}"/><text class="wc-txt" x="${L - 6}" y="${(+yy + 3).toFixed(1)}" text-anchor="end">${fmtKg(v)}</text>`; }
+  const g = goal ? `<line class="wc-goal" x1="${L}" x2="${W - R}" y1="${y(goal).toFixed(1)}" y2="${y(goal).toFixed(1)}"/><text class="wc-txt" x="${W - R}" y="${(y(goal) - 4).toFixed(1)}" text-anchor="end">meta ${fmtKg(goal)}</text>` : "";
+  const dl = s => { const d = parseYmd(s); return `${d.getDate()}/${d.getMonth() + 1}`; };
+  const end = xy[xy.length - 1];
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución del peso">${grid}<path class="wc-area" d="${area}" opacity=".7"/>${g}<path class="wc-line" d="${line}"/>
+    <circle class="wc-dot" cx="${end[0].toFixed(1)}" cy="${end[1].toFixed(1)}" r="4"/>
+    <text class="wc-txt" x="${L}" y="${H - 6}">${dl(pts[0].date)}</text><text class="wc-txt" x="${W - R}" y="${H - 6}" text-anchor="end">${dl(pts[pts.length - 1].date)}</text></svg>`;
+}
+$("weightSave").onclick = () => {
+  const kg = parseKg($("weightInput").value);
+  if (!kg) { toast("Escribe tu peso en kg, por ejemplo 78,5"); return; }
+  S.profile.weights = [...(S.profile.weights || []).filter(x => x.date !== S.date), { date: S.date, kg }];
+  saveProfile(); $("weightInput").value = ""; renderWeight(); toast(`Peso registrado: ${fmtKg(kg)} kg`);
+};
+$("weightInput").addEventListener("keydown", e => { if (e.key === "Enter") $("weightSave").click(); });
+$("weightList").addEventListener("click", e => {
+  const b = e.target.closest("[data-wdel]"); if (!b) return;
+  if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "¿Seguro?"; setTimeout(() => { if (b.isConnected) { b.dataset.armed = ""; b.textContent = "Quitar"; } }, 3000); return; }
+  S.profile.weights = (S.profile.weights || []).filter(x => x.date !== b.dataset.wdel); saveProfile(); renderWeight();
+});
+
+/* ---------- aviso de fin de ayuno ---------- */
+function fastNote(msg){ $("fastRemindNote").textContent = msg; $("fastRemindNote").hidden = false; }
+$("notifBtn").onclick = async () => {
+  if (!("Notification" in window)) { fastNote("Este teléfono no permite notificaciones desde la app. Usa \"Al calendario\"."); return; }
+  let p = Notification.permission;
+  if (p === "default") p = await Notification.requestPermission();
+  if (p === "granted") fastNote("Listo. Te aviso al cumplir la meta mientras la app esté abierta o en segundo plano reciente. Para un aviso seguro con la app cerrada, usa también \"Al calendario\".");
+  else fastNote("Las notificaciones están bloqueadas. Actívalas en los ajustes del navegador o usa \"Al calendario\".");
+};
+async function checkFastNotify(){
+  const p = S.profile; if (!p.fastStart || p.fastNotifiedFor === p.fastStart) return;
+  if (Date.now() - p.fastStart < p.fastTarget * 3600000) return;
+  p.fastNotifiedFor = p.fastStart; saveProfile();
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const body = `Completaste ${p.fastTarget} h de ayuno. Rompe el ayuno con algo liviano y con proteína.`;
+  try { const reg = await navigator.serviceWorker?.getRegistration(); if (reg) { reg.showNotification("Meta de ayuno cumplida", { body, icon: "icon-192.png", tag: "ayuno" }); return; } } catch {}
+  try { new Notification("Meta de ayuno cumplida", { body, icon: "icon-192.png" }); } catch {}
+}
+$("icsBtn").onclick = () => {
+  const p = S.profile; if (!p.fastStart) return;
+  const end = new Date(p.fastStart + p.fastTarget * 3600000);
+  const u = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//MiPlato//ES","BEGIN:VEVENT",
+    `UID:ayuno-${p.fastStart}@miplato`, `DTSTAMP:${u(new Date())}`, `DTSTART:${u(end)}`, `DTEND:${u(new Date(end.getTime() + 15 * 60000))}`,
+    `SUMMARY:Fin del ayuno (${p.fastTarget} h)`, "DESCRIPTION:Meta de ayuno cumplida. Registra tu comida en Mi Cota Fitness.",
+    "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Fin del ayuno","TRIGGER:PT0M","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "fin-ayuno.ics";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  fastNote(`Abre el archivo descargado para agregar el aviso a tu calendario (${end.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" })}).`);
+};
+
+/* ---------- código de barras ---------- */
+const scan = { stream: null, on: false, det: null, zx: null };
+function loadScript(src){ return new Promise((ok, ko) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); }); }
+async function openScanner(){
+  $("scanSheet").hidden = false; $("productBox").innerHTML = ""; $("codeInput").value = ""; $("videoWrap").hidden = false;
+  $("scanStatus").textContent = "Abriendo la cámara…";
+  if (!navigator.mediaDevices?.getUserMedia) { $("videoWrap").hidden = true; $("scanStatus").textContent = "Aquí no se puede usar la cámara en vivo. Escribe el número bajo el código de barras."; return; }
+  try {
+    const formats = ["ean_13", "ean_8", "upc_a", "upc_e"];
+    const supported = "BarcodeDetector" in window ? await BarcodeDetector.getSupportedFormats().catch(() => []) : [];
+    const usable = formats.filter(f => supported.includes(f));
+    if (usable.length) {
+      scan.det = new BarcodeDetector({ formats: usable });
+      scan.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
+      const v = $("scanVideo"); v.srcObject = scan.stream; await v.play();
+      scan.on = true; $("scanStatus").textContent = "Apunta al código de barras dentro del recuadro."; detectLoop();
+    } else {
+      if (!window.ZXing) await loadScript("https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js");
+      scan.zx = new ZXing.BrowserMultiFormatReader();
+      scan.on = true; $("scanStatus").textContent = "Apunta al código de barras dentro del recuadro.";
+      await scan.zx.decodeFromConstraints({ video: { facingMode: { ideal: "environment" } }, audio: false }, $("scanVideo"), res => { if (res && scan.on) onCode(res.getText()); });
+    }
+  } catch (e) {
+    stopScanner(); $("videoWrap").hidden = true;
+    $("scanStatus").textContent = e?.name === "NotAllowedError" ? "No diste permiso para la cámara. Puedes escribir el número del código." : "No se pudo abrir la cámara. Escribe el número bajo el código de barras.";
+  }
+}
+function detectLoop(){
+  if (!scan.on || !scan.det) return;
+  scan.det.detect($("scanVideo")).then(c => {
+    const code = c.find(x => /^\d{8,14}$/.test(x.rawValue));
+    if (code) onCode(code.rawValue); else setTimeout(detectLoop, 180);
+  }).catch(() => setTimeout(detectLoop, 400));
+}
+function stopScanner(){
+  scan.on = false;
+  try { scan.zx?.reset(); } catch {}
+  scan.zx = null; scan.det = null;
+  scan.stream?.getTracks().forEach(t => t.stop()); scan.stream = null;
+  const v = $("scanVideo"); v.pause?.(); v.srcObject = null;
+}
+function closeScanner(){ stopScanner(); $("scanSheet").hidden = true; }
+function onCode(code){ stopScanner(); $("videoWrap").hidden = true; navigator.vibrate?.(60); $("codeInput").value = code; lookup(code); }
+$("scanBtn").onclick = openScanner;
+$("scanClose").onclick = closeScanner;
+$("scanSheet").addEventListener("click", e => { if (e.target.id === "scanSheet") closeScanner(); });
+$("codeGo").onclick = () => { const c = $("codeInput").value.replace(/\D/g, ""); if (c.length < 8) { $("scanStatus").textContent = "El código debe tener al menos 8 dígitos."; return; } stopScanner(); $("videoWrap").hidden = true; lookup(c); };
+
+async function lookup(code){
+  $("productBox").innerHTML = ""; $("scanStatus").textContent = `Buscando ${code}…`;
+  const cached = get("prod-" + code, null);
+  if (cached) { $("scanStatus").textContent = ""; showProduct(cached); return; }
+  try {
+    const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,product_name_es,brands,nutriments,serving_quantity,serving_size,image_front_small_url`);
+    const j = r.ok ? await r.json() : null, pr = j?.product;
+    if (pr) {
+      const n = pr.nutriments || {};
+      const kcal = n["energy-kcal_100g"] ?? (n["energy_100g"] != null ? n["energy_100g"] / 4.184 : null);
+      const name = pr.product_name_es || pr.product_name || "";
+      if (kcal != null) {
+        const prod = { code, name: name || "Producto", brand: (pr.brands || "").split(",")[0].trim(), img: pr.image_front_small_url || "",
+          per100: { kcal: +kcal, p: +n.proteins_100g || 0, c: +n.carbohydrates_100g || 0, f: +n.fat_100g || 0 },
+          serving: +pr.serving_quantity || null, servingLabel: pr.serving_size || "", source: "Open Food Facts" };
+        put("prod-" + code, prod); $("scanStatus").textContent = ""; showProduct(prod); return;
+      }
+      notFound(code, name); return;
+    }
+    notFound(code, "");
+  } catch { $("scanStatus").textContent = "Sin conexión a internet."; notFound(code, ""); }
+}
+function notFound(code, name){
+  $("scanStatus").textContent = name ? `Encontramos "${name}", pero sin datos de calorías.` : "Este producto no está en la base de datos abierta.";
+  $("productBox").innerHTML = `<div class="product">
+    <div>Saca una foto a la <b>tabla nutricional</b> del envase y la IA lee los valores. Queda guardado: la próxima vez que lo escanees aparece al tiro.</div>
+    <input type="text" id="labelName" placeholder="Nombre del producto (ej. Yogur protein frutilla)" value="${esc(name)}">
+    <div class="row"><label class="btn" for="labelInput">📷 Foto de la tabla nutricional</label></div>
+    <div class="status" id="labelStatus"></div></div>`;
+  $("labelInput").dataset.code = code;
+}
+$("labelInput").onchange = async e => {
+  const f = e.target.files[0], code = e.target.dataset.code; e.target.value = ""; if (!f) return;
+  if (!getKey()) { $("labelStatus").innerHTML = `<span class="err">Primero configura tu clave gratuita de IA en Ajustes.</span>`; return; }
+  $("labelStatus").textContent = "Leyendo la etiqueta…";
+  const prompt = `Lee la tabla de información nutricional de este envase (formato chileno: columnas "100 g/ml" y "1 porción").
+Responde SOLO con JSON: {"nombre":"nombre del producto si se ve, o vacío","por100":{"kcal":0,"proteina_g":0,"carbohidratos_g":0,"grasa_g":0},"porcion_g":0,"porcion_texto":"ej. 1 unidad (30 g)"}
+Si solo aparece la columna por porción, calcula los valores por 100 g. Si no ves una tabla nutricional, responde {"error":"no se ve la tabla"}.`;
+  try {
+    const r = await gemini(prompt, await toB64(f));
+    if (r.error || !r.por100) throw new Error(r.error || "No se pudo leer la tabla. Prueba con una foto más cerca y con buena luz.");
+    const prod = { code, name: ($("labelName")?.value.trim()) || r.nombre || "Producto", brand: "", img: "",
+      per100: { kcal: +r.por100.kcal || 0, p: +r.por100.proteina_g || 0, c: +r.por100.carbohidratos_g || 0, f: +r.por100.grasa_g || 0 },
+      serving: +r.porcion_g || null, servingLabel: r.porcion_texto || "", source: "tu foto de la etiqueta" };
+    if (!(prod.per100.kcal > 0)) throw new Error("No se pudo leer la tabla. Prueba con una foto más cerca y con buena luz.");
+    put("prod-" + code, prod); $("scanStatus").textContent = ""; showProduct(prod);
+  } catch (err) { const el = $("labelStatus"); if (el) el.innerHTML = `<span class="err">${esc(err.status ? errText(err) : err.message)}</span>`; }
+};
+function showProduct(prod){
+  S.prod = prod; S.prodG = prod.serving || 100;
+  const opts = [];
+  if (prod.serving) opts.push([prod.serving, `1 porción (${round(prod.serving)} g)`]);
+  opts.push([100, "100 g"]);
+  if (prod.serving) opts.push([prod.serving * 2, "2 porciones"]);
+  $("productBox").innerHTML = `<div class="product">
+    <div class="ph">${prod.img ? `<img src="${esc(prod.img)}" alt="">` : ""}<div style="min-width:0"><b>${esc(prod.name)}</b><div class="small-t muted">${esc([prod.brand, "datos: " + prod.source].filter(Boolean).join(" · "))}</div></div></div>
+    <div class="small-t muted">Por 100 g / ml</div>
+    <div class="facts num"><div><b>${round(prod.per100.kcal)}</b><span class="small-t muted">kcal</span></div><div><b>${round(prod.per100.p)}</b><span class="small-t muted">prot</span></div><div><b>${round(prod.per100.c)}</b><span class="small-t muted">carb</span></div><div><b>${round(prod.per100.f)}</b><span class="small-t muted">grasa</span></div></div>
+    <div class="portion">${opts.map(([g, l]) => `<button class="chip" data-pg="${g}" aria-pressed="${g === S.prodG}">${esc(l)}</button>`).join("")}</div>
+    <div class="row"><label for="prodGrams" class="small-t muted">Cantidad (g o ml)</label><input type="number" id="prodGrams" inputmode="decimal" value="${round(S.prodG)}" style="flex:0 1 110px"></div>
+    <div class="row spread"><span class="num" style="font-family:var(--display);font-weight:800;font-size:1.4rem" id="prodKcal"></span><button class="btn" id="prodAdd">Agregar</button></div>
+  </div>`;
+  updProd();
+}
+function updProd(){ const k = S.prodG / 100; $("prodKcal").textContent = `${round(S.prod.per100.kcal * k)} kcal`; }
+$("productBox").addEventListener("click", e => {
+  const g = e.target.closest("[data-pg]")?.dataset.pg;
+  if (g) { S.prodG = +g; $("prodGrams").value = round(S.prodG); document.querySelectorAll("[data-pg]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.pg === S.prodG))); updProd(); return; }
+  if (e.target.id === "prodAdd") {
+    const p = S.prod, k = S.prodG / 100;
+    addMeal({ id: Date.now().toString(36), name: `${p.name} (${round(S.prodG)} g)`, kcal: round(p.per100.kcal * k), p: round(p.per100.p * k), c: round(p.per100.c * k), f: round(p.per100.f * k), time: nowTime(), thumb: null });
+    closeScanner(); toast(`${p.name} agregado · ${round(p.per100.kcal * k)} kcal`);
+  }
+});
+$("productBox").addEventListener("input", e => {
+  if (e.target.id !== "prodGrams") return;
+  S.prodG = Math.max(0, +e.target.value || 0);
+  document.querySelectorAll("[data-pg]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.pg === S.prodG)));
+  updProd();
+});
+document.addEventListener("visibilitychange", () => { if (document.hidden && scan.on) closeScanner(); });
+
+function renderAll(){ renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
+
+/* ---------- v3: navegación tipo app ---------- */
+const APP_VERSION = "3.1.0";
+const VIEWS = ["hoy", "ayuno", "registrar", "progreso", "perfil"];
+let cur = null;
+function go(v){
+  if (!VIEWS.includes(v)) v = "hoy";
+  if (location.hash !== "#" + v) location.hash = v; else show(v);
+}
+function show(v){
+  if (!VIEWS.includes(v)) v = "hoy";
+  if (cur === v) return;
+  const prev = cur; cur = v;
+  const dir = prev ? (VIEWS.indexOf(v) > VIEWS.indexOf(prev) ? "fwd" : "back") : "none";
+  VIEWS.forEach(n => {
+    const el = $("v-" + n), on = n === v;
+    el.hidden = !on;
+    if (on) { el.dataset.dir = dir; el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); }
+  });
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-current", t.dataset.go === v ? "page" : "false"));
+  $("viewTitle").textContent = $("v-" + v).dataset.title;
+  $("dateNav").hidden = v !== "hoy";
+  window.scrollTo(0, 0);
+  if (v !== "registrar" && typeof closeScanner === "function" && !$("scanSheet").hidden) closeScanner();
+}
+window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+document.querySelector(".tabbar").addEventListener("click", e => {
+  const t = e.target.closest("[data-go]"); if (!t) return;
+  navigator.vibrate?.(8);
+  if (t.dataset.go === cur) window.scrollTo({ top: 0, behavior: "smooth" }); else go(t.dataset.go);
+});
+document.addEventListener("click", e => { const t = e.target.closest("[data-goto]"); if (t) go(t.dataset.goto); });
+$("goSetup").addEventListener("click", () => { go("perfil"); setTimeout(() => { $("aiCard").scrollIntoView({ behavior: "smooth", block: "start" }); $("keyInput").focus({ preventScroll: true }); }, 350); });
+window.addEventListener("scroll", () => $("appbar").classList.toggle("scrolled", window.scrollY > 4), { passive: true });
+
+// Al registrar desde la pestaña Registrar, vuelve a Hoy para ver el resultado.
+const _addMeal = addMeal;
+addMeal = function(m){ _addMeal(m); if (cur === "registrar") setTimeout(() => go("hoy"), 280); };
+
+/* ---------- v3: anillo de ayuno + historial ---------- */
+function updFastRing(){
+  const p = S.profile, C = 603.2, st = p.fastStart;
+  const frac = st ? Math.min(1, (Date.now() - st) / (p.fastTarget * 3600000)) : 0;
+  $("fastRingArc").style.strokeDashoffset = String(C * (1 - frac));
+  $("fastPct").textContent = st ? `${Math.floor(frac * 100)}% de ${p.fastTarget} h` : `Meta ${p.fastTarget} h`;
+  $("fastMini").textContent = st ? `En ayuno · ${fmtDur(Date.now() - st)} h${frac >= 1 ? " · ¡meta cumplida!" : ""}` : "Sin ayuno activo · toca para iniciar";
+  const fs = (p.fasts || []).slice(0, 12);
+  $("fastHistory").innerHTML = fs.length ? fs.map(f => `<div><span>${new Date(f.start).toLocaleDateString("es-CL", { weekday: "short", day: "numeric", month: "short" })}</span><span class="num"><b>${f.hours.toFixed(1).replace(".", ",")} h</b>${f.hours >= p.fastTarget ? ' <span class="badge">meta</span>' : ""}</span></div>`).join("")
+    : `<div class="muted">Aún no completas ayunos. Cuando termines uno aparecerá aquí.</div>`;
+  $("fastAvg").textContent = fs.length ? `promedio ${(fs.reduce((a, f) => a + f.hours, 0) / fs.length).toFixed(1).replace(".", ",")} h` : "";
+}
+const _renderFast = renderFast;
+renderFast = function(){ _renderFast(); updFastRing(); };
+
+/* ---------- v3: pantalla de carga ---------- */
+function hideSplash(){ const s = $("splash"); if (!s || s.classList.contains("out")) return; s.classList.add("out"); setTimeout(() => s.remove(), 450); }
+Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 1200))]).then(() => setTimeout(hideSplash, 450));
+
+/* ---------- v3: actualizaciones en línea ---------- */
+$("appVersion").textContent = `Versión ${APP_VERSION}`;
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  navigator.serviceWorker.register("sw.js").then(reg => {
+    const offer = w => { $("updateBar").hidden = false; $("updateBtn").onclick = () => { $("updateBtn").disabled = true; w.postMessage("skipWaiting"); }; };
+    if (reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);
+    reg.addEventListener("updatefound", () => {
+      const nw = reg.installing;
+      nw?.addEventListener("statechange", () => { if (nw.state === "installed" && navigator.serviceWorker.controller) offer(nw); });
+    });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) reg.update().catch(() => {}); });
+    setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
+  }).catch(() => {});
+  let reloading = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (reloading) return; reloading = true; location.reload(); });
+}
+
+
+show(location.hash.slice(1) || "hoy");
+
+/* ---------- ejercicio (MET × peso × horas) ---------- */
+// Valores MET aproximados (Compendio de Actividad Física): [suave, moderada, intensa]
+const EX = [
+  ["Caminar", [2.8, 3.5, 4.3]],
+  ["Trotar / correr", [7.0, 8.3, 10.5]],
+  ["Bicicleta", [4.0, 6.8, 10.0]],
+  ["Bici estática", [3.5, 6.8, 8.8]],
+  ["Pesas / fuerza", [3.5, 5.0, 6.0]],
+  ["HIIT / circuito", [6.0, 8.0, 9.0]],
+  ["Elíptica", [4.6, 5.0, 7.0]],
+  ["Natación", [5.8, 7.0, 9.8]],
+  ["Fútbol", [5.0, 7.0, 10.0]],
+  ["Básquetbol", [4.5, 6.5, 8.0]],
+  ["Baile / zumba", [4.5, 5.5, 7.3]],
+  ["Yoga / pilates", [2.5, 3.0, 4.0]],
+  ["Cerro / trekking", [5.3, 6.0, 7.8]],
+  ["Saltar la cuerda", [8.8, 11.8, 12.3]],
+  ["Subir escaleras", [4.0, 6.0, 8.8]],
+  ["Trabajo físico / jardín", [3.0, 4.0, 6.0]]
+];
+const INT = ["Suave", "Moderada", "Intensa"];
+const INT_HINT = ["puedes conversar sin problema", "respiras más rápido, aún puedes hablar", "cuesta hablar"];
+const exTotal = d => (d.exercises || []).reduce((a, e) => a + (+e.kcal || 0), 0);
+const exShare = () => S.profile.exShare ?? 0.5;
+const bodyKg = () => { const w = weights(); return w.length ? w[w.length - 1].kg : null; };
+const exSel = { a: 0, i: 1, min: 30 };
+
+function renderExercises(){
+  const xs = S.day.exercises || [], tot = exTotal(S.day), mins = xs.reduce((a, e) => a + (+e.min || 0), 0);
+  $("exTotalLbl").textContent = xs.length ? `${round(tot)} kcal · ${mins} min` : "";
+  $("exList").innerHTML = xs.length ? xs.map(e => `
+    <div class="meal">
+      <div class="thumb ex">${esc((e.name || "?").charAt(0))}</div>
+      <div class="info"><b>${esc(e.name)}</b><span class="small-t muted num">${esc(e.time || "")} · ${round(e.min)} min${e.met ? " · MET " + e.met : ""}</span></div>
+      <div><div class="k num">−${round(e.kcal)} kcal</div><button class="del" data-exdel="${esc(e.id)}">Quitar</button></div>
+    </div>`).join("")
+    : `<div class="empty">Sin ejercicio registrado. Agrega una caminata, pesas, bici o lo que hayas hecho.</div>`;
+}
+$("exList").addEventListener("click", e => {
+  const b = e.target.closest("[data-exdel]"); if (!b) return;
+  if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "¿Seguro?"; setTimeout(() => { if (b.isConnected) { b.dataset.armed = ""; b.textContent = "Quitar"; } }, 3000); return; }
+  S.day.exercises = (S.day.exercises || []).filter(x => x.id !== b.dataset.exdel); saveDay(); renderDay(); renderWeek(); toast("Ejercicio quitado");
+});
+
+function openEx(){
+  $("exGrid").innerHTML = EX.map(([n], i) => `<button class="chip" data-exa="${i}" aria-pressed="${i === exSel.a}">${esc(n)}</button>`).join("");
+  $("exInt").innerHTML = INT.map((n, i) => `<button class="chip" data-exi="${i}" aria-pressed="${i === exSel.i}">${n}</button>`).join("");
+  $("exMinChips").innerHTML = [15, 30, 45, 60, 90].map(m => `<button class="chip" data-exm="${m}" aria-pressed="${m === exSel.min}">${m}</button>`).join("");
+  $("exMin").value = exSel.min; $("exAiStatus").textContent = ""; $("exAiResult").innerHTML = "";
+  $("exSheet").hidden = false; updEx();
+}
+function closeEx(){ $("exSheet").hidden = true; }
+function updEx(){
+  const kg = bodyKg() || 70, met = EX[exSel.a][1][exSel.i], kcal = round(met * kg * exSel.min / 60);
+  $("exKcal").textContent = `${kcal} kcal`;
+  $("exHint").textContent = `${INT[exSel.i]}: ${INT_HINT[exSel.i]}`;
+  $("exHow").textContent = `MET ${String(met).replace(".", ",")} × ${fmtKg(kg)} kg × ${exSel.min} min` + (bodyKg() ? "" : " · se usan 70 kg: registra tu peso en Progreso para afinar");
+  return { kcal, met };
+}
+function mark(sel, attr, val){ document.querySelectorAll(`[${attr}]`).forEach(b => b.setAttribute("aria-pressed", String(+b.getAttribute(attr) === val))); }
+$("exSheet").addEventListener("click", e => {
+  if (e.target.id === "exSheet") { closeEx(); return; }
+  const a = e.target.closest("[data-exa]"), i = e.target.closest("[data-exi]"), m = e.target.closest("[data-exm]");
+  if (a) { exSel.a = +a.dataset.exa; mark(null, "data-exa", exSel.a); updEx(); }
+  if (i) { exSel.i = +i.dataset.exi; mark(null, "data-exi", exSel.i); updEx(); }
+  if (m) { exSel.min = +m.dataset.exm; $("exMin").value = exSel.min; mark(null, "data-exm", exSel.min); updEx(); }
+});
+$("exMin").addEventListener("input", () => { exSel.min = Math.max(1, Math.min(600, +$("exMin").value || 0)); mark(null, "data-exm", exSel.min); updEx(); });
+$("exClose").onclick = closeEx;
+function addExercise(x){
+  S.day.exercises = [...(S.day.exercises || []), { id: Date.now().toString(36), time: nowTime(), ...x }];
+  saveDay(); renderDay(); renderWeek(); closeEx();
+  toast(`${x.name}: −${round(x.kcal)} kcal`);
+  if (cur !== "hoy") go("hoy");
+}
+$("exAdd").onclick = () => {
+  if (!(exSel.min > 0)) { toast("Indica los minutos"); return; }
+  const { kcal, met } = updEx();
+  addExercise({ name: `${EX[exSel.a][0]} (${INT[exSel.i].toLowerCase()})`, min: exSel.min, kcal, met });
+};
+$("exAi").onclick = async () => {
+  const desc = $("exDesc").value.trim();
+  if (!desc) { $("exAiStatus").textContent = "Describe qué hiciste y cuánto rato."; return; }
+  if (!getKey()) { $("exAiStatus").innerHTML = `<span class="err">Primero configura tu clave gratuita de IA en Perfil.</span>`; return; }
+  const kg = bodyKg() || 70;
+  $("exAi").disabled = true; $("exAiStatus").textContent = "Calculando…"; $("exAiResult").innerHTML = "";
+  const prompt = `Estima las calorías gastadas en esta actividad física usando valores MET del Compendio de Actividad Física (kcal = MET × peso kg × horas).
+Peso de la persona: ${fmtKg(kg)} kg. Actividad descrita: "${desc}".
+Si no indica duración, asume 30 minutos y dilo en "nota". Si combina varias actividades, súmalas.
+Responde SOLO con JSON: {"nombre":"nombre corto en español","minutos":0,"met":0,"kcal":0,"nota":"una frase breve"}`;
+  try {
+    const r = await gemini(prompt, null);
+    if (!r || !(+r.kcal > 0)) { const e = new Error("nojson"); e.code = "nojson"; throw e; }
+    S.exAi = { name: r.nombre || "Ejercicio", min: round(r.minutos) || 30, met: +r.met || null, kcal: round(r.kcal) };
+    $("exAiStatus").textContent = r.nota || "";
+    $("exAiResult").innerHTML = `<div class="row spread"><span><b>${esc(S.exAi.name)}</b><br><span class="small-t muted num">${S.exAi.min} min${S.exAi.met ? " · MET " + S.exAi.met : ""}</span></span>
+      <span class="row"><span class="num" style="font-family:var(--display);font-weight:800;font-size:1.2rem">${S.exAi.kcal} kcal</span><button class="btn small" id="exAiAdd">Agregar</button></span></div>`;
+  } catch (e) { $("exAiStatus").innerHTML = `<span class="err">${esc(errText(e))}</span>`; }
+  finally { $("exAi").disabled = false; }
+};
+$("exAiResult").addEventListener("click", e => { if (e.target.id === "exAiAdd" && S.exAi) addExercise(S.exAi); });
+document.addEventListener("click", e => { if (e.target.closest(".exOpen")) openEx(); });
+function exDeepLink(){ if (location.hash === "#ejercicio") { go("hoy"); setTimeout(openEx, 120); } }
+window.addEventListener("hashchange", exDeepLink);
+
+exDeepLink();
+
+/* ---------- inicio ---------- */
+S.profile = {...DEF_PROFILE, ...get("profile", {})};
+S.day = loadDay(S.date);
+renderAll();
+let lastToday = todayStr();
+setInterval(() => {
+  renderFast(); checkFastNotify();
+  const t = todayStr();
+  if (t !== lastToday) { if (S.date === lastToday) goDate(t); else renderWeek(); lastToday = t; }
+}, 30000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { renderFast(); checkFastNotify(); const t = todayStr(); if (t !== lastToday) { if (S.date === lastToday) goDate(t); lastToday = t; } } });
+
+})();
+
+</script>
+</body>
+</html>

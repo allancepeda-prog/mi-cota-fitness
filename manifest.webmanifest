@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Mi Cota Fitness",
+  "short_name": "Cota Fitness",
+  "description": "Calorías por foto, ejercicio, ayuno, agua, peso y sugerencias saludables. Hecho por Allan Cepeda.",
+  "lang": "es-CL",
+  "start_url": "./#hoy",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1f5e39",
+  "theme_color": "#eef3ec",
+  "categories": ["health", "fitness", "food", "lifestyle"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "logo.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Registrar comida", "short_name": "Comida", "url": "./#registrar", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Agregar ejercicio", "short_name": "Ejercicio", "url": "./#ejercicio", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Ayuno", "short_name": "Ayuno", "url": "./#ayuno", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}
