@@ -172,6 +172,10 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 
 #v-ayuno .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
 
+/* ===== v3.3: instalación + bienvenida Carla ===== */
+.whello{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--leaf)}
+.install{border:2px solid var(--leaf);background:var(--leaf-soft)}
+.install ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
 /* ===== v3.2: carga y bienvenida ===== */
 #splash{background:radial-gradient(circle at 50% 38%,#3a9a5f 0%,#1f5e39 55%,#123a22 100%);transition:opacity .45s ease,transform .45s ease,visibility .45s}
 #splash.out{transform:scale(1.04)}
@@ -312,8 +316,9 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
   <div class="wtrack" id="wTrack">
     <section class="wslide">
       <div class="whero"><div class="wlogo"><img src="icon-512.png" alt="Logo de Mi Cota Fitness"></div></div>
-      <h2>Bienvenido a<br>Mi Cota Fitness</h2>
-      <p>Tu compañero diario para comer mejor, moverte más y ver tu avance con datos reales.</p>
+      <div class="whello">Hola, Carla</div>
+      <h2>Bienvenida a<br>Mi Cota Fitness</h2>
+      <p>Una app hecha especialmente para ti, para comer mejor, moverte más y ver tu avance con datos reales.</p>
     </section>
     <section class="wslide">
       <h2>Todo en un solo lugar</h2>
@@ -328,7 +333,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
       <h2>Personaliza tu app</h2>
       <p>Con esto ajustamos tus cálculos. Puedes cambiarlo cuando quieras en Perfil.</p>
       <div class="wform">
-        <label for="wName">¿Cómo te llamas?<input type="text" id="wName" autocomplete="given-name" placeholder="Tu nombre" maxlength="30"></label>
+        <label for="wName">¿Cómo te llamas?<input type="text" id="wName" autocomplete="given-name" placeholder="Tu nombre" maxlength="30" value="Carla"></label>
         <label for="wKg">Peso actual (kg)<input type="text" id="wKg" inputmode="decimal" placeholder="Ej: 80,5"></label>
         <label for="wGoal">Meta diaria de calorías<input type="number" id="wGoal" inputmode="numeric" min="800" max="5000" step="50" value="2000"></label>
       </div>
@@ -358,6 +363,16 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
 <!-- ================= HOY ================= -->
 <section class="view" id="v-hoy" data-title="Hoy">
 <div class="wrap">
+  <section class="card install" id="installCard" hidden>
+    <div class="row" style="gap:12px;flex-wrap:nowrap;align-items:flex-start">
+      <img src="icon-192.png" alt="" style="width:48px;height:48px;border-radius:12px;flex:none">
+      <div style="min-width:0;flex:1">
+        <b style="font-family:var(--display);font-size:1.05rem">Instala Mi Cota Fitness</b>
+        <div class="small-t muted" id="installText">Tenla como app en tu pantalla de inicio: abre más rápido y funciona sin internet.</div>
+      </div>
+    </div>
+    <div class="row"><button class="btn" id="installBtn" hidden>Instalar app</button><button class="btn small ghost" id="installLater">Ahora no</button></div>
+  </section>
   <section class="card" aria-label="Resumen del día">
     <div class="today">
       <div class="ring">
@@ -579,7 +594,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <h2>Mi Cota Fitness</h2>
     <div class="small-t muted num" id="appVersion"></div>
     <div class="sig">Hecho por Allan Cepeda</div>
-    <div><button class="btn small ghost" id="reWelcome">Ver bienvenida</button></div>
+    <div class="row" style="justify-content:center"><button class="btn small ghost" id="reWelcome">Ver bienvenida</button><button class="btn small ghost" id="installAgain">Instalar app</button></div>
     <div class="small-t muted">Las calorías desde fotos son estimaciones de IA (pueden variar ±20%). Úsalas como guía, no como medición exacta.</div>
   </section>
 </div>
@@ -1304,7 +1319,7 @@ document.addEventListener("visibilitychange", () => { if (document.hidden && sca
 function renderAll(){ refreshTitle(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.2.0";
+const APP_VERSION = "3.3.0";
 const VIEWS = ["hoy", "ayuno", "registrar", "progreso", "perfil"];
 let cur = null;
 function go(v){
@@ -1496,7 +1511,7 @@ function refreshTitle(){
 }
 let wIdx = 0;
 function openWelcome(){
-  $("wName").value = S.profile.name || ""; $("wKg").value = bodyKg() ? fmtKg(bodyKg()) : ""; $("wGoal").value = S.profile.goal;
+  $("wName").value = S.profile.name || "Carla"; $("wKg").value = bodyKg() ? fmtKg(bodyKg()) : ""; $("wGoal").value = S.profile.goal;
   $("welcome").hidden = false; requestAnimationFrame(() => wGo(0, false));
 }
 function wGo(i, smooth = true){
@@ -1525,11 +1540,43 @@ function finishWelcome(){
   const w = $("welcome"); w.classList.add("out");
   setTimeout(() => { w.hidden = true; w.classList.remove("out"); }, 420);
   go("hoy");
-  toast(name ? `¡Bienvenido, ${name.split(/\s+/)[0]}!` : "¡Todo listo para empezar!");
+  toast(name ? `¡Bienvenida, ${name.split(/\s+/)[0]}!` : "¡Todo listo para empezar!");
 }
 $("reWelcome").onclick = openWelcome;
 $("splashVer").textContent = "v" + APP_VERSION;
 window.addEventListener("resize", () => { if (!$("welcome").hidden) wGo(wIdx, false); });
+
+/* ---------- instalar como app ---------- */
+let installEvt = null;
+const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const ua = navigator.userAgent;
+const isIOS = /iPhone|iPad|iPod/i.test(ua), isAndroid = /Android/i.test(ua);
+const inAppBrowser = /FBAN|FBAV|Instagram|WhatsApp|Line\/|; wv\)|GSA\//i.test(ua);
+const dismissedInstall = () => { try { return localStorage.getItem(P + "installLater") === todayStr(); } catch { return false; } };
+function installHelp(){
+  if (inAppBrowser) return `Estás viendo la app dentro de otra aplicación. Toca los <b>⋮</b> (arriba a la derecha) y elige <b>"Abrir en Chrome"</b>${isIOS ? " o Safari" : ""}. Ahí podrás instalarla.`;
+  if (isIOS) return `En Safari toca <b>Compartir</b> (el cuadrado con flecha) y luego <b>"Agregar a inicio"</b>.`;
+  if (isAndroid) return `En Chrome toca los <b>⋮</b> (arriba a la derecha) y elige <b>"Agregar a la pantalla principal"</b> → <b>"Instalar"</b>. Si no aparece, espera unos segundos y recarga la página.`;
+  return `En el navegador busca la opción <b>"Instalar"</b> en la barra de direcciones o en el menú.`;
+}
+function renderInstall(force){
+  if (isStandalone()) { $("installCard").hidden = true; $("installAgain").hidden = true; return; }
+  $("installBtn").hidden = !installEvt;
+  $("installText").innerHTML = installEvt ? "Tenla como app en tu pantalla de inicio: abre más rápido y funciona sin internet." : installHelp();
+  $("installCard").hidden = !force && dismissedInstall();
+}
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; renderInstall(); });
+window.addEventListener("appinstalled", () => { installEvt = null; renderInstall(); toast("¡App instalada! Búscala en tu pantalla de inicio."); });
+$("installBtn").onclick = async () => {
+  if (!installEvt) return;
+  installEvt.prompt();
+  const r = await installEvt.userChoice.catch(() => null);
+  installEvt = null;
+  if (r?.outcome !== "accepted") renderInstall();
+};
+$("installLater").onclick = () => { try { localStorage.setItem(P + "installLater", todayStr()); } catch {} $("installCard").hidden = true; };
+$("installAgain").onclick = () => { go("hoy"); renderInstall(true); setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 320); };
+renderInstall();
 
 /* ---------- inicio ---------- */
 S.profile = {...DEF_PROFILE, ...get("profile", {})};
