@@ -1,9 +1,9 @@
 // Mi Cota Fitness — service worker
 // Para publicar una actualización: cambia VERSION (y APP_VERSION en index.html), sube los archivos.
 // La app mostrará "Nueva versión disponible · Actualizar".
-const VERSION = "3.5.1";
+const VERSION = "3.6.0";
 const CACHE = "miplato-" + VERSION;
-const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./logo.svg", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png"];
+const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./logo.svg", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png", "./contenido.js"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: "reload" })))));
@@ -31,8 +31,25 @@ self.addEventListener("fetch", e => {
   }
 });
 
-// Al tocar la notificación de fin de ayuno, abre la app.
+// Avisos motivacionales enviados desde GitHub Actions (carpeta push/).
+self.addEventListener("push", e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch { d = { body: e.data && e.data.text() }; }
+  const title = d.title || "Mi Cota Fitness";
+  e.waitUntil(self.registration.showNotification(title, {
+    body: d.body || "Un pequeño paso hoy cuenta. ¡Tú puedes!",
+    icon: "icon-192.png", badge: "icon-192.png", tag: d.tag || "micota", renotify: true,
+    data: { url: d.url || "./#hoy" }
+  }));
+});
+
+// Al tocar un aviso, abre la app en la sección que corresponde.
 self.addEventListener("notificationclick", e => {
   e.notification.close();
-  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(cs => cs.length ? cs[0].focus() : self.clients.openWindow("./#ayuno")));
+  const url = new URL((e.notification.data && e.notification.data.url) || "./#ayuno", self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(cs => {
+    const c = cs.find(x => x.url.startsWith(self.registration.scope));
+    if (c) { c.navigate ? c.navigate(url).catch(() => {}) : null; return c.focus(); }
+    return self.clients.openWindow(url);
+  }));
 });

@@ -53,3 +53,17 @@ En *Perfil* eliges si esas calorías se suman a tu meta diaria (0%, 50% o 100%).
 | `manifest.webmanifest` | Nombre, colores, ícono y accesos directos de la app |
 | `logo.svg`, `icon-*.png`, `apple-touch-icon.png`, `favicon-32.png` | Logo e íconos |
 | `.nojekyll` | Le indica a GitHub Pages que publique los archivos tal cual |
+
+## Avisos motivacionales (push)
+
+Los envía GitHub Actions (`.github/workflows/avisos.yml` + `push/enviar.mjs`) cada hora; el script decide el mensaje según la hora de Chile (8, 10, 13, 14, 16, 19 y 21 h).
+Secretos en **Settings → Secrets and variables → Actions**:
+- `VAPID_PRIVATE_KEY`: clave privada de avisos (la pública está en `index.html` y en `push/enviar.mjs`).
+- `PUSH_SUBSCRIPTIONS`: códigos de activación copiados desde la app (Perfil → Avisos motivacionales), uno por línea.
+
+Para probar: pestaña **Actions → Avisos motivacionales → Run workflow**.
+Para cambiar mensajes u horarios: edita `SLOTS` en `push/enviar.mjs`.
+
+## Contenido de Aprende
+
+Lecturas, recetas, enlaces y consejos del día están en `contenido.js`.

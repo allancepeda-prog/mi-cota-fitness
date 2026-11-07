@@ -1,0 +1,34 @@
+name: Avisos motivacionales
+
+on:
+  schedule:
+    # Cada hora entre las 07:00 y las 23:00 de Chile (horario de verano e invierno).
+    # El script decide qué mensaje enviar según la hora de Chile.
+    - cron: "4 10-23 * * *"
+    - cron: "4 0-3 * * *"
+  workflow_dispatch:
+    inputs:
+      mensaje:
+        description: "Escribe 'prueba' para enviar un aviso de prueba ahora"
+        required: false
+        default: "prueba"
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Instalar web-push
+        run: npm install --no-save web-push@3.6.7
+        working-directory: push
+      - name: Enviar aviso
+        working-directory: push
+        env:
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          PUSH_SUBSCRIPTIONS: ${{ secrets.PUSH_SUBSCRIPTIONS }}
+          MENSAJE: ${{ github.event.inputs.mensaje }}
+        run: node enviar.mjs

@@ -172,6 +172,45 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 
 #v-ayuno .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
 
+/* ===== v3.6: aprende, avisos, consejo ===== */
+.avatar{width:38px;height:38px;border-radius:50%;border:0;background:var(--leaf);color:var(--on-accent);font-family:var(--display);font-weight:800;font-size:1rem;flex:none;display:flex;align-items:center;justify-content:center}
+.avatar[aria-current=page]{box-shadow:0 0 0 3px var(--leaf-soft)}
+.appbar-in{gap:10px}
+.appbar-in h1{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.datenav .lbl{min-width:70px}
+.tip{background:linear-gradient(135deg,var(--leaf-soft),var(--surface))}
+.tiptext{margin:0;font-family:var(--display);font-weight:700;font-size:1.12rem;line-height:1.3;text-wrap:balance}
+.streak{font-size:.8rem;font-weight:700;color:var(--citrus);background:var(--citrus-soft);border-radius:999px;padding:3px 10px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--sunk);border-radius:12px;padding:4px;gap:4px;position:sticky;top:calc(58px + env(safe-area-inset-top,0px));z-index:5}
+.segb{border:0;background:none;border-radius:9px;padding:9px 4px;font-weight:700;color:var(--muted)}
+.segb[aria-selected=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.seglist{display:flex;flex-direction:column;gap:14px}
+.list{display:flex;flex-direction:column;gap:10px}
+.lcard{display:flex;flex-direction:column;gap:6px;text-align:left;border:0;width:100%;background:var(--surface);border-radius:var(--r);padding:15px 16px;color:inherit;cursor:pointer}
+.lcard h3{font-size:1.06rem;line-height:1.25}
+.lcard .meta,.art .meta{display:flex;gap:8px;align-items:center;font-size:.78rem;color:var(--muted)}
+.cat{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--leaf);background:var(--leaf-soft);border-radius:999px;padding:2px 9px}
+.cat.r{color:var(--citrus);background:var(--citrus-soft)}
+.rk{margin-left:auto;font-family:var(--display);font-weight:800;color:var(--ink);font-size:1rem}
+.links{display:flex;flex-direction:column}
+.links a{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);text-decoration:none;color:inherit}
+.links a:first-child{border-top:0}
+.links a b{display:block}
+.links a span{font-size:.85rem;color:var(--muted)}
+.links a i{font-style:normal;color:var(--leaf);font-weight:700;white-space:nowrap}
+.art h2{font-size:1.45rem;line-height:1.15}
+.art p{margin:0;line-height:1.6}
+.art .try{background:var(--leaf-soft);border-radius:12px;padding:12px 14px}
+.art .try ul,.art ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.art .src{font-size:.85rem;color:var(--muted)}
+.art .facts4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.art .facts4 div{background:var(--sunk);border-radius:10px;padding:8px 2px}
+.art .facts4 b{display:block;font-family:var(--display);font-size:1.05rem}
+.aicook{gap:10px}
+.pushstate{font-size:.9rem}
+.pushstate b{color:var(--leaf)}
+.codebox{display:flex;flex-direction:column;gap:8px;background:var(--leaf-soft);border-radius:12px;padding:12px}
+.codebox textarea{font-family:ui-monospace,monospace;font-size:.72rem;background:var(--surface)}
 /* ===== v3.5: corregir ayunos ===== */
 .endpanel{display:flex;flex-direction:column;gap:8px;background:var(--citrus-soft);border-radius:12px;padding:12px}
 .history .hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;border:0;background:none;padding:9px 0;border-top:1px solid var(--line);font-size:.92rem;text-align:left;cursor:pointer;color:inherit}
@@ -374,6 +413,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
       <div class="lbl" id="dateLbl">Hoy</div>
       <button id="nextDay" aria-label="Día siguiente">›</button>
     </div>
+    <button class="avatar" id="avatarBtn" aria-label="Perfil y ajustes"><span id="avatarTxt">C</span></button>
   </div>
 </header>
 
@@ -415,6 +455,11 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     </div>
   </section>
 
+  <section class="card tip" id="tipCard">
+    <div class="row spread"><span class="eyebrow">Consejo del día</span><span class="streak num" id="streak" hidden></span></div>
+    <p class="tiptext" id="tipText"></p>
+    <div><button class="btn small ghost" id="tipMore">Leer más ›</button></div>
+  </section>
   <button class="mini" data-goto="ayuno"><span><span class="eyebrow">Ayuno</span><br><b id="fastMini">Sin ayuno activo</b></span><span class="go">Ver ›</span></button>
 
   <section class="card water" aria-label="Agua">
@@ -550,6 +595,37 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
 </div>
 </section>
 
+<!-- ================= APRENDE ================= -->
+<section class="view" id="v-aprende" data-title="Aprende" hidden>
+<div class="wrap">
+  <div class="seg" role="tablist" aria-label="Secciones de Aprende">
+    <button class="segb" data-seg="lecturas" aria-selected="true">Lecturas</button>
+    <button class="segb" data-seg="recetas" aria-selected="false">Recetas</button>
+    <button class="segb" data-seg="enlaces" aria-selected="false">Enlaces</button>
+  </div>
+  <div id="seg-lecturas" class="seglist">
+    <div class="list" id="readList"></div>
+  </div>
+  <div id="seg-recetas" class="seglist" hidden>
+    <section class="card aicook">
+      <div class="row" style="gap:10px;flex-wrap:nowrap;align-items:center"><span class="wic c" style="flex:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2M5.6 5.6l1.4 1.4M3 12h2M18.4 5.6 17 7M21 12h-2"/><circle cx="12" cy="13" r="4"/><path d="M8 20h8"/></svg></span>
+      <div><b>Receta con lo que tienes</b><div class="small-t muted">Escribe qué hay en tu refri y la IA te propone algo sano.</div></div></div>
+      <input type="text" id="cookInput" placeholder="Ej: zapallo italiano, huevos, quesillo">
+      <div class="row"><button class="btn small" id="cookBtn">Crear receta</button></div>
+      <div class="status" id="cookStatus" aria-live="polite"></div>
+    </section>
+    <div class="portion" id="recFilter"></div>
+    <div class="list" id="recList"></div>
+  </div>
+  <div id="seg-enlaces" class="seglist" hidden>
+    <section class="card">
+      <div class="small-t muted">Fuentes confiables para seguir aprendiendo. Se abren en el navegador.</div>
+      <div class="links" id="linkList"></div>
+    </section>
+  </div>
+</div>
+</section>
+
 <!-- ================= PROGRESO ================= -->
 <section class="view" id="v-progreso" data-title="Progreso" hidden>
 <div class="wrap">
@@ -595,6 +671,22 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <div class="small-t muted">"Ejercicio en tu meta" suma a tu meta diaria parte de las calorías que quemas. Sumar 50% es lo más prudente, porque las estimaciones de quema suelen quedar altas.</div>
     <div class="warn" id="goalWarn" hidden>Una meta bajo 1.200 kcal diarias conviene hacerla con supervisión de un médico o nutricionista.</div>
     <div class="row"><button class="btn small" id="saveSettings">Guardar metas</button></div>
+  </section>
+
+  <section class="card" id="pushCard">
+    <h2>Avisos motivacionales</h2>
+    <div class="small-t muted">Mensajes durante el día para tomar agua, registrar tus comidas, moverte y seguir motivada. Llegan aunque la app esté cerrada.</div>
+    <div class="pushstate" id="pushState"></div>
+    <div class="row">
+      <button class="btn" id="pushOn">Activar avisos</button>
+      <button class="btn small ghost" id="pushTest" hidden>Probar un aviso</button>
+      <button class="btn small ghost" id="pushOff" hidden>Desactivar</button>
+    </div>
+    <div id="pushCodeBox" hidden class="codebox">
+      <div class="small-t"><b>Último paso:</b> envía este código a Allan para conectar tu teléfono (solo una vez).</div>
+      <textarea id="pushCode" readonly rows="3"></textarea>
+      <div class="row"><button class="btn small" id="pushCopy">Copiar código</button><a class="btn small ghost" id="pushWa" target="_blank" rel="noopener">Enviar por WhatsApp</a></div>
+    </div>
   </section>
 
   <section class="card" id="remCard">
@@ -671,8 +763,8 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <button class="tab" data-go="hoy" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></svg>Hoy</button>
     <button class="tab" data-go="ayuno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5"/></svg>Ayuno</button>
     <button class="tab fab" data-go="registrar" aria-label="Registrar comida"><span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Registrar</button>
+    <button class="tab" data-go="aprende"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/></svg>Aprende</button>
     <button class="tab" data-go="progreso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/></svg>Progreso</button>
-    <button class="tab" data-go="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>Perfil</button>
   </div>
 </nav>
 
@@ -709,11 +801,14 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     </details>
   </div>
 </div>
+<div class="sheet" id="readSheet" hidden role="dialog" aria-modal="true" aria-label="Lectura">
+  <div class="sheet-inner art" id="readBody"></div>
+</div>
 <div class="update" id="updateBar" hidden><span>Nueva versión disponible</span><button class="btn small" id="updateBtn">Actualizar</button></div>
 <div class="toast" id="toast" hidden></div>
 
+<script src="contenido.js"></script>
 <script>
-
 (() => {
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -901,7 +996,8 @@ function errText(e){
   if (e?.code === "timeout") return "La IA tardó demasiado en responder. Revisa tu conexión (wifi o datos) y toca \"Calcular calorías\" otra vez.";
   if (e?.code === "imgfail") return "No se pudo leer la foto. Prueba sacándola de nuevo o elígela desde la galería.";
   if (e instanceof TypeError) return "Sin conexión a internet.";
-  return "No se pudo completar: " + (e?.message || "error desconocido");
+  const msg = e?.message || (typeof e === "string" ? e : "");
+  return msg ? "No se pudo completar: " + msg : "No se pudo completar. Revisa tu conexión e inténtalo de nuevo.";
 }
 function parseJson(text){
   try { return JSON.parse(text); } catch {}
@@ -921,16 +1017,17 @@ function thinkCfg(m){
   if (v >= 2.5) return { thinkingBudget: 0 };
   return null;
 }
-async function callModel(m, key, parts, signal, noThink){
+async function callModel(m, key, parts, signal, noThink, ms = AI_TIMEOUT){
   const gen = { responseMimeType: "application/json", temperature: 0.4 };
   const tc = noThink ? null : thinkCfg(m); if (tc) gen.thinkingConfig = tc;
-  const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort("timeout"), AI_TIMEOUT);
-  const onAbort = () => ctrl.abort("user"); signal?.addEventListener("abort", onAbort);
+  let timedOut = false;
+  const ctrl = new AbortController(), t = setTimeout(() => { timedOut = true; ctrl.abort(); }, ms);
+  const onAbort = () => ctrl.abort(); signal?.addEventListener("abort", onAbort);
   try {
     const r = await fetch(`${API}/models/${m}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify({ contents: [{ role: "user", parts }], generationConfig: gen }), signal: ctrl.signal });
     if (!r.ok) {
       const e = await apiErr(r);
-      if (r.status === 400 && tc && /think/i.test(e.message)) return callModel(m, key, parts, signal, true);
+      if (r.status === 400 && tc && /think/i.test(e.message)) return callModel(m, key, parts, signal, true, ms);
       throw e;
     }
     const j = await r.json();
@@ -938,21 +1035,24 @@ async function callModel(m, key, parts, signal, noThink){
     if (!out) throw new Error(j.promptFeedback?.blockReason ? "La IA no quiso analizar esta imagen." : "La IA no devolvió respuesta. Inténtalo de nuevo.");
     return parseJson(out);
   } catch (e) {
-    if (e?.name === "AbortError") { if (signal?.aborted) throw e; const te = new Error("timeout"); te.code = "timeout"; throw te; }
+    if (timedOut) { const te = new Error("timeout"); te.code = "timeout"; throw te; }
+    if (signal?.aborted) { const ae = new Error("Detenido"); ae.name = "AbortError"; throw ae; }
+    if (!(e instanceof Error)) { const ue = new Error(String(e || "sin conexión")); throw ue; }
     throw e;
   } finally { clearTimeout(t); signal?.removeEventListener("abort", onAbort); }
 }
-async function gemini(text, imgB64, signal, onStep){
+async function gemini(text, imgB64, signal, onStep, opts = {}){
   const key = getKey(); if (!key) { const e = new Error("nokey"); e.code = "nokey"; throw e; }
   await ensureModel(key);
   const parts = [{ text }];
   if (imgB64) parts.push({ inline_data: { mime_type: "image/jpeg", data: imgB64 } });
-  const models = [S.profile.model, S.profile.fallbackModel].filter((m, i, a) => m && a.indexOf(m) === i);
+  let models = [S.profile.model, S.profile.fallbackModel].filter((m, i, a) => m && a.indexOf(m) === i);
+  if (opts.fast && models.length > 1) models = [models[1], models[0]];
   let last;
   for (let k = 0; k < models.length; k++) {
     const m = models[k];
-    if (k > 0) onStep?.("Probando con un modelo más rápido…");
-    try { return await callModel(m, key, parts, signal); }
+    if (k > 0) onStep?.(opts.fast ? "Probando otro modelo…" : "Probando con un modelo más rápido…");
+    try { return await callModel(m, key, parts, signal, false, k === 0 && models.length > 1 ? 30000 : AI_TIMEOUT); }
     catch (e) {
       if (signal?.aborted) throw e;
       last = e;
@@ -1114,9 +1214,12 @@ Proteína consumida: ${round(t.p)} g. ${fasting}
 ${pref ? "Preferencia: " + pref : ""}
 Prioriza proteína magra, verduras, fibra y grasas saludables; usa ingredientes de supermercados chilenos. Cada opción debe caber en las kcal restantes (si quedan menos de 150, propone snacks livianos).
 Responde SOLO con un arreglo JSON: [{"nombre":"...","kcal":0,"proteina_g":0,"carbohidratos_g":0,"grasa_g":0,"por_que":"una frase","ingredientes":["..."],"preparacion":"1-2 frases"}]`;
-  $("sugBtn").disabled = true; $("sugStatus").textContent = "Pensando opciones…"; $("sugs").innerHTML = "";
+  $("sugBtn").disabled = true; $("sugs").innerHTML = "";
+  let sstep = "Pensando opciones…"; const st0 = Date.now();
+  const stick = () => { $("sugStatus").textContent = `${sstep} ${Math.round((Date.now() - st0) / 1000)} s`; };
+  stick(); const stimer = setInterval(stick, 1000);
   try {
-    let arr = await gemini(prompt, null);
+    let arr = await gemini(prompt, null, null, m => { sstep = m; stick(); }, { fast: true });
     if (!Array.isArray(arr)) arr = arr?.opciones || arr?.sugerencias || Object.values(arr || {}).find(Array.isArray);
     if (!Array.isArray(arr) || !arr.length) { const e = new Error("nojson"); e.code = "nojson"; throw e; }
     S.sugs = arr; $("sugStatus").textContent = "";
@@ -1126,8 +1229,8 @@ Responde SOLO con un arreglo JSON: [{"nombre":"...","kcal":0,"proteina_g":0,"car
       <div class="small-t muted">${esc((s.ingredientes || []).join(" · "))}</div>
       ${s.preparacion ? `<div class="small-t muted">${esc(s.preparacion)}</div>` : ""}
       <div class="row"><button class="btn small ghost" data-sug="${i}">Me lo comí, agregar</button></div></div>`).join("");
-  } catch (e) { $("sugStatus").innerHTML = `<span class="err">${esc(errText(e))}</span>`; }
-  finally { $("sugBtn").disabled = false; }
+  } catch (e) { clearInterval(stimer); $("sugStatus").innerHTML = `<span class="err">${esc(errText(e))}</span>`; }
+  finally { clearInterval(stimer); $("sugBtn").disabled = false; }
 };
 $("sugs").addEventListener("click", e => {
   const i = e.target.closest("[data-sug]")?.dataset.sug; if (i == null) return;
@@ -1425,11 +1528,11 @@ $("productBox").addEventListener("input", e => {
 });
 document.addEventListener("visibilitychange", () => { if (document.hidden && scan.on) closeScanner(); });
 
-function renderAll(){ refreshTitle(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
+function renderAll(){ refreshTitle(); renderAvatar(); renderTip(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.5.1";
-const VIEWS = ["hoy", "ayuno", "registrar", "progreso", "perfil"];
+const APP_VERSION = "3.6.0";
+const VIEWS = ["hoy", "ayuno", "registrar", "aprende", "progreso", "perfil"];
 let cur = null;
 function go(v){
   if (!VIEWS.includes(v)) v = "hoy";
@@ -1448,6 +1551,7 @@ function show(v){
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-current", t.dataset.go === v ? "page" : "false"));
   refreshTitle();
   $("dateNav").hidden = v !== "hoy";
+  $("avatarBtn").setAttribute("aria-current", v === "perfil" ? "page" : "false");
   window.scrollTo(0, 0);
   if (v !== "registrar" && typeof closeScanner === "function" && !$("scanSheet").hidden) closeScanner();
 }
@@ -1594,7 +1698,7 @@ Peso de la persona: ${fmtKg(kg)} kg. Actividad descrita: "${desc}".
 Si no indica duración, asume 30 minutos y dilo en "nota". Si combina varias actividades, súmalas.
 Responde SOLO con JSON: {"nombre":"nombre corto en español","minutos":0,"met":0,"kcal":0,"nota":"una frase breve"}`;
   try {
-    const r = await gemini(prompt, null);
+    const r = await gemini(prompt, null, null, null, { fast: true });
     if (!r || !(+r.kcal > 0)) { const e = new Error("nojson"); e.code = "nojson"; throw e; }
     S.exAi = { name: r.nombre || "Ejercicio", min: round(r.minutos) || 30, met: +r.met || null, kcal: round(r.kcal) };
     $("exAiStatus").textContent = r.nota || "";
@@ -1839,6 +1943,145 @@ $("fastHistory").addEventListener("click", e => {
   }
 });
 $("fastAddPast").onclick = () => { editFast = editFast === "new" ? null : "new"; renderFastHistory(); };
+
+/* ---------- Aprende ---------- */
+const C = window.CONTENIDO || { lecturas: [], recetas: [], enlaces: [], consejos: [] };
+const CATS_R = ["Todas", "Desayuno", "Almuerzo", "Cena", "Snack"];
+let recCat = "Todas";
+function renderAprende(){
+  $("readList").innerHTML = C.lecturas.map(a => `<button class="lcard" data-read="${esc(a.id)}">
+      <span class="meta"><span class="cat">${esc(a.cat)}</span>${a.min} min de lectura</span>
+      <h3>${esc(a.titulo)}</h3><span class="small-t muted">${esc(a.resumen)}</span></button>`).join("");
+  $("recFilter").innerHTML = CATS_R.map(c => `<button class="chip" data-rcat="${c}" aria-pressed="${c === recCat}">${c}</button>`).join("");
+  const rs = C.recetas.filter(r => recCat === "Todas" || r.tipo === recCat);
+  $("recList").innerHTML = rs.map(r => `<button class="lcard" data-rec2="${esc(r.id)}">
+      <span class="meta"><span class="cat r">${esc(r.tipo)}</span>${r.min} min · ${r.porciones} porci${r.porciones > 1 ? "ones" : "ón"}<span class="rk num">${r.kcal} kcal</span></span>
+      <h3>${esc(r.nombre)}</h3></button>`).join("");
+  $("linkList").innerHTML = C.enlaces.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener"><div><b>${esc(l.nombre)}</b><span>${esc(l.de)}</span></div><i>Abrir ↗</i></a>`).join("");
+}
+function openSheet(html){ $("readBody").innerHTML = html; $("readSheet").hidden = false; $("readBody").scrollTop = 0; }
+function closeSheet(){ $("readSheet").hidden = true; }
+const closeBtn = `<div class="row spread"><span></span><button class="btn small ghost" data-close>Cerrar</button></div>`;
+function openRead(id){
+  const a = C.lecturas.find(x => x.id === id); if (!a) return;
+  openSheet(`${closeBtn}<span class="meta"><span class="cat">${esc(a.cat)}</span> ${a.min} min de lectura</span>
+    <h2>${esc(a.titulo)}</h2>${a.cuerpo.map(p => `<p>${esc(p)}</p>`).join("")}
+    <div class="try"><b>Prueba esto</b><ul>${a.prueba.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>
+    ${a.fuente ? `<div class="src">Fuente: <a href="${esc(a.fuente.url)}" target="_blank" rel="noopener">${esc(a.fuente.nombre)} ↗</a></div>` : ""}
+    <div class="src">Información general; no reemplaza la indicación de tu médico o nutricionista.</div>`);
+}
+function recipeHtml(r, ai){
+  const por = r.porciones || 1;
+  return `${closeBtn}<span class="meta"><span class="cat r">${esc(r.tipo || "Receta")}</span> ${r.min ? r.min + " min · " : ""}${por} porci${por > 1 ? "ones" : "ón"}</span>
+    <h2>${esc(r.nombre)}</h2>
+    <div class="facts4 num"><div><b>${round(r.kcal)}</b><span class="small-t muted">kcal</span></div><div><b>${round(r.p)}</b><span class="small-t muted">prot</span></div><div><b>${round(r.c)}</b><span class="small-t muted">carb</span></div><div><b>${round(r.g)}</b><span class="small-t muted">grasa</span></div></div>
+    <div class="small-t muted">Valores aproximados por porción${ai ? ", calculados por IA" : ""}.</div>
+    <div><b>Ingredientes</b><ul style="margin:6px 0 0;padding-left:20px">${(r.ing || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+    <div><b>Preparación</b><ol>${(r.pasos || []).map(x => `<li>${esc(x)}</li>`).join("")}</ol></div>
+    <button class="btn" data-addrec="${ai ? "__ai" : esc(r.id)}">Agregar 1 porción a hoy</button>`;
+}
+function addRecipe(r){
+  addMeal({ id: Date.now().toString(36), name: r.nombre, kcal: round(r.kcal), p: round(r.p), c: round(r.c), f: round(r.g), time: nowTime(), thumb: null });
+  closeSheet(); toast(`${r.nombre} agregado · ${round(r.kcal)} kcal`);
+}
+document.querySelector(".seg").addEventListener("click", e => {
+  const b = e.target.closest("[data-seg]"); if (!b) return;
+  document.querySelectorAll(".segb").forEach(x => x.setAttribute("aria-selected", String(x === b)));
+  ["lecturas", "recetas", "enlaces"].forEach(n => $("seg-" + n).hidden = n !== b.dataset.seg);
+});
+$("v-aprende").addEventListener("click", e => {
+  const r = e.target.closest("[data-read]"); if (r) return openRead(r.dataset.read);
+  const rc = e.target.closest("[data-rec2]"); if (rc) { const x = C.recetas.find(y => y.id === rc.dataset.rec2); if (x) openSheet(recipeHtml(x)); return; }
+  const f = e.target.closest("[data-rcat]"); if (f) { recCat = f.dataset.rcat; renderAprende(); }
+});
+$("readSheet").addEventListener("click", e => {
+  if (e.target.id === "readSheet" || e.target.closest("[data-close]")) return closeSheet();
+  const a = e.target.closest("[data-addrec]"); if (!a) return;
+  const r = a.dataset.addrec === "__ai" ? S.aiRecipe : C.recetas.find(y => y.id === a.dataset.addrec);
+  if (r) addRecipe(r);
+});
+$("cookBtn").onclick = async () => {
+  const have = $("cookInput").value.trim();
+  if (!have) { $("cookStatus").textContent = "Escribe al menos un ingrediente."; return; }
+  if (!getKey()) { $("cookStatus").innerHTML = `<span class="err">Primero configura tu clave gratuita de IA en Perfil.</span>`; return; }
+  const left = round(S.profile.goal - totals(S.day).kcal);
+  const prompt = `Eres un nutricionista chileno. Con estos ingredientes que la persona tiene: "${have}", propone UNA receta saludable, fácil y rápida (máximo 30 minutos), con ingredientes comunes en Chile. Puedes sumar básicos (sal, aceite, limón, especias, cebolla, ajo). Prioriza verduras y proteína, poco aceite, sin frituras. ${left > 150 ? `Idealmente una porción bajo ${Math.min(left, 600)} kcal.` : "Que sea liviana."}
+Responde SOLO con JSON: {"nombre":"...","tipo":"Desayuno|Almuerzo|Cena|Snack","min":0,"porciones":1,"kcal":0,"p":0,"c":0,"g":0,"ing":["..."],"pasos":["..."]} (kcal y macros por porción, en gramos).`;
+  $("cookBtn").disabled = true; const t0 = Date.now(); let step = "Creando tu receta…";
+  const tk = () => { $("cookStatus").textContent = `${step} ${Math.round((Date.now() - t0) / 1000)} s`; }; tk(); const tm = setInterval(tk, 1000);
+  try {
+    const r = await gemini(prompt, null, null, m => { step = m; tk(); }, { fast: true });
+    if (!r || !r.nombre || !Array.isArray(r.pasos)) { const e = new Error("nojson"); e.code = "nojson"; throw e; }
+    S.aiRecipe = r; clearInterval(tm); $("cookStatus").textContent = ""; openSheet(recipeHtml(r, true));
+  } catch (e) { clearInterval(tm); $("cookStatus").innerHTML = `<span class="err">${esc(errText(e))}</span>`; }
+  finally { clearInterval(tm); $("cookBtn").disabled = false; }
+};
+renderAprende();
+
+/* ---------- consejo del día y racha ---------- */
+function renderTip(){
+  const n = C.consejos.length; if (!n) { $("tipCard").hidden = true; return; }
+  const d = new Date(), doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+  const tip = C.consejos[doy % n];
+  $("tipText").textContent = tip.t; $("tipMore").dataset.l = tip.l;
+  let streak = 0;
+  for (let i = 0; i < 365; i++) {
+    const dd = addDays(todayStr(), -i), day = dd === S.day.date ? S.day : loadDay(dd);
+    const has = (day.meals || []).length || (day.exercises || []).length || (day.water || 0) > 0;
+    if (has) streak++; else if (i > 0) break;
+  }
+  $("streak").hidden = streak < 2; $("streak").textContent = `🔥 ${streak} días seguidos`;
+}
+$("tipMore").onclick = () => openRead($("tipMore").dataset.l);
+$("avatarBtn").onclick = () => go("perfil");
+function renderAvatar(){ $("avatarTxt").textContent = ((S.profile.name || "").trim()[0] || "★").toUpperCase(); }
+
+/* ---------- avisos motivacionales (push) ---------- */
+const VAPID_PUBLIC = "BG6Rqm918V3V5RbtzdSrEEhbF5TyJKcbtXROs-sHZ97WrhZy7W2uCZzM8fOzH67fVi6czf-iw4A4rNsCpkPbJOE";
+const b64u = s => { const p = "=".repeat((4 - s.length % 4) % 4), r = atob((s + p).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(r, c => c.charCodeAt(0)); };
+const toCode = sub => btoa(unescape(encodeURIComponent(JSON.stringify(sub)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+async function swReg(){
+  if (!("serviceWorker" in navigator)) return null;
+  return (await navigator.serviceWorker.getRegistration()) || (location.protocol === "https:" ? await navigator.serviceWorker.register("sw.js") : null);
+}
+async function renderPush(){
+  const st = $("pushState"), can = "PushManager" in window && "Notification" in window && "serviceWorker" in navigator;
+  if (!can) { st.textContent = "Este navegador no permite avisos. Usa la app instalada o Chrome."; $("pushOn").hidden = true; return; }
+  const reg = await swReg().catch(() => null), sub = reg ? await reg.pushManager.getSubscription().catch(() => null) : null;
+  const on = !!sub && Notification.permission === "granted";
+  $("pushOn").hidden = on; $("pushTest").hidden = !on; $("pushOff").hidden = !on;
+  if (Notification.permission === "denied") st.innerHTML = `Los avisos están <b style="color:var(--danger)">bloqueados</b>. Actívalos en Ajustes del teléfono → Apps → Mi Cota Fitness → Notificaciones.`;
+  else st.innerHTML = on ? "Avisos <b>activados</b> en este teléfono." : "Aún no activados.";
+  if (on) {
+    const code = toCode(sub.toJSON());
+    $("pushCode").value = code;
+    $("pushWa").href = "https://wa.me/?text=" + encodeURIComponent("Código de avisos Mi Cota Fitness:\n" + code);
+    $("pushCodeBox").hidden = false;
+  } else $("pushCodeBox").hidden = true;
+}
+$("pushOn").onclick = async () => {
+  try {
+    const p = await Notification.requestPermission();
+    if (p !== "granted") { toast("Sin permiso no se pueden mostrar avisos"); return renderPush(); }
+    const reg = await swReg(); if (!reg) { toast("Instala la app para activar los avisos"); return; }
+    await navigator.serviceWorker.ready;
+    await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(VAPID_PUBLIC) });
+    toast("¡Avisos activados!"); renderPush();
+  } catch (e) { toast("No se pudieron activar: " + (e?.message || "error")); }
+};
+$("pushTest").onclick = async () => {
+  const reg = await swReg();
+  reg?.showNotification("¡Así se verán tus avisos! 💪", { body: "Toma un vaso de agua y sigue así. Cada pequeño paso cuenta.", icon: "icon-192.png", badge: "icon-192.png", tag: "prueba", data: { url: "./#hoy" } });
+};
+$("pushOff").onclick = async () => {
+  const reg = await swReg(), sub = await reg?.pushManager.getSubscription(); await sub?.unsubscribe();
+  toast("Avisos desactivados"); renderPush();
+};
+$("pushCopy").onclick = async () => {
+  try { await navigator.clipboard.writeText($("pushCode").value); toast("Código copiado"); }
+  catch { $("pushCode").select(); toast("Selecciona y copia el código"); }
+};
+renderPush();
 
 /* ---------- inicio ---------- */
 S.profile = {...DEF_PROFILE, ...get("profile", {})};
