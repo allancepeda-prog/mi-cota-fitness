@@ -4,6 +4,54 @@
 window.CONTENIDO = {
   lecturas: [
     {
+      id: "fases", cat: "Ciclo", min: 3,
+      titulo: "Tu ciclo en 4 fases",
+      resumen: "Qué pasa en tu cuerpo cada semana y cómo acompañarlo.",
+      cuerpo: [
+        "El ciclo se cuenta desde el primer día de la regla hasta el día antes de la siguiente. En promedio dura unos 28 días, pero entre 21 y 35 días se considera normal en adultas.",
+        "Menstrual (regla): el útero elimina su revestimiento; es común tener menos energía y cólicos. Folicular: sube el estrógeno y muchas mujeres notan más energía y buen ánimo. Ovulatoria: el ovario libera un óvulo, más o menos 14 días antes de la siguiente regla. Lútea: domina la progesterona; pueden aparecer antojos, hinchazón, sueño o cambios de ánimo, sobre todo los días previos a la regla.",
+        "Cada mujer vive su ciclo distinto. Registrar tus síntomas en la app te ayuda a conocer tu propio patrón."
+      ],
+      prueba: ["Registra cómo te sientes 3 días de cada fase.", "Revisa en Ciclo qué fase estás viviendo hoy."],
+      fuente: { nombre: "NIH · Irregularidades menstruales (en inglés)", url: "https://www.nichd.nih.gov/health/topics/menstruation/conditioninfo/irregularities" }
+    },
+    {
+      id: "consultar", cat: "Ciclo", min: 2,
+      titulo: "Cuándo consultar por tu regla",
+      resumen: "Señales que vale la pena conversar con tu ginecóloga.",
+      cuerpo: [
+        "Para la mayoría de las mujeres adultas un ciclo normal dura entre 21 y 35 días, y la regla entre 2 y 7 días. Que varíe unos días de un mes a otro es normal.",
+        "Conviene consultar si tus ciclos son más cortos que 21 días o más largos que 35, si varían mucho de un mes a otro, si la regla dura más de 7 días, si el sangrado es muy abundante (por ejemplo, cambiar toalla o tampón cada 1 a 2 horas), si sangras entre reglas o si el dolor no te deja hacer tu vida normal.",
+        "La app te avisa en Ciclo → Estadísticas cuando tus datos salen de esos rangos, y puedes llevar el informe a tu consulta."
+      ],
+      prueba: ["Abre Ciclo → Informe para tu consulta antes de tu próximo control."],
+      fuente: { nombre: "NIH · Irregularidades menstruales (en inglés)", url: "https://www.nichd.nih.gov/health/topics/menstruation/conditioninfo/irregularities" }
+    },
+    {
+      id: "comerciclo", cat: "Ciclo", min: 3,
+      titulo: "Alimentación según tu ciclo",
+      resumen: "Pequeños ajustes que ayudan en cada fase.",
+      cuerpo: [
+        "Durante la regla se pierde hierro: suma legumbres, carnes magras, huevo y hojas verdes, y acompáñalos con vitamina C (limón, naranja, pimentón) para absorberlo mejor. El agua y las infusiones calientes ayudan con la hinchazón y los cólicos.",
+        "En la fase lútea es común tener más hambre y antojos de dulce. En vez de pelear con ellos, prepárate: carbohidratos integrales, legumbres, frutos secos, palta y un trozo de chocolate amargo aportan saciedad y magnesio. Bajar la sal ayuda a la hinchazón.",
+        "En las fases folicular y ovulatoria muchas mujeres tienen más energía: es buen momento para entrenar fuerza y probar recetas nuevas."
+      ],
+      prueba: ["En tu regla: lentejas con un chorrito de limón.", "Antes de tu regla: deja nueces o yogur listos para los antojos."],
+      fuente: null
+    },
+    {
+      id: "colicos", cat: "Ciclo", min: 2,
+      titulo: "Cólicos: qué ayuda",
+      resumen: "Medidas simples para los días más difíciles.",
+      cuerpo: [
+        "El calor local (guatero o compresa tibia en el abdomen) relaja el útero y alivia muchos cólicos. El movimiento suave, como caminar o estirar, también ayuda, aunque cueste empezar.",
+        "Dormir bien, tomar agua y bajar la cafeína esos días suele hacer diferencia. Si usas analgésicos, pregúntale a tu médico cuál te conviene y desde cuándo tomarlo.",
+        "Si el dolor es tan fuerte que te impide trabajar o hacer tu vida normal, o empeora con los meses, consúltalo: no es algo que debas aguantar."
+      ],
+      prueba: ["Ten un guatero listo para tu próxima regla.", "Registra tus cólicos en Ciclo para ver si se repiten."],
+      fuente: null
+    },
+    {
       id: "plato", cat: "Alimentación", min: 3,
       titulo: "Arma tu plato en 3 partes",
       resumen: "Una regla simple para comer bien sin contar todo.",
@@ -170,8 +218,35 @@ window.CONTENIDO = {
     { nombre: "Recetas saludables", de: "MedlinePlus (Biblioteca de Medicina de EE. UU.)", url: "https://medlineplus.gov/spanish/recetas/" }
   ],
 
+  // Fases del ciclo: textos que aparecen en Ciclo y en Hoy.
+  fases: {
+    menstrual: { nombre: "Menstrual", color: "leaf",
+      que: "Tu cuerpo está en su regla. Es normal sentir menos energía, cólicos o más sensibilidad.",
+      comer: "Suma hierro: legumbres, huevo, carnes magras y hojas verdes, con algo de vitamina C.",
+      mover: "Movimiento suave: caminar, yoga o estiramientos. Escucha a tu cuerpo.",
+      cuidar: "Calor en el abdomen, agua e infusiones tibias. Descansa más si lo necesitas." },
+    folicular: { nombre: "Folicular", color: "water",
+      que: "Sube el estrógeno: muchas mujeres notan más energía, mejor ánimo y más motivación.",
+      comer: "Buen momento para proteína, verduras variadas y probar recetas nuevas.",
+      mover: "Aprovecha para entrenar fuerza o subir la intensidad.",
+      cuidar: "Planifica la semana y deja preparadas comidas sanas para los días de más hambre." },
+    ovulatoria: { nombre: "Ovulatoria", color: "lav",
+      que: "Estás en tus días más fértiles. La energía y la sociabilidad suelen estar en su punto alto.",
+      comer: "Fibra, frutas y verduras: ayudan a tu digestión y a mantener la energía estable.",
+      mover: "Ideal para entrenamientos intensos o algo nuevo, como una clase de baile.",
+      cuidar: "Si no buscas embarazo, recuerda que estas fechas son estimaciones: la app no es un método anticonceptivo." },
+    lutea: { nombre: "Lútea", color: "citrus",
+      que: "Domina la progesterona. Pueden aparecer antojos, hinchazón, sueño o cambios de ánimo, más aún antes de la regla.",
+      comer: "Carbohidratos integrales, legumbres, frutos secos y palta para el magnesio y la saciedad. Menos sal si te hinchas.",
+      mover: "Ejercicio moderado: caminatas, pilates o natación. Bajar la intensidad está bien.",
+      cuidar: "Prioriza el sueño y date espacio: es normal sentirte más sensible estos días." }
+  },
+
   // Consejos cortos: uno distinto cada día en la pantalla Hoy.
   consejos: [
+    { t: "Durante tu regla, el hierro y la vitamina C juntos son buenos aliados.", l: "comerciclo" },
+    { t: "Antes de tu regla, ten a mano snacks sanos para los antojos.", l: "comerciclo" },
+    { t: "Un guatero tibio en el abdomen alivia muchos cólicos.", l: "colicos" },
     { t: "Un vaso de agua al despertar activa tu día y te ayuda a llegar a la meta.", l: "agua" },
     { t: "Llena medio plato con verduras: más volumen, menos calorías.", l: "plato" },
     { t: "Una caminata de 10 minutos después de comer ayuda a tu glicemia.", l: "azucar" },

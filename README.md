@@ -1,6 +1,6 @@
 # Mi Cota Fitness
 
-App personal para contar calorías con foto, registrar ejercicio y estimar las calorías quemadas, llevar el ayuno, el agua y el peso, y recibir sugerencias de comida saludable.
+App personal para llevar el ciclo menstrual (calendario, predicción, síntomas), contar calorías con foto, registrar ejercicio y estimar las calorías quemadas, llevar el ayuno, el agua y el peso, y recibir sugerencias de comida saludable.
 
 **Hecho por Allan Cepeda.**
 
@@ -67,3 +67,9 @@ Para cambiar mensajes u horarios: edita `SLOTS` en `push/enviar.mjs`.
 ## Contenido de Aprende
 
 Lecturas, recetas, enlaces y consejos del día están en `contenido.js`.
+
+## Ciclo menstrual
+
+Pestaña **Ciclo**: calendario con reglas registradas, regla estimada, días fértiles y ovulación (estimaciones: no es método anticonceptivo), registro diario de flujo, síntomas, ánimo y notas, historial editable, estadísticas con alertas (ciclos fuera de 21–35 días, variación > 20 días, reglas > 7 días), avisos en el calendario (regla y pastilla) e informe para la consulta.
+Predicción: promedio de los últimos 6 ciclos (o el valor de Ajustes del ciclo si hay menos de 2); ovulación ≈ 14 días antes de la regla siguiente.
+Los datos del ciclo se guardan solo en el teléfono (dentro de `miplato.profile` → `cycle`) y se incluyen en el respaldo.

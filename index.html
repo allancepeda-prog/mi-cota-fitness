@@ -6,8 +6,8 @@
 <title>Mi Cota Fitness</title>
 <meta name="description" content="Calorías por foto, ejercicio, ayuno, agua, peso y sugerencias saludables. Hecho por Allan Cepeda.">
 <meta name="author" content="Allan Cepeda">
-<meta name="theme-color" content="#eef3ec" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1511" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fbf4f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#160e12" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mi Cota Fitness">
@@ -23,16 +23,18 @@
 <style>
 
 :root{
-  --bg:#eef3ec; --surface:#ffffff; --sunk:#e3eae1; --ink:#16231b; --muted:#5a6a60; --line:#d3ddd3;
-  --leaf:#2c7a4b; --leaf-soft:#d7eadc; --citrus:#c98a0c; --citrus-soft:#f6e6c2; --water:#2370ad; --water-soft:#d6e7f5;
+  --bg:#fbf4f3; --surface:#ffffff; --sunk:#f6e8ea; --ink:#2b1a22; --muted:#7b6170; --line:#eed9de;
+  --leaf:#c03d68; --leaf-soft:#fbe2ea; --citrus:#cf7a24; --citrus-soft:#fbe9d8; --water:#2f7cb6; --water-soft:#ddedf8;
+  --lav:#8466c6; --lav-soft:#ede7f9;
   --danger:#b3392f; --on-accent:#ffffff;
   --display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --r:16px; color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root{
-  --bg:#0e1511; --surface:#17211b; --sunk:#111a15; --ink:#e5eee8; --muted:#97a99d; --line:#2a3830;
-  --leaf:#5cc184; --leaf-soft:#1d3426; --citrus:#efb740; --citrus-soft:#3a2e14; --water:#60a9e3; --water-soft:#16293a;
+  --bg:#160e12; --surface:#21151b; --sunk:#1a1015; --ink:#f6e9ef; --muted:#b99cab; --line:#3b2731;
+  --leaf:#f27aa0; --leaf-soft:#3d1c2a; --citrus:#f1a85e; --citrus-soft:#3a2617; --water:#6cb4e8; --water-soft:#15293a;
+  --lav:#b9a2f2; --lav-soft:#2a2141;
   --danger:#ef7d72; --on-accent:#0e1511; color-scheme:dark }}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -172,6 +174,74 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 
 #v-ayuno .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
 
+/* ===== v3.7: ciclo menstrual ===== */
+.cyhero{align-items:stretch}
+.cyring{position:relative;width:min(230px,66vw);aspect-ratio:1;margin:0 auto}
+.cyring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.cyring circle:last-child{transition:stroke-dashoffset .6s ease}
+.cyring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+.cyring .clock{font-family:var(--display);font-weight:800;font-size:3.2rem;line-height:1;color:var(--leaf)}
+.cyline{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.phase{font-size:.78rem;font-weight:700;border-radius:999px;padding:3px 11px;white-space:nowrap}
+.ph-menstrual{background:var(--leaf-soft);color:var(--leaf)}
+.ph-folicular{background:var(--water-soft);color:var(--water)}
+.ph-ovulatoria{background:var(--lav-soft);color:var(--lav)}
+.ph-lutea{background:var(--citrus-soft);color:var(--citrus)}
+.cyempty{display:flex;flex-direction:column;gap:10px}
+.cyempty b{font-family:var(--display);font-size:1.15rem}
+.cyp{margin:0;line-height:1.5}
+.cytips{display:flex;flex-direction:column;gap:8px}
+.cytips div{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:.92rem;border-top:1px solid var(--line);padding-top:8px}
+.cytips div:first-child{border-top:0;padding-top:0}
+.cytips b{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.calnav{border:0;background:var(--sunk);width:36px;height:36px;border-radius:50%;font-size:1.2rem;color:var(--ink)}
+.calmonth{font-size:1.1rem}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal .dow{font-size:.72rem;font-weight:700;color:var(--muted);padding:4px 0}
+.cd{position:relative;border:0;background:none;aspect-ratio:1;max-width:100%;border-radius:50%;font-variant-numeric:tabular-nums;font-size:.95rem;color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+.cd.fut{color:var(--muted)}
+.cd.per{background:var(--leaf);color:var(--on-accent);font-weight:700}
+.cd.pred{border:2px dashed var(--leaf);color:var(--leaf);font-weight:700}
+.cd.fert{background:var(--lav-soft);color:var(--lav);font-weight:700}
+.cd.ov{box-shadow:inset 0 0 0 2px var(--lav)}
+.cd.per.ov{box-shadow:none}
+.cd.today{outline:2px solid var(--ink);outline-offset:1px}
+.cd .ldot{position:absolute;bottom:3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--citrus)}
+.cd.per .ldot{background:var(--on-accent)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{display:inline-block;width:14px;height:14px;border-radius:50%}
+.lg.per{background:var(--leaf)}
+.lg.pred{border:2px dashed var(--leaf)}
+.lg.fert{background:var(--lav-soft)}
+.lg.ov{box-shadow:inset 0 0 0 2px var(--lav)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.kpis div{background:var(--sunk);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;gap:2px}
+.kpis b{font-family:var(--display);font-size:1.5rem;color:var(--leaf)}
+.kpis span{font-size:.74rem;color:var(--muted);line-height:1.2}
+.cybars{display:flex;gap:8px;align-items:flex-end;height:120px;padding-top:4px}
+.cyb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;height:100%;min-width:0}
+.cyb i{display:block;width:100%;max-width:34px;border-radius:7px 7px 3px 3px;background:var(--leaf);min-height:4px}
+.cyb i.out{background:var(--citrus)}
+.cyb span{font-size:.75rem;font-weight:700}
+.cyb small{font-size:.66rem;color:var(--muted);white-space:nowrap}
+.linkbtn{border:0;background:none;padding:0;color:var(--leaf);font-weight:700;text-decoration:underline;cursor:pointer}
+.switch{display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer}
+.switch input{width:22px;height:22px;accent-color:var(--leaf);flex:none}
+.mini.cy{background:var(--leaf-soft)}
+.mini.cy .go{color:var(--leaf)}
+.mini.pg{background:var(--water-soft)}
+.mini.pg .go{color:var(--water)}
+.cybanner{display:flex;flex-direction:column;gap:3px;background:linear-gradient(135deg,var(--leaf-soft),var(--lav-soft));border-radius:var(--r);padding:12px 16px}
+.cybanner b{font-family:var(--display)}
+.report{white-space:pre-wrap;font-family:var(--body);font-size:.88rem;line-height:1.5;background:var(--sunk);border-radius:12px;padding:12px;margin:0;overflow-x:auto}
+@media print{
+  body.printing > :not(#readSheet){display:none!important}
+  body.printing #readSheet{position:static!important;background:none!important;display:block!important}
+  body.printing .sheet-inner{max-height:none!important;overflow:visible!important;box-shadow:none!important;border-radius:0!important}
+  body.printing .noprint,body.printing [data-close]{display:none!important}
+  body.printing .report{background:none;font-size:12pt}
+}
 /* ===== v3.6: aprende, avisos, consejo ===== */
 .avatar{width:38px;height:38px;border-radius:50%;border:0;background:var(--leaf);color:var(--on-accent);font-family:var(--display);font-weight:800;font-size:1rem;flex:none;display:flex;align-items:center;justify-content:center}
 .avatar[aria-current=page]{box-shadow:0 0 0 3px var(--leaf-soft)}
@@ -236,7 +306,7 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 .install{border:2px solid var(--leaf);background:var(--leaf-soft)}
 .install ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
 /* ===== v3.2: carga y bienvenida ===== */
-#splash{background:radial-gradient(circle at 50% 38%,#3a9a5f 0%,#1f5e39 55%,#123a22 100%);transition:opacity .45s ease,transform .45s ease,visibility .45s}
+#splash{background:radial-gradient(circle at 50% 38%,#d8608a 0%,#8c2a4e 55%,#55162f 100%);transition:opacity .45s ease,transform .45s ease,visibility .45s}
 #splash.out{transform:scale(1.04)}
 #splash .logo{width:120px;height:120px;border-radius:30px;box-shadow:0 0 0 10px rgba(255,255,255,.08),0 0 0 24px rgba(255,255,255,.04),0 18px 40px rgba(0,0,0,.35)}
 #splash .name{font-size:2.1rem;margin-top:14px}
@@ -291,7 +361,7 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 .exout{display:flex;flex-direction:column;gap:2px;background:var(--leaf-soft);border-radius:12px;padding:12px 14px}
 .exout #exKcal{font-family:var(--display);font-weight:800;font-size:1.8rem;color:var(--leaf);line-height:1.1}
 .thumb.ex{background:var(--citrus-soft);color:var(--citrus)}
-:root{--leaf-deep:#1f5e39;--tabh:62px}
+:root{--leaf-deep:#8c2a4e;--tabh:62px}
 html,body{overscroll-behavior-y:none}
 body{padding:0;-webkit-tap-highlight-color:transparent}
 .pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -377,11 +447,12 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
       <div class="whero"><div class="wlogo"><img src="icon-512.png" alt="Logo de Mi Cota Fitness"></div></div>
       <div class="whello">Hola, Carla</div>
       <h2>Bienvenida a<br>Mi Cota Fitness</h2>
-      <p>Una app hecha especialmente para ti, para comer mejor, moverte más y ver tu avance con datos reales.</p>
+      <p>Una app hecha especialmente para ti: tu ciclo, tu alimentación, tu movimiento y tu avance, en un solo lugar.</p>
     </section>
     <section class="wslide">
       <h2>Todo en un solo lugar</h2>
       <ul class="wfeat">
+        <li><span class="wic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.2 4.2 6 7.3 6 11a6 6 0 0 1-12 0c0-3.7 2.8-6.8 6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg></span><div><b>Tu ciclo</b><span>Calendario de tu regla, días fértiles, síntomas y ánimo.</span></div></li>
         <li><span class="wic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div><b>Foto → calorías</b><span>Saca una foto a tu plato o escanea el código de barras.</span></div></li>
         <li><span class="wic c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span><div><b>Ejercicio</b><span>Registra tu actividad y calcula las calorías que quemas.</span></div></li>
         <li><span class="wic w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5"/></svg></span><div><b>Ayuno y agua</b><span>Temporizador de ayuno con avisos y control de vasos de agua.</span></div></li>
@@ -395,6 +466,8 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
         <label for="wName">¿Cómo te llamas?<input type="text" id="wName" autocomplete="given-name" placeholder="Tu nombre" maxlength="30" value="Carla"></label>
         <label for="wKg">Peso actual (kg)<input type="text" id="wKg" inputmode="decimal" placeholder="Ej: 80,5"></label>
         <label for="wGoal">Meta diaria de calorías<input type="number" id="wGoal" inputmode="numeric" min="800" max="5000" step="50" value="2000"></label>
+        <label for="wLast">Primer día de tu última regla (opcional)<input type="date" id="wLast"></label>
+        <label for="wCyc">Tu ciclo dura aprox. (días)<input type="number" id="wCyc" inputmode="numeric" min="18" max="60" value="28"></label>
       </div>
     </section>
   </div>
@@ -460,7 +533,10 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <p class="tiptext" id="tipText"></p>
     <div><button class="btn small ghost" id="tipMore">Leer más ›</button></div>
   </section>
+  <div class="cybanner" id="cyBanner" hidden></div>
+  <button class="mini cy" data-goto="ciclo"><span><span class="eyebrow">Mi ciclo</span><br><b id="cyMini">Registra tu última regla</b></span><span class="go">Ver ›</span></button>
   <button class="mini" data-goto="ayuno"><span><span class="eyebrow">Ayuno</span><br><b id="fastMini">Sin ayuno activo</b></span><span class="go">Ver ›</span></button>
+  <button class="mini pg" data-goto="progreso"><span><span class="eyebrow">Mi progreso</span><br><b>Peso, IMC y calorías de la semana</b></span><span class="go">Ver ›</span></button>
 
   <section class="card water" aria-label="Agua">
     <div class="row spread"><h2>Agua</h2><span class="eyebrow">vaso = 250 ml</span></div>
@@ -487,6 +563,50 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <div class="row"><button class="btn" id="sugBtn">Sugerir comida saludable</button></div>
     <div class="status" id="sugStatus" aria-live="polite"></div>
     <div class="sugs" id="sugs"></div>
+  </section>
+</div>
+</section>
+
+<!-- ================= CICLO ================= -->
+<section class="view" id="v-ciclo" data-title="Mi ciclo" hidden>
+<div class="wrap">
+  <section class="card cyhero" id="cyHero"></section>
+  <section class="card" aria-label="Calendario del ciclo">
+    <div class="row spread"><button class="calnav" id="cyPrev" aria-label="Mes anterior">‹</button><h2 id="cyMonthLbl" class="calmonth"></h2><button class="calnav" id="cyNext" aria-label="Mes siguiente">›</button></div>
+    <div class="cal" id="cyGrid"></div>
+    <div class="legend small-t"><span><i class="lg per"></i>Regla</span><span><i class="lg pred"></i>Regla estimada</span><span><i class="lg fert"></i>Días fértiles</span><span><i class="lg ov"></i>Ovulación</span></div>
+    <div class="row spread" style="flex-wrap:nowrap"><span class="small-t muted">Toca un día para registrar regla, síntomas o ánimo.</span><button class="btn small ghost" id="cyTodayBtn">Hoy</button></div>
+    <div class="small-t muted">Los días fértiles son estimaciones y no sirven como método anticonceptivo.</div>
+  </section>
+  <section class="card" id="cyPhase" hidden></section>
+  <section class="card" id="cyStats" hidden>
+    <div class="row spread"><h2>Estadísticas</h2><button class="btn small ghost" id="cyReport">Informe para tu consulta</button></div>
+    <div id="cyStatsBody" style="display:flex;flex-direction:column;gap:12px"></div>
+  </section>
+  <section class="card">
+    <h2>Historial de reglas</h2>
+    <div class="small-t muted">Toca una regla para corregir sus fechas.</div>
+    <div class="history" id="cyHist"></div>
+    <div><button class="btn small ghost" id="cyAddPast">+ Agregar regla pasada</button></div>
+  </section>
+  <section class="card" id="cyRem">
+    <h2>Avisos del ciclo</h2>
+    <label class="field" for="cyRemDays">Avisarme antes de mi regla
+      <select id="cyRemDays"><option value="1">1 día antes</option><option value="2">2 días antes</option><option value="3">3 días antes</option></select></label>
+    <label class="switch"><input type="checkbox" id="cyPillOn"><span>Recordatorio diario de pastilla anticonceptiva</span></label>
+    <div class="remopts">a las <input type="time" id="cyPillT"></div>
+    <div class="small-t" id="cyRemNext"></div>
+    <div class="row"><button class="btn" id="cyRemIcs">Guardar en mi calendario</button><button class="btn small ghost" id="cyRemOne">Agregar uno por uno</button></div>
+    <div class="remlist" id="cyRemLinks" hidden></div>
+    <details>
+      <summary class="small-t" style="cursor:pointer;font-weight:700">Ajustes del ciclo</summary>
+      <div class="grid2" style="margin-top:10px">
+        <label for="cyLen">Tu ciclo dura (días)<input type="number" id="cyLen" inputmode="numeric" min="18" max="60"></label>
+        <label for="cyPlen">Tu regla dura (días)<input type="number" id="cyPlen" inputmode="numeric" min="2" max="10"></label>
+      </div>
+      <div class="small-t muted" style="margin-top:6px">Se usan mientras no haya historial suficiente. Con 2 o más reglas registradas, la app calcula con tus datos reales.</div>
+    </details>
+    <div class="small-t muted">🔒 Tus datos del ciclo quedan solo en este teléfono: no se envían a ningún servidor.</div>
   </section>
 </div>
 </section>
@@ -761,10 +881,10 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
 <nav class="tabbar pad" aria-label="Navegación principal">
   <div class="tabbar-in">
     <button class="tab" data-go="hoy" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></svg>Hoy</button>
-    <button class="tab" data-go="ayuno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5"/></svg>Ayuno</button>
+    <button class="tab" data-go="ciclo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.2 4.2 6 7.3 6 11a6 6 0 0 1-12 0c0-3.7 2.8-6.8 6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg>Ciclo</button>
     <button class="tab fab" data-go="registrar" aria-label="Registrar comida"><span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Registrar</button>
+    <button class="tab" data-go="ayuno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5"/></svg>Ayuno</button>
     <button class="tab" data-go="aprende"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/></svg>Aprende</button>
-    <button class="tab" data-go="progreso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/></svg>Progreso</button>
   </div>
 </nav>
 
@@ -1210,7 +1330,7 @@ $("sugBtn").onclick = async () => {
   const pref = $("prefInput").value.trim();
   const prompt = `Eres un nutricionista chileno práctico. Sugiere 3 opciones de comida saludable y fácil de preparar para ${momento}.
 Le quedan ${left} kcal de su meta de ${S.profile.goal} kcal hoy. Ya comió: ${(S.day.meals || []).map(m => m.name + " (" + m.kcal + " kcal)").join(", ") || "nada aún"}.
-Proteína consumida: ${round(t.p)} g. ${fasting}
+Proteína consumida: ${round(t.p)} g. ${fasting} ${cyclePrompt()}
 ${pref ? "Preferencia: " + pref : ""}
 Prioriza proteína magra, verduras, fibra y grasas saludables; usa ingredientes de supermercados chilenos. Cada opción debe caber en las kcal restantes (si quedan menos de 150, propone snacks livianos).
 Responde SOLO con un arreglo JSON: [{"nombre":"...","kcal":0,"proteina_g":0,"carbohidratos_g":0,"grasa_g":0,"por_que":"una frase","ingredientes":["..."],"preparacion":"1-2 frases"}]`;
@@ -1528,11 +1648,11 @@ $("productBox").addEventListener("input", e => {
 });
 document.addEventListener("visibilitychange", () => { if (document.hidden && scan.on) closeScanner(); });
 
-function renderAll(){ refreshTitle(); renderAvatar(); renderTip(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
+function renderAll(){ refreshTitle(); renderAvatar(); renderTip(); renderCiclo(); renderCyMini(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.6.0";
-const VIEWS = ["hoy", "ayuno", "registrar", "aprende", "progreso", "perfil"];
+const APP_VERSION = "3.7.0";
+const VIEWS = ["hoy", "ciclo", "registrar", "ayuno", "aprende", "progreso", "perfil"];
 let cur = null;
 function go(v){
   if (!VIEWS.includes(v)) v = "hoy";
@@ -1721,7 +1841,7 @@ function refreshTitle(){
 }
 let wIdx = 0;
 function openWelcome(){
-  $("wName").value = S.profile.name || "Carla"; $("wKg").value = bodyKg() ? fmtKg(bodyKg()) : ""; $("wGoal").value = S.profile.goal;
+  $("wName").value = S.profile.name || "Carla"; $("wLast").max = todayStr(); $("wKg").value = bodyKg() ? fmtKg(bodyKg()) : ""; $("wGoal").value = S.profile.goal;
   $("welcome").hidden = false; requestAnimationFrame(() => wGo(0, false));
 }
 function wGo(i, smooth = true){
@@ -1746,6 +1866,10 @@ function finishWelcome(){
   if (name) S.profile.name = name;
   if (g >= 800 && g <= 5000) S.profile.goal = Math.round(g);
   if (kg) S.profile.weights = [...(S.profile.weights || []).filter(x => x.date !== todayStr()), { date: todayStr(), kg }];
+  const wl = $("wLast").value, wc = +$("wCyc").value, cc = cy();
+  if (wc >= 18 && wc <= 60) cc.len = wc;
+  if (wl && wl <= todayStr() && !sortedPeriods(cc).some(p => p.start === wl)) cc.periods.push({ start: wl, end: dDiff(wl, todayStr()) >= cc.plen ? addDays(wl, cc.plen - 1) : null });
+  S.profile.cycle = normPeriods(cc);
   S.profile.welcomed = true; saveProfile(); renderAll();
   const w = $("welcome"); w.classList.add("out");
   setTimeout(() => { w.hidden = true; w.classList.remove("out"); }, 420);
@@ -2005,7 +2129,7 @@ $("cookBtn").onclick = async () => {
   if (!have) { $("cookStatus").textContent = "Escribe al menos un ingrediente."; return; }
   if (!getKey()) { $("cookStatus").innerHTML = `<span class="err">Primero configura tu clave gratuita de IA en Perfil.</span>`; return; }
   const left = round(S.profile.goal - totals(S.day).kcal);
-  const prompt = `Eres un nutricionista chileno. Con estos ingredientes que la persona tiene: "${have}", propone UNA receta saludable, fácil y rápida (máximo 30 minutos), con ingredientes comunes en Chile. Puedes sumar básicos (sal, aceite, limón, especias, cebolla, ajo). Prioriza verduras y proteína, poco aceite, sin frituras. ${left > 150 ? `Idealmente una porción bajo ${Math.min(left, 600)} kcal.` : "Que sea liviana."}
+  const prompt = `Eres un nutricionista chileno. Con estos ingredientes que la persona tiene: "${have}", propone UNA receta saludable, fácil y rápida (máximo 30 minutos), con ingredientes comunes en Chile. Puedes sumar básicos (sal, aceite, limón, especias, cebolla, ajo). Prioriza verduras y proteína, poco aceite, sin frituras. ${cyclePrompt()} ${left > 150 ? `Idealmente una porción bajo ${Math.min(left, 600)} kcal.` : "Que sea liviana."}
 Responde SOLO con JSON: {"nombre":"...","tipo":"Desayuno|Almuerzo|Cena|Snack","min":0,"porciones":1,"kcal":0,"p":0,"c":0,"g":0,"ing":["..."],"pasos":["..."]} (kcal y macros por porción, en gramos).`;
   $("cookBtn").disabled = true; const t0 = Date.now(); let step = "Creando tu receta…";
   const tk = () => { $("cookStatus").textContent = `${step} ${Math.round((Date.now() - t0) / 1000)} s`; }; tk(); const tm = setInterval(tk, 1000);
@@ -2082,6 +2206,351 @@ $("pushCopy").onclick = async () => {
   catch { $("pushCode").select(); toast("Selecciona y copia el código"); }
 };
 renderPush();
+
+/* ---------- Ciclo menstrual ---------- */
+const CY_DEF = { len: 28, plen: 5, remind: 2, periods: [], days: {}, pill: { on: false, t: "21:00" } };
+function cy(){ const c = S.profile.cycle || {}; return { ...CY_DEF, ...c, periods: [...(c.periods || [])], days: { ...(c.days || {}) }, pill: { ...CY_DEF.pill, ...(c.pill || {}) } }; }
+function saveCy(c){ S.profile.cycle = c; saveProfile(); }
+const dDiff = (a, b) => Math.round((parseYmd(b) - parseYmd(a)) / 864e5);
+const fmtD = (s, o = { weekday: "short", day: "numeric", month: "short" }) => parseYmd(s).toLocaleDateString("es-CL", o);
+const SYMS = ["Cólicos", "Dolor de cabeza", "Hinchazón", "Sensibilidad en mamas", "Acné", "Cansancio", "Antojos", "Dolor de espalda", "Náuseas", "Insomnio", "Flujo"];
+const MOODS = ["Feliz", "Tranquila", "Con energía", "Sensible", "Irritable", "Ansiosa", "Triste", "Estresada"];
+const FLOWS = ["Manchado", "Ligero", "Medio", "Abundante"];
+
+function sortedPeriods(c){ return c.periods.filter(p => p && p.start).sort((a, b) => a.start.localeCompare(b.start)); }
+function effEnd(c, p){
+  if (p.end) return p.end;
+  const auto = addDays(p.start, c.plen - 1), t = todayStr();
+  return auto < t ? auto : (p.start > t ? p.start : t);
+}
+function normPeriods(c){
+  const ps = sortedPeriods(c), out = [];
+  for (const p of ps) {
+    const last = out[out.length - 1];
+    if (last && dDiff(effEnd(c, last), p.start) <= 1) {
+      const e1 = effEnd(c, last), e2 = effEnd(c, p);
+      last.end = (p.end || last.end) ? (e1 > e2 ? e1 : e2) : null;
+    } else out.push({ start: p.start, end: p.end || null });
+  }
+  c.periods = out; return c;
+}
+function cycleStats(c){
+  const ps = sortedPeriods(c), lens = [];
+  for (let i = 1; i < ps.length; i++) { const L = dDiff(ps[i - 1].start, ps[i].start); if (L >= 15 && L <= 90) lens.push({ L, start: ps[i - 1].start }); }
+  const rec = lens.slice(-6).map(x => x.L);
+  const avg = rec.length ? Math.round(rec.reduce((a, b) => a + b, 0) / rec.length) : c.len;
+  const pl = ps.filter(p => p.end).map(p => dDiff(p.start, p.end) + 1).filter(x => x >= 1 && x <= 15).slice(-6);
+  const pavg = pl.length ? Math.round(pl.reduce((a, b) => a + b, 0) / pl.length) : c.plen;
+  const varr = rec.length >= 2 ? Math.max(...rec) - Math.min(...rec) : null;
+  return { ps, lens, rec, avg: Math.min(60, Math.max(18, avg)), pavg: Math.min(10, Math.max(2, pavg)), varr, pl };
+}
+function phaseOf(day, L, P){
+  const O = L - 14;
+  if (day <= P) return "menstrual";
+  if (day < O - 1) return "folicular";
+  if (day <= O + 1) return "ovulatoria";
+  return "lutea";
+}
+function cycleNow(c){
+  const st = cycleStats(c), t = todayStr(), last = st.ps[st.ps.length - 1];
+  if (!last) return { st, none: true };
+  const L = st.avg, P = st.pavg, day = dDiff(last.start, t) + 1;
+  const inP = t >= last.start && t <= effEnd(c, last) && (last.end || day <= P);
+  const next = addDays(last.start, L);
+  const late = !inP && next <= t ? dDiff(next, t) : 0;
+  const base = late > 0 ? addDays(t, 1) : next;
+  const until = late > 0 ? 0 : dDiff(t, next);
+  const ph = inP ? "menstrual" : (late > 0 ? "lutea" : phaseOf(day, L, P));
+  const ov = addDays(last.start, L - 14);
+  return { st, last, L, P, day, inP, next, late, base, until, ph, ov, ongoing: inP && !last.end };
+}
+function cycleMarks(c, from, to){
+  const m = {}, mk = (d, k) => { if (d < from || d > to) return; (m[d] = m[d] || {})[k] = 1; };
+  const now = cycleNow(c); if (now.none) return m;
+  const t = todayStr();
+  for (const p of now.st.ps) { const e = effEnd(c, p); for (let d = p.start; d <= e; d = addDays(d, 1)) mk(d, "per"); }
+  if (now.ongoing) for (let d = addDays(t, 1); d <= addDays(now.last.start, now.P - 1); d = addDays(d, 1)) mk(d, "pred");
+  const starts = [now.last.start]; for (let k = 0; k < 6; k++) starts.push(addDays(now.base, k * now.L));
+  starts.forEach((s, i) => {
+    if (i > 0) for (let j = 0; j < now.P; j++) { const d = addDays(s, j); if (d > t) mk(d, "pred"); }
+    const ov = addDays(s, now.L - 14);
+    if (i === 0 && now.late > 0) return;
+    for (let j = -5; j <= 1; j++) mk(addDays(ov, j), "fert");
+    mk(ov, "ov");
+  });
+  for (const d in c.days) { const x = c.days[d]; if (x && ((x.s || []).length || (x.m || []).length || x.n)) mk(d, "log"); }
+  return m;
+}
+function setPeriodDay(c, d, on){
+  let ps = sortedPeriods(c);
+  const hit = ps.find(p => d >= p.start && d <= effEnd(c, p));
+  if (on) {
+    if (hit) return c;
+    const after = ps.find(p => { const e = effEnd(c, p); return d > e && dDiff(e, d) <= 2; });
+    const before = ps.find(p => d < p.start && dDiff(d, p.start) <= 2);
+    if (after) after.end = d;
+    else if (before) before.start = d;
+    else ps.push({ start: d, end: d < todayStr() && dDiff(d, todayStr()) >= c.plen ? addDays(d, c.plen - 1) : null });
+  } else if (hit) {
+    const e = effEnd(c, hit);
+    if (d === hit.start && d === e) ps = ps.filter(p => p !== hit);
+    else if (d === hit.start) { hit.start = addDays(d, 1); if (!hit.end) hit.end = e; }
+    else hit.end = addDays(d, -1);
+  }
+  c.periods = ps; return normPeriods(c);
+}
+
+let cyMonth = null, cyEdit = null;
+function renderCiclo(){
+  const c = cy(), now = cycleNow(c), F = C.fases || {};
+  // Encabezado
+  if (now.none) {
+    $("cyHero").innerHTML = `<div class="cyempty"><b>Empieza registrando tu última regla</b>
+      <span class="small-t muted">Con el primer día de tu última regla la app calcula cuándo llega la próxima, tus días fértiles y en qué fase estás.</span>
+      <label class="field" for="cyFirst">Primer día de tu última regla<input type="date" id="cyFirst" max="${todayStr()}"></label>
+      <div class="row"><button class="btn" id="cyFirstSave">Guardar</button><button class="btn ghost" id="cyToday">Me llegó hoy</button></div></div>`;
+  } else {
+    const f = F[now.ph] || {}, frac = Math.min(1, now.day / now.L), Cc = 603.2;
+    let big, sub, line;
+    if (now.inP) { big = `Día ${now.day}`; sub = "de tu regla"; line = now.ongoing ? `Termina aprox. ${fmtD(addDays(now.last.start, now.P - 1))}` : "Regla registrada"; }
+    else if (now.late > 0) { big = `${now.late}`; sub = now.late === 1 ? "día de atraso" : "días de atraso"; line = `Se esperaba el ${fmtD(now.next)}`; }
+    else { big = `${now.until}`; sub = now.until === 1 ? "día para tu regla" : "días para tu regla"; line = `Próxima regla ≈ ${fmtD(now.next)}`; }
+    $("cyHero").innerHTML = `<div class="cyring">
+        <svg viewBox="0 0 220 220" aria-hidden="true"><circle cx="110" cy="110" r="96" fill="none" style="stroke:var(--leaf-soft)" stroke-width="16"/>
+        <circle cx="110" cy="110" r="96" fill="none" style="stroke:var(--${now.inP ? "leaf" : f.color || "leaf"})" stroke-width="16" stroke-linecap="round" stroke-dasharray="${Cc}" stroke-dashoffset="${Cc * (1 - frac)}"/></svg>
+        <div class="center"><span class="eyebrow">Ciclo · día ${now.day}</span><span class="clock num">${big}</span><span class="small-t muted">${sub}</span></div>
+      </div>
+      <div class="cyline"><span class="phase ph-${now.ph}">Fase ${esc(f.nombre || now.ph)}</span><span class="small-t muted">${esc(line)}</span></div>
+      ${now.late >= 7 ? `<div class="warn small-t">Los atrasos pueden deberse a estrés, cambios de peso o de rutina. Si existe la posibilidad de embarazo, un test sale de la duda; si se repite o te preocupa, coméntalo con tu ginecóloga.</div>` : ""}
+      <div class="row fast-actions">${now.ongoing ? `<button class="btn" id="cyEnd">Terminó mi regla</button>` : (!now.inP ? `<button class="btn" id="cyStart">Me llegó la regla</button>` : "")}<button class="btn ghost" id="cyLogToday">Registrar cómo me siento</button></div>`;
+  }
+  // Fase
+  if (!now.none && F[now.ph]) {
+    const f = F[now.ph];
+    $("cyPhase").hidden = false;
+    $("cyPhase").innerHTML = `<div class="row spread"><h2>Fase ${esc(f.nombre)}</h2><span class="phase ph-${now.ph}">día ${now.day}</span></div>
+      <p class="cyp">${esc(f.que)}</p>
+      <div class="cytips"><div><b>Comer</b><span>${esc(f.comer)}</span></div><div><b>Moverte</b><span>${esc(f.mover)}</span></div><div><b>Cuidarte</b><span>${esc(f.cuidar)}</span></div></div>
+      <div><button class="btn small ghost" data-readc="${now.ph === "menstrual" ? "colicos" : "fases"}">Leer más ›</button></div>`;
+  } else $("cyPhase").hidden = true;
+  renderCal(c, now);
+  renderCyStats(c, now);
+  renderCyHistory(c);
+  renderCyRem(c, now);
+}
+function renderCal(c, now){
+  const t = todayStr(); if (!cyMonth) cyMonth = t.slice(0, 7);
+  const [y, mo] = cyMonth.split("-").map(Number), first = new Date(y, mo - 1, 1), days = new Date(y, mo, 0).getDate();
+  const lead = (first.getDay() + 6) % 7, from = ymd(first), to = ymd(new Date(y, mo - 1, days));
+  const marks = cycleMarks(c, from, to);
+  const ml = first.toLocaleDateString("es-CL", { month: "long", year: "numeric" }).replace(" de ", " ");
+  $("cyMonthLbl").textContent = ml.charAt(0).toUpperCase() + ml.slice(1);
+  let h = ["L", "M", "M", "J", "V", "S", "D"].map(d => `<span class="dow">${d}</span>`).join("");
+  for (let i = 0; i < lead; i++) h += `<span></span>`;
+  for (let d = 1; d <= days; d++) {
+    const ds = `${cyMonth}-${pad(d)}`, k = marks[ds] || {};
+    const cls = ["cd", k.per ? "per" : "", !k.per && k.pred ? "pred" : "", !k.per && !k.pred && k.fert ? "fert" : "", k.ov ? "ov" : "", ds === t ? "today" : "", ds > t ? "fut" : ""].filter(Boolean).join(" ");
+    h += `<button class="${cls}" data-cday="${ds}" aria-label="${fmtD(ds, { day: "numeric", month: "long" })}${k.per ? ", regla" : k.pred ? ", regla estimada" : k.ov ? ", ovulación estimada" : k.fert ? ", día fértil estimado" : ""}">${d}${k.log ? '<i class="ldot"></i>' : ""}</button>`;
+  }
+  $("cyGrid").innerHTML = h;
+}
+function renderCyStats(c, now){
+  if (now.none) { $("cyStats").hidden = true; return; }
+  $("cyStats").hidden = false;
+  const st = now.st, alerts = [];
+  if (st.rec.length >= 2 && (st.avg < 21 || st.avg > 35)) alerts.push("Tus ciclos están fuera del rango habitual de 21 a 35 días.");
+  if (st.varr !== null && st.varr > 20) alerts.push("Tus ciclos varían más de 20 días entre sí.");
+  if (st.pl.length >= 2 && st.pavg > 7) alerts.push("Tus reglas suelen durar más de 7 días.");
+  const since = addDays(todayStr(), -90), cnt = {};
+  for (const d in c.days) if (d >= since) (c.days[d].s || []).forEach(x => cnt[x] = (cnt[x] || 0) + 1);
+  const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const lens = st.lens.slice(-6), mx = Math.max(40, ...lens.map(x => x.L));
+  $("cyStatsBody").innerHTML = `<div class="kpis num">
+      <div><b>${st.avg}</b><span>días de ciclo${st.rec.length ? "" : " (estimado)"}</span></div>
+      <div><b>${st.pavg}</b><span>días de regla${st.pl.length ? "" : " (estimado)"}</span></div>
+      <div><b>${st.varr ?? "–"}</b><span>días de variación</span></div></div>
+    ${lens.length ? `<div class="cybars">${lens.map(x => `<div class="cyb"><span class="num">${x.L}</span><i style="height:${Math.round(x.L / mx * 100)}%" class="${x.L < 21 || x.L > 35 ? "out" : ""}"></i><small>${fmtD(x.start, { day: "numeric", month: "short" })}</small></div>`).join("")}</div>
+      <div class="small-t muted">Largo de tus últimos ciclos. La franja normal es de 21 a 35 días.</div>` : `<div class="small-t muted">Cuando registres dos o más reglas verás aquí el largo real de tus ciclos.</div>`}
+    ${top.length ? `<div class="small-t"><b>Síntomas más frecuentes (90 días):</b> ${top.map(([k, v]) => `${esc(k)} (${v})`).join(", ")}</div>` : ""}
+    ${alerts.length ? `<div class="warn small-t">${alerts.map(esc).join(" ")} Vale la pena comentarlo con tu ginecóloga. <button class="linkbtn" data-readc="consultar">Saber más</button></div>` : ""}`;
+}
+function renderCyHistory(c){
+  const ps = sortedPeriods(c).reverse().slice(0, 12);
+  const editor = p => `<div class="hedit">
+      <label>Primer día<input type="date" id="pStart" value="${p ? p.start : addDays(todayStr(), -30)}" max="${todayStr()}"></label>
+      <label>Último día<input type="date" id="pEnd" value="${p ? effEnd(c, p) : addDays(todayStr(), -26)}" max="${todayStr()}"></label>
+      <div class="row"><button class="btn small" id="pSave">Guardar</button>${p ? '<button class="btn small ghost" id="pDel">Eliminar</button>' : ""}<button class="btn small ghost" id="pCancel">Cancelar</button></div></div>`;
+  let h = cyEdit === "new" ? editor(null) : "";
+  h += ps.map((p, i) => { const e = effEnd(c, p), n = dDiff(p.start, e) + 1; return `<button class="hrow" data-pi="${i}">
+      <span class="when"><span>${esc(fmtD(p.start))}</span><small class="num">${p.end ? `hasta ${esc(fmtD(e))}` : "en curso o estimada"}</small></span>
+      <span class="num"><b>${n} día${n > 1 ? "s" : ""}</b><span class="edit">Editar</span></span></button>${cyEdit === i ? editor(p) : ""}`; }).join("");
+  $("cyHist").innerHTML = h || `<div class="muted small-t">Aún no hay reglas registradas.</div>`;
+  $("cyHist").dataset.order = JSON.stringify(ps.map(p => p.start));
+}
+function renderCyRem(c, now){
+  $("cyRemDays").value = String(c.remind); $("cyPillOn").checked = c.pill.on; $("cyPillT").value = c.pill.t;
+  $("cyLen").value = c.len; $("cyPlen").value = c.plen;
+  $("cyPillT").disabled = !c.pill.on;
+  const nx = now.none ? null : now.base;
+  $("cyRemNext").innerHTML = nx ? `Próximo aviso: <b>${esc(fmtD(addDays(nx, -c.remind)))}</b> (regla estimada ${esc(fmtD(nx))}).` : "Registra tu última regla para activar los avisos.";
+  $("cyRemIcs").disabled = !nx && !c.pill.on;
+}
+
+/* Hoja para registrar un día */
+function openDay(d){
+  const c = cy(), x = c.days[d] || {}, now = cycleNow(c);
+  const isPer = !now.none && sortedPeriods(c).some(p => d >= p.start && d <= effEnd(c, p));
+  const chips = (arr, sel, attr) => arr.map(v => `<button class="chip" ${attr}="${esc(v)}" aria-pressed="${(sel || []).includes(v)}">${esc(v)}</button>`).join("");
+  openSheet(`${closeBtn}<span class="meta"><span class="cat">${d === todayStr() ? "Hoy" : esc(fmtD(d, { weekday: "long" }))}</span></span>
+    <h2>${esc(fmtD(d, { day: "numeric", month: "long", year: "numeric" }))}</h2>
+    <label class="switch"><input type="checkbox" id="dPer" ${isPer ? "checked" : ""} ${d > todayStr() ? "disabled" : ""}><span>Tuve regla este día</span></label>
+    <div id="dFlowBox" ${isPer ? "" : "hidden"}><b class="small-t">Flujo</b><div class="portion" style="margin-top:6px">${FLOWS.map(v => `<button class="chip" data-flow="${v}" aria-pressed="${x.f === v}">${v}</button>`).join("")}</div></div>
+    <div><b class="small-t">Síntomas</b><div class="portion" style="margin-top:6px">${chips(SYMS, x.s, "data-sym")}</div></div>
+    <div><b class="small-t">Ánimo</b><div class="portion" style="margin-top:6px">${chips(MOODS, x.m, "data-mood")}</div></div>
+    <label class="field" for="dNote">Notas<textarea id="dNote" rows="2" placeholder="Algo que quieras recordar de este día">${esc(x.n || "")}</textarea></label>
+    <button class="btn" data-dsave="${d}">Guardar</button>
+    <div class="src">Tus datos del ciclo quedan solo en este teléfono.</div>`);
+}
+$("readSheet").addEventListener("click", e => {
+  const ch = e.target.closest("[data-sym],[data-mood]"); if (ch) { ch.setAttribute("aria-pressed", String(ch.getAttribute("aria-pressed") !== "true")); return; }
+  const fl = e.target.closest("[data-flow]"); if (fl) { const on = fl.getAttribute("aria-pressed") !== "true"; document.querySelectorAll("[data-flow]").forEach(b => b.setAttribute("aria-pressed", "false")); fl.setAttribute("aria-pressed", String(on)); return; }
+  const sv = e.target.closest("[data-dsave]"); if (!sv) return;
+  const d = sv.dataset.dsave; let c = cy();
+  const pick = a => [...document.querySelectorAll(`[${a}][aria-pressed=true]`)].map(b => b.getAttribute(a));
+  const f = (document.querySelector("[data-flow][aria-pressed=true]") || {}).dataset?.flow || null;
+  const rec = { f: $("dPer").checked ? f : null, s: pick("data-sym"), m: pick("data-mood"), n: $("dNote").value.trim().slice(0, 300) };
+  if (rec.f || rec.s.length || rec.m.length || rec.n) c.days[d] = rec; else delete c.days[d];
+  const wasPer = sortedPeriods(c).some(p => d >= p.start && d <= effEnd(c, p));
+  if ($("dPer").checked !== wasPer) c = setPeriodDay(c, d, $("dPer").checked);
+  saveCy(c); closeSheet(); renderCiclo(); renderCyMini(); toast("Guardado");
+});
+$("readSheet").addEventListener("change", e => { if (e.target.id === "dPer") $("dFlowBox").hidden = !e.target.checked; });
+
+/* Eventos de la vista Ciclo */
+$("v-ciclo").addEventListener("click", e => {
+  const id = e.target.id;
+  const day = e.target.closest("[data-cday]"); if (day) return openDay(day.dataset.cday);
+  const rd = e.target.closest("[data-readc]"); if (rd) return openRead(rd.dataset.readc);
+  if (id === "cyPrev" || id === "cyNext") { const [y, m] = cyMonth.split("-").map(Number), d = new Date(y, m - 1 + (id === "cyNext" ? 1 : -1), 1); cyMonth = ymd(d).slice(0, 7); return renderCal(cy(), cycleNow(cy())); }
+  if (id === "cyTodayBtn") { cyMonth = null; return renderCal(cy(), cycleNow(cy())); }
+  if (id === "cyStart" || id === "cyToday") { let c = setPeriodDay(cy(), todayStr(), true); saveCy(c); renderCiclo(); renderCyMini(); toast("Regla registrada. ¡Cuídate mucho! 🌸"); return; }
+  if (id === "cyFirstSave") {
+    const v = $("cyFirst").value; if (!v || v > todayStr()) { toast("Elige una fecha de hoy o anterior"); return; }
+    let c = cy(); c.periods.push({ start: v, end: dDiff(v, todayStr()) >= c.plen ? addDays(v, c.plen - 1) : null }); saveCy(normPeriods(c)); renderCiclo(); renderCyMini(); toast("¡Listo! Ya puedo estimar tu próxima regla"); return;
+  }
+  if (id === "cyEnd") { const c = cy(), ps = sortedPeriods(c), l = ps[ps.length - 1]; if (l) { l.end = todayStr(); c.periods = ps; saveCy(normPeriods(c)); } renderCiclo(); renderCyMini(); toast("Fin de la regla registrado"); return; }
+  if (id === "cyLogToday") return openDay(todayStr());
+  if (id === "cyReport") return openReport();
+  const hr = e.target.closest("[data-pi]");
+  if (hr) { const i = +hr.dataset.pi; cyEdit = cyEdit === i ? null : i; return renderCyHistory(cy()); }
+  if (id === "cyAddPast") { cyEdit = cyEdit === "new" ? null : "new"; return renderCyHistory(cy()); }
+  if (id === "pCancel") { cyEdit = null; return renderCyHistory(cy()); }
+  if (id === "pSave" || id === "pDel") {
+    let c = cy(); const order = JSON.parse($("cyHist").dataset.order || "[]");
+    const orig = cyEdit === "new" ? null : order[cyEdit];
+    if (id === "pDel") {
+      const b = e.target; if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "¿Seguro?"; setTimeout(() => { if (b.isConnected) { b.dataset.armed = ""; b.textContent = "Eliminar"; } }, 3000); return; }
+      c.periods = c.periods.filter(p => p.start !== orig);
+    } else {
+      const s = $("pStart").value, en = $("pEnd").value;
+      if (!s || !en || en < s) { toast("El último día debe ser igual o posterior al primero"); return; }
+      if (dDiff(s, en) > 14) { toast("Una regla no debería durar más de 15 días; revisa las fechas"); return; }
+      if (orig) c.periods = c.periods.filter(p => p.start !== orig);
+      c.periods.push({ start: s, end: en });
+    }
+    saveCy(normPeriods(c)); cyEdit = null; renderCiclo(); renderCyMini(); toast(id === "pDel" ? "Regla eliminada" : "Regla guardada");
+  }
+});
+$("v-ciclo").addEventListener("change", e => {
+  const c = cy();
+  if (e.target.id === "cyRemDays") c.remind = +e.target.value;
+  if (e.target.id === "cyPillOn") c.pill.on = e.target.checked;
+  if (e.target.id === "cyPillT" && /^\d{2}:\d{2}$/.test(e.target.value)) c.pill.t = e.target.value;
+  if (e.target.id === "cyLen" && +e.target.value >= 18 && +e.target.value <= 60) c.len = +e.target.value;
+  if (e.target.id === "cyPlen" && +e.target.value >= 2 && +e.target.value <= 10) c.plen = +e.target.value;
+  saveCy(c); renderCiclo(); renderCyMini();
+});
+
+/* Recordatorios de regla y pastilla en el calendario */
+function cyEvents(){
+  const c = cy(), now = cycleNow(c), ev = [];
+  if (!now.none) for (let k = 0; k < 6; k++) {
+    const s = addDays(now.base, k * now.L), r = addDays(s, -c.remind);
+    if (r >= todayStr()) ev.push({ id: "regla-" + s, title: "🌸 Se acerca tu regla", desc: `Tu regla podría llegar alrededor del ${fmtD(s, { day: "numeric", month: "long" })}. Ten todo listo y cuídate.`, date: r, time: "09:00" });
+  }
+  if (c.pill.on) ev.push({ id: "pastilla", title: "💊 Toma tu pastilla", desc: "Recordatorio diario de Mi Cota Fitness.", date: todayStr(), time: c.pill.t, rrule: "FREQ=DAILY" });
+  return ev;
+}
+function gcalOne(x){
+  const [h, m] = x.time.split(":").map(Number), st = parseYmd(x.date); st.setHours(h, m, 0, 0);
+  const en = new Date(st.getTime() + 10 * 60000);
+  const p = new URLSearchParams({ action: "TEMPLATE", text: x.title, details: x.desc, dates: `${icsLocal(st)}/${icsLocal(en)}` });
+  if (x.rrule) p.set("recur", "RRULE:" + x.rrule);
+  try { p.set("ctz", Intl.DateTimeFormat().resolvedOptions().timeZone); } catch {}
+  return "https://calendar.google.com/calendar/render?" + p.toString();
+}
+$("cyRemIcs").onclick = () => {
+  const ev = cyEvents(); if (!ev.length) return;
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, ""), e2 = t => t.replace(/([,;\\])/g, "\\$1");
+  const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//MiCotaFitness//ES", "CALSCALE:GREGORIAN"];
+  ev.forEach(x => { const [h, m] = x.time.split(":").map(Number), st = parseYmd(x.date); st.setHours(h, m, 0, 0);
+    L.push("BEGIN:VEVENT", `UID:micota-${x.id}@micotafitness`, `DTSTAMP:${stamp}`, `DTSTART:${icsLocal(st)}`, "DURATION:PT10M", ...(x.rrule ? [`RRULE:${x.rrule}`] : []),
+      `SUMMARY:${e2(x.title)}`, `DESCRIPTION:${e2(x.desc)}`, "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${e2(x.title)}`, "TRIGGER:PT0M", "END:VALARM", "END:VEVENT"); });
+  L.push("END:VCALENDAR");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([L.join("\r\n")], { type: "text/calendar" })); a.download = "avisos-ciclo-mi-cota-fitness.ics";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast("Archivo descargado: ábrelo y confirma \"Importar\"");
+};
+$("cyRemOne").onclick = () => {
+  const ev = cyEvents(); if (!ev.length) { toast("Registra tu última regla primero"); return; }
+  $("cyRemLinks").innerHTML = ev.map(x => `<div><span>${esc(x.title)} · ${x.rrule ? "todos los días " + x.time : esc(fmtD(x.date))}</span><a class="btn small" href="${esc(gcalOne(x))}" target="_blank" rel="noopener">Agregar</a></div>`).join("");
+  $("cyRemLinks").hidden = false;
+};
+
+/* Informe para la consulta */
+function reportText(){
+  const c = cy(), now = cycleNow(c); if (now.none) return "";
+  const st = now.st, ps = st.ps.slice(-7), lines = [];
+  lines.push(`Informe de ciclo menstrual — ${S.profile.name || ""}`.trim(), `Generado el ${fmtD(todayStr(), { day: "numeric", month: "long", year: "numeric" })} con Mi Cota Fitness`, "");
+  lines.push(`Ciclo promedio: ${st.avg} días${st.rec.length ? ` (rango ${Math.min(...st.rec)}–${Math.max(...st.rec)}, ${st.rec.length} ciclos)` : " (estimado)"}`);
+  lines.push(`Duración promedio de la regla: ${st.pavg} días`, `Última regla: ${fmtD(now.last.start, { day: "numeric", month: "long", year: "numeric" })}`, "");
+  lines.push("Reglas registradas:");
+  ps.forEach((p, i) => { const e = effEnd(c, p), nx = ps[i + 1]; const nd = dDiff(p.start, e) + 1; lines.push(`• ${fmtD(p.start, { day: "numeric", month: "short", year: "numeric" })}: ${nd} día${nd > 1 ? "s" : ""} de regla${nx ? `, ciclo de ${dDiff(p.start, nx.start)} días` : ""}`); });
+  const since = addDays(todayStr(), -90), cnt = {}, notes = [];
+  for (const d of Object.keys(c.days).sort()) if (d >= since) { (c.days[d].s || []).forEach(x => cnt[x] = (cnt[x] || 0) + 1); if (c.days[d].n) notes.push(`• ${fmtD(d, { day: "numeric", month: "short" })}: ${c.days[d].n}`); }
+  const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
+  lines.push("", "Síntomas registrados (últimos 90 días):", top.length ? top.map(([k, v]) => `• ${k}: ${v} día${v > 1 ? "s" : ""}`).join("\n") : "• Sin síntomas registrados");
+  if (notes.length) lines.push("", "Notas:", ...notes.slice(-8));
+  return lines.join("\n");
+}
+function openReport(){
+  const t = reportText(); if (!t) { toast("Registra al menos una regla para generar el informe"); return; }
+  openSheet(`${closeBtn}<span class="meta"><span class="cat">Ciclo</span></span><h2>Informe para tu consulta</h2>
+    <pre class="report" id="repText">${esc(t)}</pre>
+    <div class="row noprint"><button class="btn" id="repCopy">Copiar</button><button class="btn ghost" id="repPrint">Imprimir o guardar PDF</button></div>
+    <div class="src noprint">Muéstralo en tu control o envíalo por correo o WhatsApp.</div>`);
+}
+document.addEventListener("click", async e => {
+  if (e.target.id === "repCopy") { try { await navigator.clipboard.writeText($("repText").textContent); toast("Informe copiado"); } catch { toast("Mantén presionado el texto para copiarlo"); } }
+  if (e.target.id === "repPrint") { document.body.classList.add("printing"); window.print(); setTimeout(() => document.body.classList.remove("printing"), 500); }
+});
+
+/* Mini tarjeta en Hoy + contexto para la IA */
+function renderCyMini(){
+  const c = cy(), now = cycleNow(c), F = C.fases || {};
+  if (now.none) { $("cyMini").textContent = "Registra tu última regla · toca para empezar"; $("cyBanner").hidden = true; return; }
+  const f = F[now.ph] || {};
+  $("cyMini").textContent = now.inP ? `Regla · día ${now.day}` : now.late > 0 ? `Atraso de ${now.late} día${now.late > 1 ? "s" : ""} · fase ${f.nombre}` : `Día ${now.day} · fase ${f.nombre} · regla en ${now.until} día${now.until === 1 ? "" : "s"}`;
+  const soon = !now.inP && now.late === 0 && now.until <= Math.max(1, c.remind);
+  $("cyBanner").hidden = !soon;
+  if (soon) $("cyBanner").innerHTML = `<b>🌸 Tu regla podría llegar ${now.until === 0 ? "hoy" : now.until === 1 ? "mañana" : `en ${now.until} días`}</b><span class="small-t">Ten a mano lo que necesites y anota tus síntomas en Ciclo.</span>`;
+}
+function cyclePrompt(){
+  const c = cy(), now = cycleNow(c); if (now.none) return "";
+  const map = { menstrual: "está con su regla: prioriza hierro (legumbres, carnes magras, hojas verdes) con vitamina C y opciones reconfortantes", folicular: "está en fase folicular, con más energía: buen momento para proteína y verduras variadas", ovulatoria: "está en fase ovulatoria: prioriza fibra, frutas y verduras", lutea: "está en fase lútea (premenstrual), con más hambre y antojos posibles: incluye opciones saciadoras con magnesio y fibra (legumbres, frutos secos, palta, cacao amargo) y poca sal" };
+  return `Contexto del ciclo: la persona ${map[now.ph]}.`;
+}
+
 
 /* ---------- inicio ---------- */
 S.profile = {...DEF_PROFILE, ...get("profile", {})};
