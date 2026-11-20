@@ -174,6 +174,15 @@ hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 
 #v-ayuno .btn:not(.ghost){background:var(--citrus);color:var(--on-accent)}
 
+/* ===== v3.8: reloj Samsung ===== */
+.watch{background:linear-gradient(135deg,var(--water-soft),var(--surface))}
+.wtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.wtiles div{background:var(--surface);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.wtiles b{font-family:var(--display);font-size:1.3rem;color:var(--water);line-height:1.1}
+.wtiles span{font-size:.74rem;color:var(--muted)}
+.wtiles small{font-size:.66rem;color:var(--muted)}
+.cyb i.wst{background:var(--water)}
+.cyb i.wsl{background:var(--lav)}
 /* ===== v3.7: ciclo menstrual ===== */
 .cyhero{align-items:stretch}
 .cyring{position:relative;width:min(230px,66vw);aspect-ratio:1;margin:0 auto}
@@ -528,6 +537,11 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     </div>
   </section>
 
+  <section class="card watch" id="watchCard" hidden>
+    <div class="row spread"><span class="eyebrow">⌚ Tu reloj</span><button class="btn small ghost" data-goto="perfil">Actualizar</button></div>
+    <div class="wtiles" id="watchTiles"></div>
+    <div class="small-t muted" id="watchAge"></div>
+  </section>
   <section class="card tip" id="tipCard">
     <div class="row spread"><span class="eyebrow">Consejo del día</span><span class="streak num" id="streak" hidden></span></div>
     <p class="tiptext" id="tipText"></p>
@@ -749,6 +763,13 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
 <!-- ================= PROGRESO ================= -->
 <section class="view" id="v-progreso" data-title="Progreso" hidden>
 <div class="wrap">
+  <section class="card" id="watchWeek" hidden>
+    <div class="row spread"><h2>Reloj · 7 días</h2><span class="small-t muted num" id="watchWeekAvg"></span></div>
+    <div class="small-t" style="font-weight:700">Pasos</div>
+    <div class="cybars" id="watchSteps"></div>
+    <div class="small-t" style="font-weight:700">Sueño (horas)</div>
+    <div class="cybars" id="watchSleep"></div>
+  </section>
   <section class="card" aria-label="Últimos 7 días">
     <div class="row spread"><h2>Calorías · 7 días</h2><span class="small-t muted num" id="weekAvg"></span></div>
     <div class="week" id="week"></div>
@@ -791,6 +812,21 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <div class="small-t muted">"Ejercicio en tu meta" suma a tu meta diaria parte de las calorías que quemas. Sumar 50% es lo más prudente, porque las estimaciones de quema suelen quedar altas.</div>
     <div class="warn" id="goalWarn" hidden>Una meta bajo 1.200 kcal diarias conviene hacerla con supervisión de un médico o nutricionista.</div>
     <div class="row"><button class="btn small" id="saveSettings">Guardar metas</button></div>
+  </section>
+
+  <section class="card" id="watchSet">
+    <h2>Reloj Samsung</h2>
+    <div class="small-t muted">Trae a la app los datos de tu Galaxy Watch guardados en Samsung Health: pasos, sueño, ritmo cardiaco, ejercicios y peso.</div>
+    <ol class="small-t muted" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">
+      <li>En <b>Samsung Health</b> toca <b>⋮ → Ajustes → Descargar datos personales → Descargar</b> y confirma con tu cuenta Samsung.</li>
+      <li>Espera a que termine; puede tardar varios minutos. Los archivos quedan en <b>Mis archivos → Descargas → Samsung Health</b>, o te llegan como ZIP por correo.</li>
+      <li>Toca <b>Importar datos del reloj</b> y elige el ZIP, o selecciona los archivos .csv de esa carpeta (puedes elegir varios).</li>
+    </ol>
+    <div class="row"><label class="btn" for="watchInput">Importar datos del reloj</label><button class="btn small ghost" id="watchClear" hidden>Quitar datos del reloj</button></div>
+    <input type="file" id="watchInput" accept=".zip,.csv,application/zip,text/csv" multiple hidden>
+    <div class="small-t" id="watchImportStatus" aria-live="polite"></div>
+    <div class="small-t muted" id="watchStatus"></div>
+    <div class="small-t muted">Los archivos se leen en tu teléfono y no se envían a ningún servidor. Repite la importación cuando quieras actualizar, por ejemplo una vez por semana. Los ejercicios del reloj se suman solos a tus calorías del día.</div>
   </section>
 
   <section class="card" id="pushCard">
@@ -1648,10 +1684,10 @@ $("productBox").addEventListener("input", e => {
 });
 document.addEventListener("visibilitychange", () => { if (document.hidden && scan.on) closeScanner(); });
 
-function renderAll(){ refreshTitle(); renderAvatar(); renderTip(); renderCiclo(); renderCyMini(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
+function renderAll(){ refreshTitle(); renderAvatar(); renderTip(); renderCiclo(); renderCyMini(); renderWatch(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.7.0";
+const APP_VERSION = "3.8.0";
 const VIEWS = ["hoy", "ciclo", "registrar", "ayuno", "aprende", "progreso", "perfil"];
 let cur = null;
 function go(v){
@@ -1760,7 +1796,7 @@ function renderExercises(){
   $("exList").innerHTML = xs.length ? xs.map(e => `
     <div class="meal">
       <div class="thumb ex">${esc((e.name || "?").charAt(0))}</div>
-      <div class="info"><b>${esc(e.name)}</b><span class="small-t muted num">${esc(e.time || "")} · ${round(e.min)} min${e.met ? " · MET " + e.met : ""}</span></div>
+      <div class="info"><b>${esc(e.name)}</b><span class="small-t muted num">${esc(e.time || "")} · ${round(e.min)} min${e.met ? " · MET " + e.met : ""}${e.src === "reloj" ? " · ⌚" + (e.hr ? " " + e.hr + " lpm" : "") + (e.km ? " · " + String(e.km).replace(".", ",") + " km" : "") : ""}</span></div>
       <div><div class="k num">−${round(e.kcal)} kcal</div><button class="del" data-exdel="${esc(e.id)}">Quitar</button></div>
     </div>`).join("")
     : `<div class="empty">Sin ejercicio registrado. Agrega una caminata, pesas, bici o lo que hayas hecho.</div>`;
@@ -2551,6 +2587,160 @@ function cyclePrompt(){
   return `Contexto del ciclo: la persona ${map[now.ph]}.`;
 }
 
+
+/* ---------- Reloj Samsung (importar desde Samsung Health) ---------- */
+const EXTYPE = { 1001: "Caminata", 1002: "Carrera", 11007: "Bicicleta", 13001: "Senderismo" };
+function parseCSV(text){
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ",") { row.push(f); f = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+    else f += ch;
+  }
+  if (f !== "" || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
+function shTable(text){
+  const rows = parseCSV(text).filter(r => r.length > 1);
+  let hi = rows.findIndex((r, i) => i < 4 && r.some(h => /(^|\.)(start_time|day_time)$/.test(h.trim())));
+  if (hi < 0) return [];
+  const H = rows[hi].map(h => h.trim().split(".").pop());
+  return rows.slice(hi + 1).map(r => { const o = {}; H.forEach((h, i) => { const v = (r[i] ?? "").trim(); if (o[h] === undefined || o[h] === "") o[h] = v; }); return o; });
+}
+function shWall(v, off){
+  if (v == null || v === "") return null;
+  const ms = /^\d{11,}$/.test(v) ? +v : Date.parse(String(v).trim().replace(" ", "T") + (/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? "" : "Z"));
+  if (isNaN(ms)) return null;
+  const m = /UTC([+-])(\d{2})(\d{2})/.exec(off || "");
+  const offMin = m ? (m[1] === "-" ? -1 : 1) * (+m[2] * 60 + +m[3]) : -new Date(ms).getTimezoneOffset();
+  return new Date(ms + offMin * 60000);
+}
+const wDate = d => d.toISOString().slice(0, 10), wTime = d => d.toISOString().slice(11, 16);
+function dayOf(v){ if (v == null || v === "") return null; const ms = /^\d{11,}$/.test(v) ? +v : Date.parse(String(v).replace(" ", "T") + "Z"); return isNaN(ms) ? null : new Date(ms).toISOString().slice(0, 10); }
+
+function shKind(name){
+  const n = name.toLowerCase().split("/").pop();
+  if (!n.endsWith(".csv")) return null;
+  if (/step_daily_trend\.\d/.test(n)) return "trend";
+  if (/pedometer_day_summary\.\d/.test(n)) return "pedo";
+  if (/(shealth|health)\.exercise\.\d/.test(n)) return "exercise";
+  if (/(shealth|health)\.sleep\.\d/.test(n)) return "sleep";
+  if (/tracker\.heart_rate\.\d|health\.heart_rate\.\d/.test(n)) return "hr";
+  if (/health\.weight\.\d/.test(n)) return "weight";
+  return null;
+}
+async function readWatchFiles(files){
+  const out = [];
+  for (const f of files) {
+    if (/\.zip$/i.test(f.name) || f.type === "application/zip") {
+      if (!window.JSZip) await loadScript("jszip.min.js").catch(() => { throw new Error("no se pudo abrir el ZIP; prueba eligiendo los archivos .csv"); });
+      const z = await JSZip.loadAsync(f);
+      for (const name of Object.keys(z.files)) { const k = shKind(name); if (k && !z.files[name].dir) out.push({ kind: k, text: await z.files[name].async("string") }); }
+    } else { const k = shKind(f.name); if (k) out.push({ kind: k, text: await f.text() }); }
+  }
+  return out;
+}
+function importWatch(parts){
+  const since = addDays(todayStr(), -90), steps = {}, trendAll = {}, sleep = {}, sleepSeen = new Set(), hr = {}, ex = [], wts = {};
+  for (const p of parts) {
+    const rows = shTable(p.text);
+    for (const r of rows) {
+      if (p.kind === "trend" || p.kind === "pedo") {
+        const d = dayOf(r.day_time); const n = +(r.count || r.step_count || 0);
+        if (!d || d < since || !(n > 0)) continue;
+        if (p.kind === "trend" && String(r.source_type) === "-2") trendAll[d] = Math.max(trendAll[d] || 0, n);
+        else steps[d] = Math.max(steps[d] || 0, n);
+      } else if (p.kind === "sleep") {
+        const s = shWall(r.start_time, r.time_offset), e = shWall(r.end_time, r.time_offset);
+        if (!s || !e || e <= s) continue; const d = wDate(e); if (d < since) continue;
+        const key = r.start_time + "|" + r.end_time; if (sleepSeen.has(key)) continue; sleepSeen.add(key);
+        sleep[d] = (sleep[d] || 0) + Math.round((e - s) / 60000);
+      } else if (p.kind === "hr") {
+        const s = shWall(r.start_time, r.time_offset), v = +(r.heart_rate || 0);
+        if (!s || !(v > 25 && v < 230)) continue; const d = wDate(s); if (d < since) continue;
+        const h = hr[d] = hr[d] || { sum: 0, n: 0, min: 999, max: 0 };
+        h.sum += v; h.n++; h.min = Math.min(h.min, +(r.min || v)); h.max = Math.max(h.max, +(r.max || v));
+      } else if (p.kind === "exercise") {
+        const s = shWall(r.start_time, r.time_offset); if (!s) continue; const d = wDate(s); if (d < since) continue;
+        const e = shWall(r.end_time, r.time_offset), min = Math.round(+(r.duration || 0) / 60000) || (e ? Math.round((e - s) / 60000) : 0);
+        if (!(min > 0)) continue;
+        ex.push({ d, id: "w" + (Date.parse(r.start_time.replace(" ", "T") + "Z") || r.start_time), name: `${EXTYPE[+r.exercise_type] || "Ejercicio"} (reloj)`, min, kcal: Math.round(+(r.calorie || r.total_calorie || 0)), time: wTime(s), hr: Math.round(+(r.mean_heart_rate || 0)) || null, km: +(r.distance || 0) ? Math.round(+r.distance / 100) / 10 : null });
+      } else if (p.kind === "weight") {
+        const s = shWall(r.start_time, r.time_offset), kg = +(r.weight || 0); if (!s || !(kg > 25 && kg < 350)) continue;
+        const d = wDate(s); if (d >= since) wts[d] = Math.round(kg * 10) / 10;
+      }
+    }
+  }
+  Object.assign(steps, trendAll);
+  const w = S.profile.watch || {};
+  const merge = (a, b) => { const o = { ...(a || {}), ...b }; for (const k of Object.keys(o)) if (k < since) delete o[k]; return o; };
+  const hrOut = {}; for (const [d, h] of Object.entries(hr)) hrOut[d] = { avg: Math.round(h.sum / h.n), min: h.min, max: h.max };
+  w.steps = merge(w.steps, steps); w.sleep = merge(w.sleep, sleep); w.hr = merge(w.hr, hrOut); w.last = new Date().toISOString();
+  // ejercicios del reloj dentro de cada día
+  let nEx = 0;
+  for (const x of ex) {
+    const day = x.d === S.day.date ? S.day : loadDay(x.d);
+    day.exercises = day.exercises || [];
+    if (day.exercises.some(y => y.id === x.id)) continue;
+    day.exercises.push({ id: x.id, name: x.name, min: x.min, kcal: x.kcal, time: x.time, src: "reloj", hr: x.hr, km: x.km }); nEx++;
+    if (day === S.day) saveDay(); else put("day-" + x.d, day);
+  }
+  // peso: solo días sin registro manual
+  let nW = 0; const ws = S.profile.weights || [];
+  for (const [d, kg] of Object.entries(wts)) if (!ws.some(x => x.date === d)) { ws.push({ date: d, kg, src: "reloj" }); nW++; }
+  S.profile.weights = ws; S.profile.watch = w; saveProfile();
+  return { steps: Object.keys(steps).length, sleep: Object.keys(sleep).length, hr: Object.keys(hrOut).length, ex: nEx, w: nW, files: parts.length };
+}
+
+function renderWatch(){
+  const w = S.profile.watch;
+  if (!w || !w.last) { $("watchCard").hidden = true; $("watchWeek").hidden = true; $("watchStatus").textContent = "Aún no has importado datos del reloj."; $("watchClear").hidden = true; return; }
+  const ds = Object.keys(w.steps || {}).sort(), last = ds[ds.length - 1];
+  const dsl = Object.keys(w.sleep || {}).sort(), lastS = dsl[dsl.length - 1];
+  const dh = Object.keys(w.hr || {}).sort(), lastH = dh[dh.length - 1];
+  $("watchStatus").innerHTML = `Última importación: <b>${esc(new Date(w.last).toLocaleString("es-CL", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}</b> · datos hasta el ${esc(last ? fmtD(last, { day: "numeric", month: "short" }) : "–")}.`;
+  $("watchClear").hidden = false;
+  // Tarjeta en Hoy
+  const tile = (v, l, sub) => `<div><b class="num">${v}</b><span>${l}</span>${sub ? `<small>${sub}</small>` : ""}</div>`;
+  const today = todayStr(), stepD = w.steps?.[S.date] != null ? S.date : last;
+  $("watchCard").hidden = false;
+  $("watchTiles").innerHTML =
+    tile(stepD ? (w.steps[stepD] || 0).toLocaleString("es-CL") : "–", "pasos", stepD && stepD !== today ? fmtD(stepD, { day: "numeric", month: "short" }) : "") +
+    tile(lastS ? `${Math.floor(w.sleep[lastS] / 60)} h ${pad(w.sleep[lastS] % 60)}` : "–", "de sueño", lastS ? fmtD(lastS, { day: "numeric", month: "short" }) : "") +
+    tile(lastH ? w.hr[lastH].avg : "–", "lpm promedio", lastH ? `${w.hr[lastH].min}–${w.hr[lastH].max}` : "");
+  const age = last ? dDiff(last, today) : 99;
+  $("watchAge").textContent = age > 1 ? `Datos de hace ${age} días: importa de nuevo para actualizar.` : "Importado desde tu reloj Samsung.";
+  // Progreso: 7 días de pasos y sueño
+  $("watchWeek").hidden = false;
+  const days = []; for (let i = 6; i >= 0; i--) days.push(addDays(today, -i));
+  const mx = Math.max(10000, ...days.map(d => w.steps?.[d] || 0)), my = Math.max(540, ...days.map(d => w.sleep?.[d] || 0));
+  const bars = (fn, max, cls, lbl) => days.map(d => { const v = fn(d); return `<div class="cyb"><span class="num">${v ? lbl(v) : ""}</span><i class="${cls}" style="height:${v ? Math.max(3, Math.round(v / max * 100)) : 2}%"></i><small>${DAYS[parseYmd(d).getDay()]}</small></div>`; }).join("");
+  $("watchSteps").innerHTML = bars(d => w.steps?.[d] || 0, mx, "wst", v => v >= 1000 ? (v / 1000).toFixed(1).replace(".", ",") + "k" : v);
+  $("watchSleep").innerHTML = bars(d => w.sleep?.[d] || 0, my, "wsl", v => (v / 60).toFixed(1).replace(".", ","));
+  const sv = days.map(d => w.steps?.[d]).filter(Boolean), sl = days.map(d => w.sleep?.[d]).filter(Boolean);
+  $("watchWeekAvg").textContent = [sv.length ? `${Math.round(sv.reduce((a, b) => a + b, 0) / sv.length).toLocaleString("es-CL")} pasos/día` : "", sl.length ? `${(sl.reduce((a, b) => a + b, 0) / sl.length / 60).toFixed(1).replace(".", ",")} h de sueño` : ""].filter(Boolean).join(" · ");
+}
+$("watchInput").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = ""; if (!files.length) return;
+  $("watchImportStatus").textContent = "Leyendo archivos…";
+  try {
+    const parts = await readWatchFiles(files);
+    if (!parts.length) { $("watchImportStatus").innerHTML = `<span class="err">No encontré datos de Samsung Health en esos archivos. Elige el ZIP o los archivos .csv que empiezan con "com.samsung".</span>`; return; }
+    const r = importWatch(parts);
+    $("watchImportStatus").innerHTML = `<span style="color:var(--leaf)">Listo: ${r.steps} días de pasos, ${r.sleep} noches de sueño, ${r.hr} días de ritmo cardiaco, ${r.ex} ejercicio${r.ex === 1 ? "" : "s"} nuevo${r.ex === 1 ? "" : "s"} y ${r.w} registro${r.w === 1 ? "" : "s"} de peso.</span>`;
+    renderAll(); toast("Datos del reloj importados ⌚");
+  } catch (err) { $("watchImportStatus").innerHTML = `<span class="err">No se pudieron leer los archivos: ${esc(err?.message || "error")}.</span>`; }
+};
+$("watchClear").onclick = () => {
+  const b = $("watchClear");
+  if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "¿Seguro? Toca de nuevo"; setTimeout(() => { b.dataset.armed = ""; b.textContent = "Quitar datos del reloj"; }, 3000); return; }
+  delete S.profile.watch; S.profile.weights = (S.profile.weights || []).filter(x => x.src !== "reloj"); saveProfile();
+  try { for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k.startsWith(P + "day-")) { const d = JSON.parse(localStorage.getItem(k)); if ((d.exercises || []).some(x => x.src === "reloj")) { d.exercises = d.exercises.filter(x => x.src !== "reloj"); localStorage.setItem(k, JSON.stringify(d)); } } } } catch {}
+  S.day = loadDay(S.date); b.dataset.armed = ""; b.textContent = "Quitar datos del reloj"; renderAll(); toast("Datos del reloj quitados");
+};
 
 /* ---------- inicio ---------- */
 S.profile = {...DEF_PROFILE, ...get("profile", {})};
