@@ -73,9 +73,3 @@ Lecturas, recetas, enlaces y consejos del día están en `contenido.js`.
 Pestaña **Ciclo**: calendario con reglas registradas, regla estimada, días fértiles y ovulación (estimaciones: no es método anticonceptivo), registro diario de flujo, síntomas, ánimo y notas, historial editable, estadísticas con alertas (ciclos fuera de 21–35 días, variación > 20 días, reglas > 7 días), avisos en el calendario (regla y pastilla) e informe para la consulta.
 Predicción: promedio de los últimos 6 ciclos (o el valor de Ajustes del ciclo si hay menos de 2); ovulación ≈ 14 días antes de la regla siguiente.
 Los datos del ciclo se guardan solo en el teléfono (dentro de `miplato.profile` → `cycle`) y se incluyen en el respaldo.
-
-## Reloj Samsung (Galaxy Watch)
-
-Perfil → **Reloj Samsung** importa la exportación de Samsung Health (Ajustes → Descargar datos personales): el ZIP completo o los `.csv`.
-Lee pasos (`step_daily_trend` / `pedometer_day_summary`), sueño (`shealth.sleep`), ritmo cardiaco (`tracker.heart_rate`), ejercicios (`shealth.exercise`) y peso (`health.weight`) de los últimos 90 días.
-Los ejercicios se suman al día (marcados ⌚, sin duplicar al reimportar) y el peso solo se agrega en días sin registro manual. Todo se procesa en el teléfono; `jszip.min.js` (MIT) abre el ZIP.

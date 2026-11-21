@@ -1,9 +1,9 @@
 // Mi Cota Fitness — service worker
 // Para publicar una actualización: cambia VERSION (y APP_VERSION en index.html), sube los archivos.
 // La app mostrará "Nueva versión disponible · Actualizar".
-const VERSION = "3.8.0";
+const VERSION = "3.8.1";
 const CACHE = "miplato-" + VERSION;
-const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./logo.svg", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png", "./contenido.js", "./jszip.min.js"];
+const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./logo.svg", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png", "./contenido.js"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: "reload" })))));
