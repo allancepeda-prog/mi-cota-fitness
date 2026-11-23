@@ -536,7 +536,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
   <div class="cybanner" id="cyBanner" hidden></div>
   <button class="mini cy" data-goto="ciclo"><span><span class="eyebrow">Mi ciclo</span><br><b id="cyMini">Registra tu última regla</b></span><span class="go">Ver ›</span></button>
   <button class="mini" data-goto="ayuno"><span><span class="eyebrow">Ayuno</span><br><b id="fastMini">Sin ayuno activo</b></span><span class="go">Ver ›</span></button>
-  <button class="mini pg" data-goto="progreso"><span><span class="eyebrow">Mi progreso</span><br><b>Peso, IMC y calorías de la semana</b></span><span class="go">Ver ›</span></button>
+  <button class="mini pg" data-goto="aprende"><span><span class="eyebrow">Aprende</span><br><b>Recetas sanas y lecturas</b></span><span class="go">Ver ›</span></button>
   <section class="card" aria-label="Peso de hoy">
     <div class="row spread"><h2>Peso</h2><span class="small-t muted num" id="qwLast"></span></div>
     <div class="row">
@@ -891,7 +891,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
     <button class="tab" data-go="ciclo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.2 4.2 6 7.3 6 11a6 6 0 0 1-12 0c0-3.7 2.8-6.8 6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg>Ciclo</button>
     <button class="tab fab" data-go="registrar" aria-label="Registrar comida"><span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Registrar</button>
     <button class="tab" data-go="ayuno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5"/></svg>Ayuno</button>
-    <button class="tab" data-go="aprende"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/></svg>Aprende</button>
+    <button class="tab" data-go="progreso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/></svg>Progreso</button>
   </div>
 </nav>
 
@@ -1663,8 +1663,8 @@ document.addEventListener("visibilitychange", () => { if (document.hidden && sca
 function renderAll(){ refreshTitle(); renderAvatar(); renderTip(); renderCiclo(); renderCyMini(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.8.2";
-const VIEWS = ["hoy", "ciclo", "registrar", "ayuno", "aprende", "progreso", "perfil"];
+const APP_VERSION = "3.8.3";
+const VIEWS = ["hoy","ciclo","registrar","ayuno","progreso","aprende","perfil"];
 let cur = null;
 function go(v){
   if (!VIEWS.includes(v)) v = "hoy";
