@@ -140,6 +140,17 @@ details.card summary{cursor:pointer;font-family:var(--display);font-weight:700;f
 details.card summary::-webkit-details-marker{display:none}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid2 label,.field{display:flex;flex-direction:column;gap:4px;font-size:.86rem;color:var(--muted)}
+.plangrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.pm{border-radius:14px;padding:10px 8px;text-align:center}
+.pm b{display:block;font-family:var(--display);font-weight:800;font-size:1.35rem;line-height:1.1}
+.pm span{font-size:.75rem;font-weight:700}
+.pkcal{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pkcal b{font-family:var(--display);font-weight:800;font-size:2.2rem;color:var(--leaf);line-height:1}
+.pfacts{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:.86rem}
+.pfacts div{display:flex;justify-content:space-between;gap:6px;border-bottom:1px dashed var(--line);padding:3px 0}
+.chips2{display:flex;flex-wrap:wrap;gap:6px}
+.chips2 button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font-weight:700;font-size:.85rem}
+.chips2 button[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:var(--on-accent)}
 .warn{background:var(--citrus-soft);color:var(--ink);border-radius:10px;padding:8px 10px;font-size:.88rem}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.92rem;z-index:20;max-width:calc(100% - 32px)}
 .note{font-size:.8rem;color:var(--muted);text-align:center}
@@ -524,6 +535,7 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
         <div class="macro"><div class="row spread small-t"><span>Proteína</span><span class="num muted" id="mP">0 / 0 g</span></div><div class="bar"><i id="bP" style="background:var(--leaf)"></i></div></div>
         <div class="macro"><div class="row spread small-t"><span>Carbohidratos</span><span class="num muted" id="mC">0 / 0 g</span></div><div class="bar"><i id="bC" style="background:var(--citrus)"></i></div></div>
         <div class="macro"><div class="row spread small-t"><span>Grasas</span><span class="num muted" id="mF">0 / 0 g</span></div><div class="bar"><i id="bF" style="background:var(--water)"></i></div></div>
+        <button class="linkbtn small-t" id="planLink" style="align-self:flex-start">Calcular mi plan de calorías y macros ›</button>
       </div>
     </div>
   </section>
@@ -782,6 +794,30 @@ main{padding-top:6px;padding-bottom:calc(var(--tabh) + 34px + env(safe-area-inse
 <!-- ================= PERFIL ================= -->
 <section class="view" id="v-perfil" data-title="Perfil" hidden>
 <div class="wrap">
+  <section class="card" id="planCard">
+    <div><span class="eyebrow">Según tu cuerpo y tu objetivo</span><h2>Mi plan de calorías y macros</h2></div>
+    <div class="grid2">
+      <label for="plSex">Sexo<select id="plSex"><option value="f">Mujer</option><option value="m">Hombre</option></select></label>
+      <label for="plAge">Edad (años)<input type="number" id="plAge" inputmode="numeric" min="14" max="99" placeholder="ej: 38"></label>
+      <label for="plHeight">Estatura (cm)<input type="number" id="plHeight" inputmode="numeric" min="100" max="230" placeholder="ej: 160"></label>
+      <label for="plKg">Peso actual (kg)<input type="text" id="plKg" inputmode="decimal" placeholder="ej: 72,5"></label>
+    </div>
+    <div class="field">¿Cuánto te mueves en el día?
+      <select id="plAct">
+        <option value="1.2">Poco (casi sin ejercicio)</option>
+        <option value="1.375">Ligero (ejercicio 1–3 días)</option>
+        <option value="1.55">Moderado (3–5 días)</option>
+        <option value="1.725">Mucho (intenso 6–7 días)</option>
+      </select></div>
+    <div class="field">Tu objetivo<div class="chips2" id="plGoal">
+      <button data-v="lose" aria-pressed="true">Bajar de peso</button><button data-v="keep" aria-pressed="false">Mantener</button><button data-v="gain" aria-pressed="false">Subir / tonificar</button></div></div>
+    <div class="field" id="plPaceBox">Ritmo<div class="chips2" id="plPace">
+      <button data-v="0.1" aria-pressed="false">Suave</button><button data-v="0.2" aria-pressed="true">Recomendado</button><button data-v="0.25" aria-pressed="false">Más rápido</button></div></div>
+    <div id="plOut"></div>
+    <div class="row"><button class="btn" id="plUse">Usar este plan</button></div>
+    <div class="small-t muted">Cálculo con la fórmula de Mifflin-St Jeor, la más usada por nutricionistas para estimar el gasto diario. Es una estimación: si en 3–4 semanas el peso no se mueve como esperabas, ajusta 100–150 kcal. No reemplaza a un nutricionista.</div>
+  </section>
+
   <section class="card" id="settings">
     <h2>Mis metas</h2>
     <div class="grid2">
@@ -986,7 +1022,9 @@ function renderDay(){
   const frac = Math.min(t.kcal / goal, 1), C = 326.7, arc = $("ringArc");
   arc.setAttribute("stroke-dashoffset", String(C * (1 - frac)));
   arc.style.stroke = left < 0 ? "var(--citrus)" : "var(--leaf)";
-  const tg = { p: goal * .25 / 4, c: goal * .45 / 4, f: goal * .30 / 9 };
+  const mp = S.profile.plan?.pct || { p: .25, c: .45, f: .30 };
+  const tg = { p: goal * mp.p / 4, c: goal * mp.c / 4, f: goal * mp.f / 9 };
+  $("planLink").textContent = S.profile.plan ? "Ver o ajustar mi plan ›" : "Calcular mi plan de calorías y macros ›";
   [["p","P"],["c","C"],["f","F"]].forEach(([k,K]) => {
     $("m"+K).textContent = `${round(t[k])} / ${round(tg[k])} g`;
     $("b"+K).style.width = Math.min(100, t[k] / tg[k] * 100) + "%";
@@ -1370,6 +1408,7 @@ $("sugs").addEventListener("click", e => {
 function fillSettings(){
   $("goalInput").value = S.profile.goal; $("waterGoalInput").value = S.profile.waterGoal; $("fastTargetInput").value = String(S.profile.fastTarget);
   $("goalWarn").hidden = S.profile.goal >= 1200;
+  fillPlan();
   $("nameInput").value = S.profile.name || ""; $("exShareInput").value = String(exShare()); $("heightInput").value = S.profile.height || ""; $("weightGoalInput").value = S.profile.weightGoal ? fmtKg(S.profile.weightGoal) : "";
   const k = getKey(); $("keyInput").placeholder = k ? "Clave guardada ••••" + k.slice(-4) : "AIza…";
   fillModels([]);
@@ -1386,6 +1425,80 @@ $("saveSettings").onclick = () => {
   S.profile.weightGoal = parseKg($("weightGoalInput").value);
   saveProfile(); renderAll(); toast("Ajustes guardados");
 };
+/* ---------- plan de calorías y macros ---------- */
+const PL = { goal: "lose", pace: 0.2 };
+function planInputs(){
+  const sex = $("plSex").value, age = +$("plAge").value, h = +$("plHeight").value, kg = parseKg($("plKg").value), act = +$("plAct").value;
+  return { sex, age, h, kg, act, goal: PL.goal, pace: PL.pace };
+}
+function calcPlan(i){
+  if (!(i.age >= 14 && i.age <= 99 && i.h >= 100 && i.h <= 230 && i.kg)) return null;
+  const bmr = 10 * i.kg + 6.25 * i.h - 5 * i.age + (i.sex === "m" ? 5 : -161);
+  const tdee = bmr * i.act, floor = i.sex === "m" ? 1500 : 1200;
+  let kcal = i.goal === "lose" ? tdee * (1 - i.pace) : i.goal === "gain" ? tdee + 250 : tdee;
+  const floored = i.goal === "lose" && kcal < floor;
+  kcal = Math.round(Math.max(kcal, i.goal === "lose" ? Math.min(floor, tdee) : 0) / 10) * 10;
+  const hm = i.h / 100, bmi = i.kg / (hm * hm);
+  const refKg = Math.min(i.kg, 25 * hm * hm);               // con sobrepeso, la proteína se calcula sobre un peso de referencia
+  const pPerKg = i.goal === "keep" ? 1.4 : 1.6;
+  let p = Math.round(refKg * pPerKg), f = Math.round(Math.max(kcal * .28 / 9, 0.6 * refKg));
+  let c = Math.round((kcal - p * 4 - f * 9) / 4);
+  if (c < 100) { c = 100; f = Math.max(30, Math.round((kcal - p * 4 - c * 4) / 9)); }
+  const tot = p * 4 + c * 4 + f * 9;
+  return { bmr: Math.round(bmr), tdee: Math.round(tdee), kcal, p, c, f, bmi, floored,
+    pct: { p: p * 4 / tot, c: c * 4 / tot, f: f * 9 / tot }, weekly: i.goal === "lose" ? (tdee - kcal) * 7 / 7700 : i.goal === "gain" ? 250 * 7 / 7700 : 0 };
+}
+function bmiTxt(b){ return b < 18.5 ? "bajo peso" : b < 25 ? "normal" : b < 30 ? "sobrepeso" : "obesidad"; }
+function renderPlan(){
+  $("plPaceBox").hidden = PL.goal !== "lose";
+  document.querySelectorAll("#plGoal button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === PL.goal)));
+  document.querySelectorAll("#plPace button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === PL.pace)));
+  const i = planInputs(), r = calcPlan(i);
+  $("plUse").disabled = !r; $("plUse").style.opacity = r ? 1 : .45;
+  if (!r) { $("plOut").innerHTML = `<div class="empty">Completa edad, estatura y peso para ver tu plan.</div>`; return; }
+  const gw = S.profile.weightGoal, weeks = gw && r.weekly > 0 && (PL.goal === "lose" ? i.kg > gw : i.kg < gw) ? Math.ceil(Math.abs(i.kg - gw) / r.weekly) : null;
+  const pctTxt = k => Math.round(r.pct[k] * 100) + "%";
+  $("plOut").innerHTML = `
+    <div class="pkcal"><b class="num">${r.kcal.toLocaleString("es-CL")}</b><span class="muted">kcal al día</span></div>
+    <div class="plangrid">
+      <div class="pm" style="background:var(--leaf-soft);color:var(--leaf)"><b class="num">${r.p} g</b><span>Proteína · ${pctTxt("p")}</span></div>
+      <div class="pm" style="background:var(--citrus-soft);color:var(--citrus)"><b class="num">${r.c} g</b><span>Carbohidratos · ${pctTxt("c")}</span></div>
+      <div class="pm" style="background:var(--water-soft);color:var(--water)"><b class="num">${r.f} g</b><span>Grasas · ${pctTxt("f")}</span></div>
+    </div>
+    <div class="pfacts">
+      <div><span class="muted">Metabolismo en reposo</span><b class="num">${r.bmr.toLocaleString("es-CL")} kcal</b></div>
+      <div><span class="muted">Gasto diario total</span><b class="num">${r.tdee.toLocaleString("es-CL")} kcal</b></div>
+      <div><span class="muted">IMC</span><b class="num">${r.bmi.toFixed(1).replace(".", ",")} · ${bmiTxt(r.bmi)}</b></div>
+      <div><span class="muted">${PL.goal === "keep" ? "Cambio esperado" : "Ritmo estimado"}</span><b class="num">${r.weekly ? (PL.goal === "lose" ? "−" : "+") + fmtKg(r.weekly) + " kg/sem" : "estable"}</b></div>
+    </div>
+    ${weeks ? `<div class="small-t">Con este plan llegarías a tu peso meta (${fmtKg(gw)} kg) en unas <b>${weeks} semanas</b>.</div>` : ""}
+    ${r.floored ? `<div class="warn">Ajusté el plan a ${i.sex === "m" ? "1.500" : "1.200"} kcal, el mínimo recomendado sin supervisión profesional.</div>` : ""}
+    ${PL.goal === "lose" && PL.pace >= 0.25 ? `<div class="warn">El ritmo rápido cuesta más sostenerlo. Si sientes mucha hambre o cansancio, vuelve a "Recomendado".</div>` : ""}`;
+}
+function fillPlan(){
+  const pl = S.profile.planIn || {};
+  $("plSex").value = pl.sex || "f";
+  $("plAge").value = pl.birthYear ? new Date().getFullYear() - pl.birthYear : "";
+  $("plHeight").value = S.profile.height || "";
+  $("plKg").value = bodyKg() ? fmtKg(bodyKg()) : "";
+  $("plAct").value = String(pl.act || 1.375);
+  PL.goal = pl.goal || "lose"; PL.pace = pl.pace || 0.2;
+  renderPlan();
+}
+["plSex","plAge","plHeight","plKg","plAct"].forEach(id => $(id).addEventListener("input", renderPlan));
+$("plGoal").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { PL.goal = b.dataset.v; renderPlan(); } });
+$("plPace").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { PL.pace = +b.dataset.v; renderPlan(); } });
+$("plUse").onclick = () => {
+  const i = planInputs(), r = calcPlan(i); if (!r) return;
+  S.profile.planIn = { sex: i.sex, birthYear: new Date().getFullYear() - i.age, act: i.act, goal: i.goal, pace: i.pace };
+  S.profile.height = i.h; S.profile.goal = r.kcal;
+  S.profile.plan = { kcal: r.kcal, p: r.p, c: r.c, f: r.f, pct: r.pct, date: todayStr() };
+  if (!(S.profile.weights || []).some(x => x.date === todayStr()) && bodyKg() !== i.kg)
+    S.profile.weights = [...(S.profile.weights || []), { date: todayStr(), kg: i.kg }];
+  saveProfile(); renderAll(); toast(`Plan guardado: ${r.kcal.toLocaleString("es-CL")} kcal · P ${r.p} g · C ${r.c} g · G ${r.f} g`);
+};
+$("planLink").onclick = () => { go("perfil"); setTimeout(() => $("planCard").scrollIntoView({ behavior: "smooth", block: "start" }), 350); };
+
 function storageInfo(){
   try {
     let bytes = 0, days = 0;
@@ -1663,7 +1776,7 @@ document.addEventListener("visibilitychange", () => { if (document.hidden && sca
 function renderAll(){ refreshTitle(); renderAvatar(); renderTip(); renderCiclo(); renderCyMini(); renderRem(); renderDay(); renderFast(); renderWeek(); renderWeight(); renderRecents(); fillSettings(); updateSetupHint(); }
 
 /* ---------- v3: navegación tipo app ---------- */
-const APP_VERSION = "3.8.3";
+const APP_VERSION = "3.9.0";
 const VIEWS = ["hoy","ciclo","registrar","ayuno","progreso","aprende","perfil"];
 let cur = null;
 function go(v){
